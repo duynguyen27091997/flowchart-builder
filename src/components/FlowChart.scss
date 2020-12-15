@@ -1,4 +1,4 @@
-.drawflow,.drawflow .parent-node{position:relative}.parent-drawflow{display:flex;overflow:hidden;touch-action:none;outline:0}.drawflow{width:100%;height:100%;user-select:none}.drawflow .drawflow-node{display:flex;align-items:center;position:absolute;background:#0ff;width:160px;min-height:40px;border-radius:4px;border:2px solid #000;color:#000;z-index:2;padding:15px}.drawflow .drawflow-node.selected{background:red}.drawflow .drawflow-node:hover{cursor:move}.drawflow .drawflow-node .inputs,.drawflow .drawflow-node .outputs{width:0}.drawflow .drawflow-node .drawflow_content_node{width:100%;display:block}.drawflow .drawflow-node .input,.drawflow .drawflow-node .output{position:relative;width:20px;height:20px;background:#fff;border-radius:50%;border:2px solid #000;cursor:crosshair;z-index:1;margin-bottom:5px}.drawflow .drawflow-node .input{left:-27px;top:2px;background:#ff0}.drawflow .drawflow-node .output{right:-3px;top:2px}.drawflow svg{z-index:0;position:absolute;overflow:visible!important}.drawflow .connection{position:absolute;transform:translate(9999px,9999px)}.drawflow .connection .main-path{fill:none;stroke-width:5px;stroke:#4682b4;transform:translate(-9999px,-9999px)}.drawflow .connection .main-path:hover{stroke:#1266ab;cursor:pointer}.drawflow .connection .main-path.selected{stroke:#43b993}.drawflow .connection .point{cursor:move;stroke:#000;stroke-width:2;fill:#fff;transform:translate(-9999px,-9999px)}.drawflow .connection .point.selected,.drawflow .connection .point:hover{fill:#1266ab}.drawflow .main-path{fill:none;stroke-width:5px;stroke:#4682b4}.drawflow .selectbox{z-index:3;position:absolute;transform:translate(9999px,9999px)}.drawflow .selectbox rect{fill:#00f;opacity:.5;stroke:#ff0;stroke-width:5;stroke-opacity:.5;transform:translate(-9999px,-9999px)}.drawflow-delete{position:absolute;display:block;width:30px;height:30px;background:#000;color:#fff;z-index:4;border:2px solid #fff;line-height:30px;font-weight:700;text-align:center;border-radius:50%;font-family:monospace;cursor:pointer}.drawflow>.drawflow-delete{margin-left:-15px;margin-top:15px}.parent-node .drawflow-delete{right:-15px;top:-15px}
+.workflow,.workflow .parent-node{position:relative}.parent-workflow{display:flex;overflow:hidden;touch-action:none;outline:0}.workflow{width:100%;height:100%;user-select:none}.workflow .workflow-node{display:flex;align-items:center;position:absolute;background:#0ff;width:160px;min-height:40px;border-radius:4px;border:2px solid #000;color:#000;z-index:2;padding:15px}.workflow .workflow-node.selected{background:red}.workflow .workflow-node:hover{cursor:move}.workflow .workflow-node .inputs,.workflow .workflow-node .outputs{width:0}.workflow .workflow-node .workflow_content_node{width:100%;display:block}.workflow .workflow-node .input,.workflow .workflow-node .output{position:relative;width:20px;height:20px;background:#fff;border-radius:50%;border:2px solid #000;cursor:crosshair;z-index:1;margin-bottom:5px}.workflow .workflow-node .input{left:-27px;top:2px;background:#ff0}.workflow .workflow-node .output{right:-3px;top:2px}.workflow svg{z-index:0;position:absolute;overflow:visible!important}.workflow .connection{position:absolute;transform:translate(9999px,9999px)}.workflow .connection .main-path{fill:none;stroke-width:5px;stroke:#4682b4;transform:translate(-9999px,-9999px)}.workflow .connection .main-path:hover{stroke:#1266ab;cursor:pointer}.workflow .connection .main-path.selected{stroke:#43b993}.workflow .connection .point{cursor:move;stroke:#000;stroke-width:2;fill:#fff;transform:translate(-9999px,-9999px)}.workflow .connection .point.selected,.workflow .connection .point:hover{fill:#1266ab}.workflow .main-path{fill:none;stroke-width:5px;stroke:#4682b4}.workflow .selectbox{z-index:3;position:absolute;transform:translate(9999px,9999px)}.workflow .selectbox rect{fill:#00f;opacity:.5;stroke:#ff0;stroke-width:5;stroke-opacity:.5;transform:translate(-9999px,-9999px)}.workflow-delete{position:absolute;display:block;width:30px;height:30px;background:#000;color:#fff;z-index:4;border:2px solid #fff;line-height:30px;font-weight:700;text-align:center;border-radius:50%;font-family:monospace;cursor:pointer}.workflow>.workflow-delete{margin-left:-15px;margin-top:15px}.parent-node .workflow-delete{right:-15px;top:-15px}
 :root {
   --border-color: #cacaca;
   --background-color: #ffffff;
@@ -58,13 +58,6 @@ header a {
   border-right: 1px solid var(--border-color);
 }
 
-.drag-drawflow {
-  line-height: 50px;
-  border-bottom: 1px solid var(--border-color);
-  padding-left: 20px;
-  cursor: move;
-  user-select: none;
-}
 .menu {
   position: absolute;
   height: 40px;
@@ -161,13 +154,11 @@ header a {
 }
 .bar-zoom svg {
   cursor: pointer;
-  padding-left: 10px;
-}
-.bar-zoom svg:nth-child(1) {
-  padding-left: 0px;
+  margin:0 5px;
 }
 
-#drawflow {
+
+#workflow {
   position: relative;
   width: calc(100vw - 301px);
   height: calc(100% - 50px);
@@ -183,62 +174,62 @@ header a {
   .col {
     width: 50px;
   }
-  .col .drag-drawflow span {
+  .col .drag-workflow span {
     display:none;
   }
-  #drawflow {
+  #workflow {
     width: calc(100vw - 51px);
   }
 }
 
-/* Editing Drawflow */
+/* Editing workflow */
 
-.drawflow .drawflow-node {
+.workflow .workflow-node {
   background: var(--background-color);
   border: 1px solid var(--border-color);
   -webkit-box-shadow: 0 2px 15px 2px var(--border-color);
   box-shadow: 0 2px 15px 2px var(--border-color);
-  padding: 0px;
-  width: 200px;
+  padding: 0;
+  width: 250px;
 }
 
-.drawflow .drawflow-node.selected  {
+.workflow .workflow-node.selected  {
   background: white;
   border: 1px solid #4ea9ff;
   -webkit-box-shadow: 0 2px 20px 2px #4ea9ff;
   box-shadow: 0 2px 20px 2px #4ea9ff;
 }
 
-.drawflow .drawflow-node.selected .title-box {
+.workflow .workflow-node.selected .title-box {
   color: #22598c;
   /*border-bottom: 1px solid #4ea9ff;*/
 }
 
-.drawflow .connection .main-path {
+.workflow .connection .main-path {
   stroke: #4ea9ff;
   stroke-width: 3px;
 }
 
-.drawflow .drawflow-node .input, .drawflow .drawflow-node .output {
+.workflow .workflow-node .input, .workflow .workflow-node .output {
   height: 15px;
   width: 15px;
   border: 2px solid var(--border-color);
 }
 
-.drawflow .drawflow-node .input:hover, .drawflow .drawflow-node .output:hover {
+.workflow .workflow-node .input:hover, .workflow .workflow-node .output:hover {
   background: #4ea9ff;
 }
 
-.drawflow .drawflow-node .output {
+.workflow .workflow-node .output {
   right: 10px;
 }
 
-.drawflow .drawflow-node .input {
+.workflow .workflow-node .input {
   left: -10px;
   background: white;
 }
 
-.drawflow > .drawflow-delete {
+.workflow > .workflow-delete {
   border: 2px solid #43b993;
   background: white;
   color: #43b993;
@@ -246,7 +237,7 @@ header a {
   box-shadow: 0 2px 20px 2px #43b993;
 }
 
-.drawflow-delete {
+.workflow-delete {
   border: 2px solid #4ea9ff;
   background: white;
   color: #4ea9ff;
@@ -254,37 +245,51 @@ header a {
   box-shadow: 0 2px 20px 2px #4ea9ff;
 }
 
-.drawflow-node .title-box {
-  height: 50px;
-  line-height: 50px;
+.workflow-node .title-box {
+  h6{
+    margin: 0;
+    font-size: 16px;
+  }
+  p{
+    margin: 0;
+  }
+  line-height: 25px;
   background: var(--background-box-title);
   border-bottom: 1px solid #e9e9e9;
   border-radius: 4px 4px 0px 0px;
   padding-left: 10px;
 }
-.drawflow .title-box svg {
+.workflow .title-box svg {
   position: initial;
 }
-.drawflow-node .box {
+.workflow-node .box {
   padding: 10px 20px 20px 20px;
   font-size: 14px;
   color: #555555;
-
+  font-weight: 600;
+  &__target{
+    font-size: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #BDC3C7;
+  }
+  &__action{
+    padding: 5px 0;
+    font-size: 15px;
+  }
 }
-.drawflow-node .box p {
-  margin-top: 5px;
-  margin-bottom: 5px;
+.workflow-node .box p {
+  margin: 0;
 }
 
-.drawflow-node.welcome {
+.workflow-node.welcome {
   width: 250px;
 }
 
-.drawflow-node.slack .title-box {
+.workflow-node.slack .title-box {
   border-radius: 4px;
 }
 
-.drawflow-node input, .drawflow-node select, .drawflow-node textarea {
+.workflow-node input, .workflow-node select, .workflow-node textarea {
   border-radius: 4px;
   border: 1px solid var(--border-color);
   height: 30px;
@@ -294,36 +299,36 @@ header a {
   color: #555555;
 }
 
-.drawflow-node textarea {
+.workflow-node textarea {
   height: 100px;
 }
 
 
-.drawflow-node.personalized {
+.workflow-node.personalized {
   background: red;
   height: 200px;
   text-align: center;
   color: white;
 }
-.drawflow-node.personalized .input {
+.workflow-node.personalized .input {
   background: yellow;
 }
-.drawflow-node.personalized .output {
+.workflow-node.personalized .output {
   background: green;
 }
 
-.drawflow-node.personalized.selected {
+.workflow-node.personalized.selected {
   background: blue;
 }
 
-.drawflow .connection .point {
+.workflow .connection .point {
   stroke: var(--border-color);
   stroke-width: 2;
   fill: white;
   transform: translate(-9999px, -9999px);
 }
 
-.drawflow .connection .point.selected, .drawflow .connection .point:hover {
+.workflow .connection .point.selected, .workflow .connection .point:hover {
   fill: #4ea9ff;
 }
 
@@ -367,30 +372,16 @@ header a {
   }
 }
 
-.workflow{
+.flow{
   display: flex;
   $color-gray:#bdc3c7;
   $color-blue:#3498db;
   $color-red:#c0392b;
   $color-green:#27ae60;
-  border: 1px solid $color-gray;
   &__sidebar{
     flex: 0 0 290px;
     padding: 5px;
     border-right: 1px solid $color-gray;
-    .elements{
-      list-style: none;
-      padding-left: 0;
-      .element{
-        cursor: pointer;
-        user-select: none;
-        padding: 10px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        border: 1px solid $color-gray;
-      }
-    }
   }
   &__draw {
     flex-grow: 1;

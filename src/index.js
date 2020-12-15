@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import 'drawflow/dist/drawflow.min.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

@@ -1,4 +1,4 @@
-import DrawFlow from "../helper/Drawflow";
+import DrawFlow from "../helpers/Drawflow";
 import {useState, useEffect} from "react";
 
 
@@ -60,25 +60,25 @@ import {useState, useEffect} from "react";
 //
 // }
 
-const useFlowChart = (idElement, classElement) => {
+const useFlowChart = (workflowId) => {
     let [editor, setEditor] = useState(null);
     //set up editor
 
     useEffect(() => {
-        let id = document.getElementById(idElement);
+        let id = document.getElementById(workflowId);
         if (!editor)
-            setEditor(new DrawFlow(id));
-        else {
-            id.addEventListener('drop', drop, false)
-            id.addEventListener('dragover', allowDrop, false)
-        }
+            setEditor(new DrawFlow(id,workflowId));
+        // else {
+        //     id.addEventListener('drop', drop, false)
+        //     id.addEventListener('dragover', allowDrop, false)
+        // }
         // bindEvent(editor)
-        let elements = document.getElementsByClassName(classElement)
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].addEventListener('dragstart', drag, false);
-        }
+        // let elements = document.getElementsByClassName(classElement)
+        // for (let i = 0; i < elements.length; i++) {
+        //     elements[i].addEventListener('dragstart', drag, false);
+        // }
 
-    }, [classElement, editor, idElement])
+    }, [ editor])
     useEffect(() => {
         if (editor) {
             editor.start();
@@ -91,12 +91,17 @@ const useFlowChart = (idElement, classElement) => {
     }
 
     const drag = (ev) => {
-        console.log("drag")
-        ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+
+        let currentNode = ev.target;
+        let name = currentNode.getAttribute('data-name');
+        let description = currentNode.getAttribute('data-description')
+        let action = currentNode.getAttribute('data-action')
+        let target = currentNode.getAttribute('data-target')
+        ev.dataTransfer.setData("node", JSON.stringify({name,description,action,target}));
 
     }
 
-    const addNodeToDrawFlow = (data, pos_x, pos_y) => {
+    const addNodeToDrawFlow = ({name="",description="",action="",target=""}, pos_x, pos_y) => {
         if (editor.editor_mode === 'fixed') {
             return false;
         }
@@ -105,26 +110,27 @@ const useFlowChart = (idElement, classElement) => {
 
         let template = `
             <div>
-              <div class="title-box"><i class="fas fa-code"></i> Thông tin</div>
+              <div class="title-box"><h6>${name}</h6>
+              <p>${description}</p>
+              </div>
                   <div class="box">
-                    <p>Chức vụ</p>
-                    <p>Action</p>
+                    <p class="box__target">Đối tượng : ${target}</p>
+                    <p class="box__action">Tác vụ : ${action}</p>
                   </div>
             </div>
             `;
-        editor.addNode('template', 1, 1, pos_x, pos_y, 'template', {"template": 'Write your template'}, template);
+        let extraData = {};
+        editor.addNode({name,description,action,target}, pos_x, pos_y, extraData, template);
 
     }
 
     const drop = (ev) => {
-        console.log('drop')
-        console.log(editor)
         let data = ev.dataTransfer.getData("node");
-        addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+        addNodeToDrawFlow(JSON.parse(data), ev.clientX, ev.clientY);
     }
 
 
-    return editor;
+    return [editor,drag,drop,allowDrop];
 };
 
 export default useFlowChart;

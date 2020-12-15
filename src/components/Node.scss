@@ -1,0 +1,33 @@
+$color-gray: #bdc3c7;
+.node {
+
+  cursor: pointer;
+  user-select: none;
+  padding: 10px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid $color-gray;
+  margin-bottom: 10px;
+  &__form-group{
+    display: block;
+    margin-bottom: 10px;
+    label{
+      display: block;
+      text-align: left;
+      font-size: 14px;
+      color: #151515;
+      margin-bottom: 4px;
+    }
+  }
+  input,select{
+    background: #ffffff;
+    width: 100%;
+    border: 1px solid $color-gray;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+  }
+}
