@@ -3,7 +3,7 @@ import FlowChart from "./components/FlowChart";
 function App() {
   return (
     <div className="App">
-      <FlowChart/>
+      <FlowChart />
     </div>
   );
 }

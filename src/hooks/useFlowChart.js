@@ -97,14 +97,16 @@ const useFlowChart = (workflowId) => {
         let description = currentNode.getAttribute('data-description')
         let action = currentNode.getAttribute('data-action')
         let target = currentNode.getAttribute('data-target')
-        ev.dataTransfer.setData("node", JSON.stringify({name,description,action,target}));
+        let checked = currentNode.getAttribute('data-checked')
+        ev.dataTransfer.setData("node", JSON.stringify({name,description,action,target,checked}));
 
     }
 
-    const addNodeToDrawFlow = ({name="",description="",action="",target=""}, pos_x, pos_y) => {
+    const addNodeToDrawFlow = ({name="",description="",action="",target="",checked}, pos_x, pos_y) => {
         if (editor.editor_mode === 'fixed') {
             return false;
         }
+        let first = (checked === 'true');
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
@@ -116,11 +118,14 @@ const useFlowChart = (workflowId) => {
                   <div class="box">
                     <p class="box__target">Đối tượng : ${target}</p>
                     <p class="box__action">Tác vụ : ${action}</p>
+                    <p class="box__check">
+                       ${first ? '<input type="checkbox" aria-label="" disabled checked> <span>first</span>' : ''}
+                    </p>
                   </div>
             </div>
             `;
         let extraData = {};
-        editor.addNode({name,description,action,target}, pos_x, pos_y, extraData, template);
+        editor.addNode({name,description,action,target,first}, pos_x, pos_y, extraData, template);
 
     }
 

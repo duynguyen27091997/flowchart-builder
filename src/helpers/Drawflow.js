@@ -353,7 +353,7 @@ export default class Workflow {
 
             this.ele_selected.style.top = (this.ele_selected.offsetTop - y) + "px";
             this.ele_selected.style.left = (this.ele_selected.offsetLeft - x) + "px";
-            let nodeIndex = this.workflow.steps.findIndex(step => step.id === parseInt(this.ele_selected.id.slice(5)));
+            let nodeIndex = this.workflow.steps.findIndex(step => step.step_id === parseInt(this.ele_selected.id.slice(5)));
             if (nodeIndex !== -1) {
                 this.workflow.steps[nodeIndex].pos_x = (this.ele_selected.offsetLeft - x);
                 this.workflow.steps[nodeIndex].pos_y = (this.ele_selected.offsetTop - y);
@@ -452,9 +452,9 @@ export default class Workflow {
         }
         if (this.connection === true) {
             //console.log(ele_last)
-            if (ele_last.classList[0] === 'input' || (this.force_first_input && (ele_last.closest(".workflow_content_node") != null || ele_last.classList[0] === 'workflow-node'))) {
+            if (ele_last.classList[0] === 'input' || (this.force_first_input && (ele_last.closest(".workflow_content_node") !== null || ele_last.classList[0] === 'workflow-node'))) {
 
-                if (this.force_first_input && (ele_last.closest(".workflow_content_node") != null || ele_last.classList[0] === 'workflow-node')) {
+                if (this.force_first_input && (ele_last.closest(".workflow_content_node") !== null || ele_last.classList[0] === 'workflow-node')) {
                     if (ele_last.closest(".workflow_content_node") != null) {
                         input_id = ele_last.closest(".workflow_content_node").parentElement.id;
                     } else {
@@ -484,18 +484,22 @@ export default class Workflow {
                         this.connection_ele.classList.add("node_out_" + output_id);
                         this.connection_ele.classList.add(output_class);
                         this.connection_ele.classList.add(input_class);
+
+                        let [action,,status] = output_class.split("_");
+
                         let id_input = input_id.slice(5);
                         let id_output = output_id.slice(5);
-                        let stepIn = this.workflow.steps.findIndex(step => step.id === parseInt(id_input));
-                        let stepOut = this.workflow.steps.findIndex(step => step.id === parseInt(id_output));
-                        this.workflow.steps[stepIn].inputs[input_class].connections.push({
+
+                        let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
+                        let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
+                        let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
+                        let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+
+                        this.workflow.steps[stepIn].inputs[portIn]['steps'].push({
                             "step_id": id_output,
                             "output": output_class
                         });
-                        this.workflow.steps[stepOut].actions[output_class].connections.push({
-                            "step_id": id_input,
-                            "input": input_class
-                        });
+                        this.workflow.steps[stepOut].actions[portOut][status] = id_input;
 
                         this.updateConnectionNodes('node-' + id_output);
                         this.updateConnectionNodes('node-' + id_input);
@@ -641,12 +645,22 @@ export default class Workflow {
         let y = end_pos_y;
         let curvature = curvature_value;
 
+        // let hx1 = line_x + Math.abs(x - line_x) * curvature;
+        // let hx2 = x - Math.abs(x - line_x) * curvature;
 
-        let hx1 = line_x + Math.abs(x - line_x) * curvature;
-        let hx2 = x - Math.abs(x - line_x) * curvature;
+        let hx1 = Math.max(line_x + 70,line_x + Math.abs(x - line_x)/2);
+        let hx2 = Math.min(x-70,x - Math.abs(x - line_x)/2);
+        let mid =line_y - (line_y - y)/2;
 
-        return ' M ' + line_x + ' ' + line_y + ' C ' + hx1 + ' ' + line_y + ' ' + hx2 + ' ' + y + ' ' + x + '  ' + y + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 5) + '  L' + (x - 20) + ' ' + (y + 5) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 3) + '  L' + (x - 20) + ' ' + (y + 3) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 1) + '  L' + (x - 20) + ' ' + (y + 1) + ' Z';
+        if (line_x > (x+70))
+            mid = line_y - Math.abs(line_y - y)/2;
 
+        // return ' M ' + line_x + ' ' + line_y + ' L ' + hx1 + ' ' + line_y + ' ' + hx2 + ' ' + y + ' ' + x + '  ' + y + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 5) + '  L' + (x - 20) + ' ' + (y + 5) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 3) + '  L' + (x - 20) + ' ' + (y + 3) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 1) + '  L' + (x - 20) + ' ' + (y + 1) + ' Z';
+        // if (!mid)
+        //  return ' M '+ line_x +' '+ line_y +' L '+ hx1 +' '+ line_y +' '+ hx2 +' ' + y +' ' + x +'  ' + y;
+        // else
+         return ' M '+ line_x +' '+ line_y +' L '+ hx1 +' '+ line_y +' '+ hx1 +' ' + mid +' '+ hx2 +' ' + mid +' '+ hx2 +' ' + y +' ' + x +'  ' + y
+        +'M '+ (x-11)  + ' ' + y + ' L'+(x-20)+' '+ (y-5)+'  L'+(x-20)+' '+ (y+5)+' Z' +' M '+ (x-11)  + ' ' + y + ' L'+(x-20)+' '+ (y-3)+'  L'+(x-20)+' '+ (y+3)+' Z' +' M '+ (x-11)  + ' ' + y + ' L'+(x-20)+' '+ (y-1)+'  L'+(x-20)+' '+ (y+1)+' Z';
     }
 
     drawConnection(ele) {
@@ -655,12 +669,15 @@ export default class Workflow {
         let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
         path.classList.add("main-path");
         path.setAttributeNS(null, 'd', '');
-        // path.innerHTML = 'a';
+        let [_,outputClass] = ele.classList;
+        let [,,status] = outputClass.split("_");
         connection.classList.add("connection");
+        if (status)
+            connection.setAttribute('status',status);
         connection.appendChild(path);
         this.precanvas.appendChild(connection);
 
-    }
+    };
 
     updateConnection(eX, eY) {
         const precanvas = this.precanvas;
@@ -747,8 +764,6 @@ export default class Workflow {
     }
 
     updateConnectionNodes(id) {
-
-        // Aquí nos quedamos;
         const idSearch = 'node_in_' + id;
         const idSearchOut = 'node_out_' + id;
         var line_path = this.line_path / 2;
@@ -1320,7 +1335,7 @@ export default class Workflow {
         return nodes;
     }
 
-    addNode({name = "", description = "", action, target}, ele_pos_x, ele_pos_y, data, html,) {
+    addNode({name = "", description = "", action, target,first = false}, ele_pos_x, ele_pos_y, data, html) {
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
 
@@ -1331,12 +1346,44 @@ export default class Workflow {
 
         const inputs = document.createElement('div');
         inputs.classList.add("inputs");
-
         const outputs = document.createElement('div');
         outputs.classList.add("outputs");
 
+        let jsonInput = [];
+        let jsonOutput = [];
 
+        if (action && target) {
 
+            let inputItem = {
+                name:"",
+                steps:[]
+            };
+
+            ['default'].forEach(value => {
+                let input = document.createElement('div');
+                input.classList.add("input");
+                input.classList.add(`input_${value}`);
+                inputItem.name = `input_${value}`;
+                inputs.appendChild(input);
+            });
+
+            jsonInput.push(inputItem);
+
+            let outputItem = {
+                name:action,
+                target_type: target
+            };
+
+            ['pass', 'reject'].forEach(value => {
+                let output = document.createElement('div');
+                output.classList.add("output");
+                output.classList.add(`${action}_output_${value}`);
+                outputItem[value] = null;
+                outputs.appendChild(output)
+            })
+
+            jsonOutput.push(outputItem)
+        }
 
 
         const content = document.createElement('div');
@@ -1353,13 +1400,22 @@ export default class Workflow {
         this.precanvas.appendChild(parent);
 
         this.workflow.steps.push({
-            id: this.nodeId,
+            step_id: this.nodeId,
             workflow_id: this.workflowId,
             description: description,
             name: name,
             data: data,
-            inputs: [],
-            actions: [],
+            is_first: first,
+            inputs: jsonInput,
+            actions: jsonOutput,
+            targets: [
+                {
+                    id: '',
+                    name: '',
+                    type: target,
+                    action: action
+                },
+            ],
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         });
@@ -1435,8 +1491,8 @@ export default class Workflow {
             if (typeof key[1] === "object") {
                 insertObjectkeys(null, key[0], key[0]);
             } else {
-                var elems = content.querySelectorAll('[df-' + key[0] + ']');
-                for (var i = 0; i < elems.length; i++) {
+                let elems = content.querySelectorAll('[df-' + key[0] + ']');
+                for (let i = 0; i < elems.length; i++) {
                     elems[i].value = key[1];
                 }
             }
@@ -1764,7 +1820,7 @@ export default class Workflow {
 
         document.getElementById(id).remove();
 
-        this.workflow.steps = this.workflow.steps.filter(step => step.id !== parseInt(id.slice(5)));
+        this.workflow.steps = this.workflow.steps.filter(step => step.step_id !== parseInt(id.slice(5)));
 
         this.dispatch('nodeRemoved', id.slice(5));
     }
@@ -1773,23 +1829,35 @@ export default class Workflow {
         if (this.connection_selected != null) {
             let listClass = this.connection_selected.parentElement.classList;
             this.connection_selected.parentElement.remove();
-            console.log(listClass);
-            // let index_out = this.workflow.steps[listclass[2].slice(14)].outputs[listclass[3]].connections.findIndex(function (item, i) {
-            //     return item.node === listclass[1].slice(13) && item.output === listclass[4]
-            // });
-            // this.workflow.workflow[this.module].steps[listclass[2].slice(14)].outputs[listclass[3]].connections.splice(index_out, 1);
-            //
-            // var index_in = this.workflow.workflow[this.module].steps[listclass[1].slice(13)].inputs[listclass[4]].connections.findIndex(function (item, i) {
-            //     return item.node === listclass[2].slice(14) && item.input === listclass[3]
-            // });
-            // this.workflow.workflow[this.module].steps[listclass[1].slice(13)].inputs[listclass[4]].connections.splice(index_in, 1);
-            // this.dispatch('connectionRemoved', {
-            //     output_id: listclass[2].slice(14),
-            //     input_id: listclass[1].slice(13),
-            //     output_class: listclass[3],
-            //     input_class: listclass[4]
-            // });
-            // this.connection_selected = null;
+            const [,nodeIn,nodeOut,output_class,input_class] = listClass;
+
+            let [action,,status] = output_class.split("_");
+
+            let id_input = nodeIn.slice(13);
+            let id_output = nodeOut.slice(14);
+
+            let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
+            let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
+            let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
+            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+
+
+            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item=>{
+                return item["step_id"] === id_output && item["output"] === output_class
+            });
+
+            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex,1);
+
+            this.workflow.steps[stepOut].actions[portOut][status] = null;
+
+            this.dispatch('connectionRemoved', {
+                output_id: id_output,
+                input_id: id_input,
+                output_class: output_class,
+                input_class: input_class
+            });
+
+            this.connection_selected = null;
         }
     }
 
@@ -1839,56 +1907,78 @@ export default class Workflow {
     removeConnectionNodeId(id) {
         const idSearchIn = 'node_in_' + id;
         const idSearchOut = 'node_out_' + id;
-        console.log(idSearchIn)
-        console.log(idSearchOut)
-        // const elemsOut = document.getElementsByClassName(idSearchOut);
-        // for (var i = elemsOut.length - 1; i >= 0; i--) {
-        //     var listclass = elemsOut[i].classList;
-        //
-        //     var index_in = this.workflow.workflow[this.module].steps[listclass[1].slice(13)].inputs[listclass[4]].connections.findIndex(function (item, i) {
-        //         return item.node === listclass[2].slice(14) && item.input === listclass[3]
-        //     });
-        //     this.workflow.workflow[this.module].steps[listclass[1].slice(13)].inputs[listclass[4]].connections.splice(index_in, 1);
-        //
-        //     var index_out = this.workflow.workflow[this.module].steps[listclass[2].slice(14)].outputs[listclass[3]].connections.findIndex(function (item, i) {
-        //         return item.node === listclass[1].slice(13) && item.output === listclass[4]
-        //     });
-        //     this.workflow.workflow[this.module].steps[listclass[2].slice(14)].outputs[listclass[3]].connections.splice(index_out, 1);
-        //
-        //     elemsOut[i].remove();
-        //
-        //     this.dispatch('connectionRemoved', {
-        //         output_id: listclass[2].slice(14),
-        //         input_id: listclass[1].slice(13),
-        //         output_class: listclass[3],
-        //         input_class: listclass[4]
-        //     });
-        // }
-        //
-        // const elemsIn = document.getElementsByClassName(idSearchIn);
-        // for (var i = elemsIn.length - 1; i >= 0; i--) {
-        //
-        //     var listclass = elemsIn[i].classList;
-        //
-        //     var index_out = this.workflow.workflow[this.module].steps[listclass[2].slice(14)].outputs[listclass[3]].connections.findIndex(function (item, i) {
-        //         return item.node === listclass[1].slice(13) && item.output === listclass[4]
-        //     });
-        //     this.workflow.workflow[this.module].steps[listclass[2].slice(14)].outputs[listclass[3]].connections.splice(index_out, 1);
-        //
-        //     var index_in = this.workflow.workflow[this.module].steps[listclass[1].slice(13)].inputs[listclass[4]].connections.findIndex(function (item, i) {
-        //         return item.node === listclass[2].slice(14) && item.input === listclass[3]
-        //     });
-        //     this.workflow.workflow[this.module].steps[listclass[1].slice(13)].inputs[listclass[4]].connections.splice(index_in, 1);
-        //
-        //     elemsIn[i].remove();
-        //
-        //     this.dispatch('connectionRemoved', {
-        //         output_id: listclass[2].slice(14),
-        //         input_id: listclass[1].slice(13),
-        //         output_class: listclass[3],
-        //         input_class: listclass[4]
-        //     });
-        // }
+
+        const elemsOut = document.getElementsByClassName(idSearchOut);
+        for (let i = elemsOut.length - 1; i >= 0; i--) {
+            let listClass = elemsOut[i].classList;
+
+            const [,nodeIn,nodeOut,output_class,input_class] = listClass;
+
+            let [action,,status] = output_class.split("_");
+
+            let id_input = nodeIn.slice(13);
+            let id_output = nodeOut.slice(14);
+
+            let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
+            let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
+            let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
+            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+
+
+            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item=>{
+                return item["step_id"] === id_output && item["output"] === output_class
+            });
+
+            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex,1);
+
+            this.workflow.steps[stepOut].actions[portOut][status] = null;
+
+            elemsOut[i].remove();
+
+            this.dispatch('connectionRemoved', {
+                output_id: nodeOut,
+                input_id: nodeIn,
+                output_class: output_class,
+                input_class: input_class
+            });
+        }
+
+        const elemsIn = document.getElementsByClassName(idSearchIn);
+
+        for (let i = elemsIn.length - 1; i >= 0; i--) {
+
+            let listClass = elemsIn[i].classList;
+
+            const [,nodeIn,nodeOut,output_class,input_class] = listClass;
+
+            let [action,,status] = output_class.split("_");
+
+            let id_input = nodeIn.slice(13);
+            let id_output = nodeOut.slice(14);
+
+            let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
+            let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
+            let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
+            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+
+
+            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item=>{
+                return item["step_id"] === id_output && item["output"] === output_class
+            });
+
+            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex,1);
+
+            this.workflow.steps[stepOut].actions[portOut][status] = null;
+
+            elemsIn[i].remove();
+
+            this.dispatch('connectionRemoved', {
+                output_id: nodeOut,
+                input_id: nodeIn,
+                output_class: output_class,
+                input_class: input_class
+            });
+        }
     }
 
     getModuleFromNodeId(id) {

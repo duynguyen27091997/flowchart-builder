@@ -1,0 +1,112 @@
+{
+  "steps": [
+    {
+      "id": 1,
+      "workflow_id": 1,
+      "description": "Nhan su tao hs",
+      "name": "Tao HS1",
+      "data": {},
+      "inputs": [
+        {
+          "name": "input_default",
+          "steps": [
+            {
+              "step_id": "2",
+              "output": "confirm_output_reject"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "create",
+          "target_type": "editorial_board",
+          "pass": "2",
+          "reject": null
+        }
+      ],
+      "targets": [
+        {
+          "id": "",
+          "name": "",
+          "type": "editorial_board",
+          "action": "create"
+        }
+      ],
+      "pos_x": -434,
+      "pos_y": 482
+    },
+    {
+      "id": 2,
+      "workflow_id": 1,
+      "description": "",
+      "name": "Duyet hs",
+      "data": {},
+      "inputs": [
+        {
+          "name": "input_default",
+          "steps": [
+            {
+              "step_id": "1",
+              "output": "create_output_pass"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "confirm",
+          "target_type": "newsroom_secretary",
+          "pass": "3",
+          "reject": "1"
+        }
+      ],
+      "targets": [
+        {
+          "id": "",
+          "name": "",
+          "type": "newsroom_secretary",
+          "action": "confirm"
+        }
+      ],
+      "pos_x": -185,
+      "pos_y": 113
+    },
+    {
+      "id": 3,
+      "workflow_id": 1,
+      "description": "",
+      "name": "Luu HS",
+      "data": {},
+      "inputs": [
+        {
+          "name": "input_default",
+          "steps": [
+            {
+              "step_id": "2",
+              "output": "confirm_output_pass"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "update",
+          "target_type": "personal",
+          "pass": null,
+          "reject": null
+        }
+      ],
+      "targets": [
+        {
+          "id": "",
+          "name": "",
+          "type": "personal",
+          "action": "update"
+        }
+      ],
+      "pos_x": 236.875,
+      "pos_y": 44.25000190734862
+    }
+  ]
+}
