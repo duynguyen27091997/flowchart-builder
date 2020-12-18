@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 
 import "./Node.scss"
 import {useState} from "react";
@@ -29,6 +29,11 @@ const Node = ({drag}) => {
             setShow(false);
             setValue(template)
         }
+
+        useEffect(()=>{
+            if (!show)
+                setChecked(false)
+        },[show])
 
         return (
             <div>

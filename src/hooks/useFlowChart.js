@@ -103,10 +103,17 @@ const useFlowChart = (workflowId) => {
     }
 
     const addNodeToDrawFlow = ({name="",description="",action="",target="",checked}, pos_x, pos_y) => {
+
         if (editor.editor_mode === 'fixed') {
             return false;
         }
+
         let first = (checked === 'true');
+        console.log(first)
+        if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && first){
+            alert('Đã tồn tại bước bắt đầu !');
+            return false;
+        }
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
@@ -119,7 +126,7 @@ const useFlowChart = (workflowId) => {
                     <p class="box__target">Đối tượng : ${target}</p>
                     <p class="box__action">Tác vụ : ${action}</p>
                     <p class="box__check">
-                       ${first ? '<input type="checkbox" aria-label="" disabled checked> <span>first</span>' : ''}
+                       ${first ? '<input type="checkbox" aria-label="" onclick="return false;" checked> <span>first</span>' : ''}
                     </p>
                   </div>
             </div>

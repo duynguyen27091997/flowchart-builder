@@ -1431,7 +1431,7 @@ export default class Workflow {
 
         const node = document.createElement('div');
         node.innerHTML = "";
-        node.setAttribute("id", "node-" + dataNode.id);
+        node.setAttribute("id", "node-" + dataNode.step_id);
         node.classList.add("workflow-node");
         if (dataNode.class !== '') {
             node.classList.add(dataNode.class);
@@ -1442,13 +1442,15 @@ export default class Workflow {
 
         const outputs = document.createElement('div');
         outputs.classList.add("outputs");
+        debugger;
 
-        Object.keys(dataNode.inputs).map(function (input_item, index) {
+        dataNode.inputs.forEach((input_item, index)=>{
             const input = document.createElement('div');
             input.classList.add("input");
-            input.classList.add(input_item);
+            input.classList.add(input_item.name);
             inputs.appendChild(input);
-            Object.keys(dataNode.inputs[input_item].connections).map(function (output_item, index) {
+
+            input_item['steps'].forEach((output_item, index) => {
 
                 let connection = document.createElementNS('http://www.w3.org/2000/svg', "svg");
                 let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
@@ -1456,10 +1458,10 @@ export default class Workflow {
                 path.setAttributeNS(null, 'd', '');
                 // path.innerHTML = 'a';
                 connection.classList.add("connection");
-                connection.classList.add("node_in_node-" + dataNode.id);
-                connection.classList.add("node_out_node-" + dataNode.inputs[input_item].connections[output_item].node);
-                connection.classList.add(dataNode.inputs[input_item].connections[output_item].input);
-                connection.classList.add(input_item);
+                connection.classList.add("node_in_node-" + dataNode.step_id);
+                connection.classList.add("node_out_node-" + output_item.step_id);
+                connection.classList.add(output_item.output);
+                connection.classList.add(input_item.name);
 
                 connection.appendChild(path);
                 preCanvas.appendChild(connection);
@@ -1468,7 +1470,8 @@ export default class Workflow {
         });
 
 
-        for (let x = 0; x < Object.keys(dataNode.outputs).length; x++) {
+        for (let x = 0; x < dataNode.actions.length; x++) {
+
             const output = document.createElement('div');
             output.classList.add("output");
             output.classList.add("output_" + (x + 1));
@@ -1483,37 +1486,6 @@ export default class Workflow {
             content.innerHTML = dataNode.html;
         } else if (dataNode.typenode === true) {
             content.appendChild(this.noderegister[dataNode.html].html.cloneNode(true));
-        } else {
-        }
-
-
-        Object.entries(dataNode.data).forEach(function (key, value) {
-            if (typeof key[1] === "object") {
-                insertObjectkeys(null, key[0], key[0]);
-            } else {
-                let elems = content.querySelectorAll('[df-' + key[0] + ']');
-                for (let i = 0; i < elems.length; i++) {
-                    elems[i].value = key[1];
-                }
-            }
-        })
-
-        function insertObjectkeys(object, name, completname) {
-            if (object === null) {
-                var object = dataNode.data[name];
-            } else {
-                var object = object[name]
-            }
-            Object.entries(object).forEach(function (key, value) {
-                if (typeof key[1] === "object") {
-                    insertObjectkeys(object, key[0], name + '-' + key[0]);
-                } else {
-                    var elems = content.querySelectorAll('[df-' + completname + '-' + key[0] + ']');
-                    for (var i = 0; i < elems.length; i++) {
-                        elems[i].value = key[1];
-                    }
-                }
-            });
         }
 
         node.appendChild(inputs);
@@ -1525,51 +1497,51 @@ export default class Workflow {
         this.precanvas.appendChild(parent);
     }
 
-    addRerouteImport(dataNode) {
-        const reroute_width = this.reroute_width
-        const reroute_fix_curvature = this.reroute_fix_curvature
-
-        Object.keys(dataNode.outputs).map(function (output_item, index) {
-            Object.keys(dataNode.outputs[output_item].connections).map(function (input_item, index) {
-                const points = dataNode.outputs[output_item].connections[input_item].points
-                if (points !== undefined) {
-
-                    points.forEach((item, i) => {
-                        const input_id = dataNode.outputs[output_item].connections[input_item].node;
-                        const input_class = dataNode.outputs[output_item].connections[input_item].output;
-                        //console.log('.connection.node_in_'+input_id+'.node_out_'+dataNode.id+'.'+output_item+'.'+input_class);
-                        const ele = document.querySelector('.connection.node_in_node-' + input_id + '.node_out_node-' + dataNode.id + '.' + output_item + '.' + input_class);
-
-                        if (reroute_fix_curvature) {
-                            if (i === 0) {
-                                for (var z = 0; z < points.length; z++) {
-                                    var path = document.createElementNS('http://www.w3.org/2000/svg', "path");
-                                    path.classList.add("main-path");
-                                    path.setAttributeNS(null, 'd', '');
-                                    ele.appendChild(path);
-
-                                }
-                            }
-                        }
-
-
-                        const point = document.createElementNS('http://www.w3.org/2000/svg', "circle");
-                        point.classList.add("point");
-                        var pos_x = item.pos_x;
-                        var pos_y = item.pos_y;
-
-                        point.setAttributeNS(null, 'cx', pos_x);
-                        point.setAttributeNS(null, 'cy', pos_y);
-                        point.setAttributeNS(null, 'r', reroute_width);
-
-                        ele.appendChild(point);
-
-                    });
-                }
-                ;
-            });
-        });
-    }
+    // addRerouteImport(dataNode) {
+    //     const reroute_width = this.reroute_width
+    //     const reroute_fix_curvature = this.reroute_fix_curvature
+    //
+    //     Object.keys(dataNode.outputs).map(function (output_item, index) {
+    //         Object.keys(dataNode.outputs[output_item].connections).map(function (input_item, index) {
+    //             const points = dataNode.outputs[output_item].connections[input_item].points
+    //             if (points !== undefined) {
+    //
+    //                 points.forEach((item, i) => {
+    //                     const input_id = dataNode.outputs[output_item].connections[input_item].node;
+    //                     const input_class = dataNode.outputs[output_item].connections[input_item].output;
+    //                     //console.log('.connection.node_in_'+input_id+'.node_out_'+dataNode.id+'.'+output_item+'.'+input_class);
+    //                     const ele = document.querySelector('.connection.node_in_node-' + input_id + '.node_out_node-' + dataNode.id + '.' + output_item + '.' + input_class);
+    //
+    //                     if (reroute_fix_curvature) {
+    //                         if (i === 0) {
+    //                             for (var z = 0; z < points.length; z++) {
+    //                                 var path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+    //                                 path.classList.add("main-path");
+    //                                 path.setAttributeNS(null, 'd', '');
+    //                                 ele.appendChild(path);
+    //
+    //                             }
+    //                         }
+    //                     }
+    //
+    //
+    //                     const point = document.createElementNS('http://www.w3.org/2000/svg', "circle");
+    //                     point.classList.add("point");
+    //                     var pos_x = item.pos_x;
+    //                     var pos_y = item.pos_y;
+    //
+    //                     point.setAttributeNS(null, 'cx', pos_x);
+    //                     point.setAttributeNS(null, 'cy', pos_y);
+    //                     point.setAttributeNS(null, 'r', reroute_width);
+    //
+    //                     ele.appendChild(point);
+    //
+    //                 });
+    //             }
+    //             ;
+    //         });
+    //     });
+    // }
 
     updateNodeValue(event) {
         let attr = event.target.attributes
