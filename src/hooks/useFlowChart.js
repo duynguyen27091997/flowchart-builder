@@ -79,23 +79,18 @@ const useFlowChart = (workflowId) => {
     const drag = (ev) => {
 
         let currentNode = ev.target;
-        let name = currentNode.getAttribute('data-name');
-        let description = currentNode.getAttribute('data-description')
-        let action = currentNode.getAttribute('data-action')
-        let target = currentNode.getAttribute('data-target')
-        let checked = currentNode.getAttribute('data-checked')
-        ev.dataTransfer.setData("node", JSON.stringify({name,description,action,target,checked}));
+        ev.dataTransfer.setData("node", JSON.stringify(currentNode.dataset));
 
     }
 
-    const addNodeToDrawFlow = ({name="",description="",action="",target="",checked}, pos_x, pos_y) => {
-
+    const addNodeToDrawFlow = (data, pos_x, pos_y) => {
+        let {name="",description="",action="",target="",checked} = data;
         if (editor.editor_mode === 'fixed') {
             return false;
         }
 
         let first = (checked === 'true');
-        console.log(first)
+
         if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && first){
             alert('Đã tồn tại bước bắt đầu !');
             return false;
@@ -117,8 +112,7 @@ const useFlowChart = (workflowId) => {
                   </div>
             </div>
             `;
-        let extraData = {};
-        editor.addNode({name,description,action,target,first}, pos_x, pos_y, extraData, template);
+        editor.addNode(data, pos_x, pos_y, template);
 
     }
 

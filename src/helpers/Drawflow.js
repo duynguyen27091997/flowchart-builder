@@ -1331,7 +1331,9 @@ export default class Workflow {
         return nodes;
     }
 
-    addNode({name = "", description = "", action, target,first = false}, ele_pos_x, ele_pos_y, data, html) {
+    addNode(data, ele_pos_x, ele_pos_y, html) {
+        let {name = "", description = "", action, target,first = false} = data;
+
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
 
@@ -1396,11 +1398,11 @@ export default class Workflow {
         this.precanvas.appendChild(parent);
 
         this.workflow.steps.push({
+            ...data,
             step_id: this.nodeId,
             workflow_id: this.workflowId,
             description: description,
             name: name,
-            data: data,
             html:html,
             is_first: first,
             inputs: jsonInput,
@@ -1461,7 +1463,7 @@ export default class Workflow {
                 connection.classList.add("connection");
                 if (status)
                     connection.setAttribute('status',status);
-                
+
                 connection.classList.add(output_item.output);
                 connection.classList.add(input_item.name);
 
