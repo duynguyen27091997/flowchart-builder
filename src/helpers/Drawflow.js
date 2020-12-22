@@ -151,16 +151,14 @@ export default class Workflow {
     /* End Mobile Zoom */
 
     load() {
-        let number = 1;
         this.workflow.steps.forEach((item, index, array) => {
-
             this.addNodeImport(item, this.precanvas);
-            if (this.reroute) this.addRerouteImport(item);
-            this.updateConnectionNodes('node-' + item.id);
-
-            if (parseInt(item.id) >= number) number = parseInt(item.id) + 1;
+            this.nodeId+=1;
         });
-        this.nodeId = number;
+
+        this.workflow.steps.forEach((item, index, array) => {
+            this.updateConnectionNodes('node-' + item.step_id);
+        });
     }
 
 
@@ -782,8 +780,7 @@ export default class Workflow {
 
 
         const elemsOut = document.getElementsByClassName(idSearchOut);
-
-        Object.keys(elemsOut).map(function (item, index) {
+        Object.keys(elemsOut).forEach((item, index)=>  {
             if (elemsOut[item].querySelector('.point') === null) {
 
                 var elemtsearchId_out = document.getElementById(id);
@@ -982,14 +979,13 @@ export default class Workflow {
         })
 
         const elems = document.getElementsByClassName(idSearch);
-        Object.keys(elems).map(function (item, index) {
+        Object.keys(elems).forEach( (item, index) => {
             // console.log("In")
             if (elems[item].querySelector('.point') === null) {
                 var elemtsearchId_in = document.getElementById(id);
 
                 var id_search = elems[item].classList[2].replace('node_out_', '');
                 var elemtsearchId = document.getElementById(id_search);
-
                 var elemtsearch = elemtsearchId.querySelectorAll('.' + elems[item].classList[3])[0]
 
                 /*var line_x = elemtsearch.offsetWidth/2 + line_path + elemtsearch.parentElement.parentElement.offsetLeft + elemtsearch.offsetLeft;
@@ -1405,6 +1401,7 @@ export default class Workflow {
             description: description,
             name: name,
             data: data,
+            html:html,
             is_first: first,
             inputs: jsonInput,
             actions: jsonOutput,
@@ -1442,7 +1439,6 @@ export default class Workflow {
 
         const outputs = document.createElement('div');
         outputs.classList.add("outputs");
-        debugger;
 
         dataNode.inputs.forEach((input_item, index)=>{
             const input = document.createElement('div');
@@ -1460,6 +1456,12 @@ export default class Workflow {
                 connection.classList.add("connection");
                 connection.classList.add("node_in_node-" + dataNode.step_id);
                 connection.classList.add("node_out_node-" + output_item.step_id);
+                let [,,status] = output_item.output.split("_");
+
+                connection.classList.add("connection");
+                if (status)
+                    connection.setAttribute('status',status);
+                
                 connection.classList.add(output_item.output);
                 connection.classList.add(input_item.name);
 
@@ -1469,24 +1471,20 @@ export default class Workflow {
             });
         });
 
-
-        for (let x = 0; x < dataNode.actions.length; x++) {
-
-            const output = document.createElement('div');
-            output.classList.add("output");
-            output.classList.add("output_" + (x + 1));
-            outputs.appendChild(output);
-        }
+        dataNode.actions.forEach(action =>{
+            ['pass', 'reject'].forEach(value => {
+                let output = document.createElement('div');
+                output.classList.add("output");
+                output.classList.add(`${action.name}_output_${value}`);
+                outputs.appendChild(output)
+            })
+        })
 
         const content = document.createElement('div');
         content.classList.add("workflow_content_node");
         //content.innerHTML = dataNode.html;
 
-        if (dataNode.typenode === false) {
-            content.innerHTML = dataNode.html;
-        } else if (dataNode.typenode === true) {
-            content.appendChild(this.noderegister[dataNode.html].html.cloneNode(true));
-        }
+        content.innerHTML = dataNode.html;
 
         node.appendChild(inputs);
         node.appendChild(content);
@@ -1497,52 +1495,6 @@ export default class Workflow {
         this.precanvas.appendChild(parent);
     }
 
-    // addRerouteImport(dataNode) {
-    //     const reroute_width = this.reroute_width
-    //     const reroute_fix_curvature = this.reroute_fix_curvature
-    //
-    //     Object.keys(dataNode.outputs).map(function (output_item, index) {
-    //         Object.keys(dataNode.outputs[output_item].connections).map(function (input_item, index) {
-    //             const points = dataNode.outputs[output_item].connections[input_item].points
-    //             if (points !== undefined) {
-    //
-    //                 points.forEach((item, i) => {
-    //                     const input_id = dataNode.outputs[output_item].connections[input_item].node;
-    //                     const input_class = dataNode.outputs[output_item].connections[input_item].output;
-    //                     //console.log('.connection.node_in_'+input_id+'.node_out_'+dataNode.id+'.'+output_item+'.'+input_class);
-    //                     const ele = document.querySelector('.connection.node_in_node-' + input_id + '.node_out_node-' + dataNode.id + '.' + output_item + '.' + input_class);
-    //
-    //                     if (reroute_fix_curvature) {
-    //                         if (i === 0) {
-    //                             for (var z = 0; z < points.length; z++) {
-    //                                 var path = document.createElementNS('http://www.w3.org/2000/svg', "path");
-    //                                 path.classList.add("main-path");
-    //                                 path.setAttributeNS(null, 'd', '');
-    //                                 ele.appendChild(path);
-    //
-    //                             }
-    //                         }
-    //                     }
-    //
-    //
-    //                     const point = document.createElementNS('http://www.w3.org/2000/svg', "circle");
-    //                     point.classList.add("point");
-    //                     var pos_x = item.pos_x;
-    //                     var pos_y = item.pos_y;
-    //
-    //                     point.setAttributeNS(null, 'cx', pos_x);
-    //                     point.setAttributeNS(null, 'cy', pos_y);
-    //                     point.setAttributeNS(null, 'r', reroute_width);
-    //
-    //                     ele.appendChild(point);
-    //
-    //                 });
-    //             }
-    //             ;
-    //         });
-    //     });
-    // }
-
     updateNodeValue(event) {
         let attr = event.target.attributes
         for (let i = 0; i < attr.length; i++) {
@@ -1551,239 +1503,6 @@ export default class Workflow {
             }
 
         }
-    }
-
-    updateNodeDataFromId(id, data) {
-        var moduleName = this.getModuleFromNodeId(id)
-        this.workflow.workflow[moduleName].steps[id].data = data;
-        if (this.module === moduleName) {
-            const content = document.querySelector('#node-' + id);
-
-            Object.entries(data).forEach(function (key, value) {
-                if (typeof key[1] === "object") {
-                    insertObjectkeys(null, key[0], key[0]);
-                } else {
-                    var elems = content.querySelectorAll('[df-' + key[0] + ']');
-                    for (var i = 0; i < elems.length; i++) {
-                        elems[i].value = key[1];
-                    }
-                }
-            })
-
-            function insertObjectkeys(object, name, completname) {
-                if (object === null) {
-                    var object = data[name];
-                } else {
-                    var object = object[name]
-                }
-                Object.entries(object).forEach(function (key, value) {
-                    if (typeof key[1] === "object") {
-                        insertObjectkeys(object, key[0], name + '-' + key[0]);
-                    } else {
-                        var elems = content.querySelectorAll('[df-' + completname + '-' + key[0] + ']');
-                        for (var i = 0; i < elems.length; i++) {
-                            elems[i].value = key[1];
-                        }
-                    }
-                });
-            }
-
-        }
-    }
-
-    addNodeInput(id) {
-        var moduleName = this.getModuleFromNodeId(id)
-        const infoNode = this.getNodeFromId(id)
-        const numInputs = Object.keys(infoNode.inputs).length;
-        if (this.module === moduleName) {
-            //Draw input
-            const input = document.createElement('div');
-            input.classList.add("input");
-            input.classList.add("input_" + (numInputs + 1));
-            const parent = document.querySelector('#node-' + id + ' .inputs');
-            parent.appendChild(input);
-            this.updateConnectionNodes('node-' + id);
-
-        }
-        this.workflow.workflow[moduleName].steps[id].inputs["input_" + (numInputs + 1)] = {"connections": []};
-    }
-
-    addNodeOutput(id) {
-        var moduleName = this.getModuleFromNodeId(id)
-        const infoNode = this.getNodeFromId(id)
-        const numOutputs = Object.keys(infoNode.outputs).length;
-        if (this.module === moduleName) {
-            //Draw output
-            const output = document.createElement('div');
-            output.classList.add("output");
-            output.classList.add("output_" + (numOutputs + 1));
-            const parent = document.querySelector('#node-' + id + ' .outputs');
-            parent.appendChild(output);
-            this.updateConnectionNodes('node-' + id);
-
-        }
-        this.workflow.workflow[moduleName].steps[id].outputs["output_" + (numOutputs + 1)] = {"connections": []};
-    }
-
-    removeNodeInput(id, input_class) {
-        var moduleName = this.getModuleFromNodeId(id)
-        const infoNode = this.getNodeFromId(id)
-        if (this.module === moduleName) {
-            document.querySelector('#node-' + id + ' .inputs .input.' + input_class).remove();
-        }
-        const removeInputs = [];
-        Object.keys(infoNode.inputs[input_class].connections).map(function (key, index) {
-            const id_output = infoNode.inputs[input_class].connections[index].node;
-            const output_class = infoNode.inputs[input_class].connections[index].input;
-            removeInputs.push({id_output, id, output_class, input_class})
-        })
-        // Remove connections
-        removeInputs.forEach((item, i) => {
-            this.removeSingleConnection(item.id_output, item.id, item.output_class, item.input_class);
-        });
-
-        delete this.workflow.workflow[moduleName].steps[id].inputs[input_class];
-
-        // Update connection
-        const connections = [];
-        const connectionsInputs = this.workflow.workflow[moduleName].steps[id].inputs
-        Object.keys(connectionsInputs).map(function (key, index) {
-            connections.push(connectionsInputs[key]);
-        });
-        this.workflow.workflow[moduleName].steps[id].inputs = {};
-        const input_class_id = input_class.slice(6);
-        let nodeUpdates = [];
-        connections.forEach((item, i) => {
-            item.connections.forEach((itemx, f) => {
-                nodeUpdates.push(itemx);
-            });
-            this.workflow.workflow[moduleName].steps[id].inputs['input_' + (i + 1)] = item;
-        });
-        nodeUpdates = new Set(nodeUpdates.map(e => JSON.stringify(e)));
-        nodeUpdates = Array.from(nodeUpdates).map(e => JSON.parse(e));
-
-        if (this.module === moduleName) {
-            const eles = document.querySelectorAll("#node-" + id + " .inputs .input");
-            eles.forEach((item, i) => {
-                const id_class = item.classList[1].slice(6);
-                if (parseInt(input_class_id) < parseInt(id_class)) {
-                    item.classList.remove('input_' + id_class);
-                    item.classList.add('input_' + (id_class - 1));
-                }
-            });
-
-        }
-
-        nodeUpdates.forEach((itemx, i) => {
-            this.workflow.workflow[moduleName].steps[itemx.node].outputs[itemx.input].connections.forEach((itemz, g) => {
-                if (itemz.node == id) {
-                    const output_id = itemz.output.slice(6);
-                    if (parseInt(input_class_id) < parseInt(output_id)) {
-                        if (this.module === moduleName) {
-                            const ele = document.querySelector(".connection.node_in_node-" + id + ".node_out_node-" + itemx.node + "." + itemx.input + ".input_" + output_id);
-                            ele.classList.remove('input_' + output_id);
-                            ele.classList.add('input_' + (output_id - 1));
-                        }
-                        if (itemz.points) {
-                            this.workflow.workflow[moduleName].steps[itemx.node].outputs[itemx.input].connections[g] = {
-                                node: itemz.node,
-                                output: 'input_' + (output_id - 1),
-                                points: itemz.points
-                            }
-                        } else {
-                            this.workflow.workflow[moduleName].steps[itemx.node].outputs[itemx.input].connections[g] = {
-                                node: itemz.node,
-                                output: 'input_' + (output_id - 1)
-                            }
-                        }
-                    }
-                }
-            });
-        });
-        this.updateConnectionNodes('node-' + id);
-    }
-
-    removeNodeOutput(id, output_class) {
-        var moduleName = this.getModuleFromNodeId(id)
-        const infoNode = this.getNodeFromId(id)
-        if (this.module === moduleName) {
-            document.querySelector('#node-' + id + ' .outputs .output.' + output_class).remove();
-        }
-        const removeOutputs = [];
-        Object.keys(infoNode.outputs[output_class].connections).map(function (key, index) {
-            const id_input = infoNode.outputs[output_class].connections[index].node;
-            const input_class = infoNode.outputs[output_class].connections[index].output;
-            removeOutputs.push({id, id_input, output_class, input_class})
-        })
-        // Remove connections
-        removeOutputs.forEach((item, i) => {
-            this.removeSingleConnection(item.id, item.id_input, item.output_class, item.input_class);
-        });
-
-        delete this.workflow.workflow[moduleName].steps[id].outputs[output_class];
-
-        // Update connection
-        const connections = [];
-        const connectionsOuputs = this.workflow.workflow[moduleName].steps[id].outputs
-        Object.keys(connectionsOuputs).map(function (key, index) {
-            connections.push(connectionsOuputs[key]);
-        });
-        this.workflow.workflow[moduleName].steps[id].outputs = {};
-        const output_class_id = output_class.slice(7);
-        let nodeUpdates = [];
-        connections.forEach((item, i) => {
-            item.connections.forEach((itemx, f) => {
-                nodeUpdates.push({node: itemx.node, output: itemx.output});
-            });
-            this.workflow.workflow[moduleName].steps[id].outputs['output_' + (i + 1)] = item;
-        });
-        nodeUpdates = new Set(nodeUpdates.map(e => JSON.stringify(e)));
-        nodeUpdates = Array.from(nodeUpdates).map(e => JSON.parse(e));
-
-        if (this.module === moduleName) {
-            const eles = document.querySelectorAll("#node-" + id + " .outputs .output");
-            eles.forEach((item, i) => {
-                const id_class = item.classList[1].slice(7);
-                if (parseInt(output_class_id) < parseInt(id_class)) {
-                    item.classList.remove('output_' + id_class);
-                    item.classList.add('output_' + (id_class - 1));
-                }
-            });
-
-        }
-
-        nodeUpdates.forEach((itemx, i) => {
-            this.workflow.workflow[moduleName].steps[itemx.node].inputs[itemx.output].connections.forEach((itemz, g) => {
-                if (itemz.node == id) {
-                    const input_id = itemz.input.slice(7);
-                    if (parseInt(output_class_id) < parseInt(input_id)) {
-                        if (this.module === moduleName) {
-
-                            const ele = document.querySelector(".connection.node_in_node-" + itemx.node + ".node_out_node-" + id + ".output_" + input_id + "." + itemx.output);
-                            ele.classList.remove('output_' + input_id);
-                            ele.classList.remove(itemx.output);
-                            ele.classList.add('output_' + (input_id - 1));
-                            ele.classList.add(itemx.output);
-                        }
-                        if (itemz.points) {
-                            this.workflow.workflow[moduleName].steps[itemx.node].inputs[itemx.output].connections[g] = {
-                                node: itemz.node,
-                                input: 'output_' + (input_id - 1),
-                                points: itemz.points
-                            }
-                        } else {
-                            this.workflow.workflow[moduleName].steps[itemx.node].inputs[itemx.output].connections[g] = {
-                                node: itemz.node,
-                                input: 'output_' + (input_id - 1)
-                            }
-                        }
-                    }
-                }
-            });
-        });
-
-        this.updateConnectionNodes('node-' + id);
-
     }
 
 
@@ -1833,48 +1552,48 @@ export default class Workflow {
         }
     }
 
-    removeSingleConnection(id_output, id_input, output_class, input_class) {
-        let nodeOneModule = this.getModuleFromNodeId(id_output);
-        let nodeTwoModule = this.getModuleFromNodeId(id_input);
-        if (nodeOneModule === nodeTwoModule) {
-            // Check nodes in same module.
-
-            // Check connection exist
-            var exists = this.workflow.workflow[nodeOneModule].steps[id_output].outputs[output_class].connections.findIndex(function (item, i) {
-                return item.node == id_input && item.output === input_class
-            });
-            if (exists > -1) {
-
-                if (this.module === nodeOneModule) {
-                    // In same module with view.
-                    document.querySelector('.connection.node_in_node-' + id_input + '.node_out_node-' + id_output + '.' + output_class + '.' + input_class).remove();
-                }
-
-                var index_out = this.workflow.workflow[nodeOneModule].steps[id_output].outputs[output_class].connections.findIndex(function (item, i) {
-                    return item.node == id_input && item.output === input_class
-                });
-                this.workflow.workflow[nodeOneModule].steps[id_output].outputs[output_class].connections.splice(index_out, 1);
-
-                var index_in = this.workflow.workflow[nodeOneModule].steps[id_input].inputs[input_class].connections.findIndex(function (item, i) {
-                    return item.node == id_output && item.input === output_class
-                });
-                this.workflow.workflow[nodeOneModule].steps[id_input].inputs[input_class].connections.splice(index_in, 1);
-
-                this.dispatch('connectionRemoved', {
-                    output_id: id_output,
-                    input_id: id_input,
-                    output_class: output_class,
-                    input_class: input_class
-                });
-                return true;
-
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+    // removeSingleConnection(id_output, id_input, output_class, input_class) {
+    //     let nodeOneModule = this.getModuleFromNodeId(id_output);
+    //     let nodeTwoModule = this.getModuleFromNodeId(id_input);
+    //     if (nodeOneModule === nodeTwoModule) {
+    //         // Check nodes in same module.
+    //
+    //         // Check connection exist
+    //         var exists = this.workflow.workflow[nodeOneModule].steps[id_output].outputs[output_class].connections.findIndex(function (item, i) {
+    //             return item.node == id_input && item.output === input_class
+    //         });
+    //         if (exists > -1) {
+    //
+    //             if (this.module === nodeOneModule) {
+    //                 // In same module with view.
+    //                 document.querySelector('.connection.node_in_node-' + id_input + '.node_out_node-' + id_output + '.' + output_class + '.' + input_class).remove();
+    //             }
+    //
+    //             var index_out = this.workflow.workflow[nodeOneModule].steps[id_output].outputs[output_class].connections.findIndex(function (item, i) {
+    //                 return item.node == id_input && item.output === input_class
+    //             });
+    //             this.workflow.workflow[nodeOneModule].steps[id_output].outputs[output_class].connections.splice(index_out, 1);
+    //
+    //             var index_in = this.workflow.workflow[nodeOneModule].steps[id_input].inputs[input_class].connections.findIndex(function (item, i) {
+    //                 return item.node == id_output && item.input === output_class
+    //             });
+    //             this.workflow.workflow[nodeOneModule].steps[id_input].inputs[input_class].connections.splice(index_in, 1);
+    //
+    //             this.dispatch('connectionRemoved', {
+    //                 output_id: id_output,
+    //                 input_id: id_input,
+    //                 output_class: output_class,
+    //                 input_class: input_class
+    //             });
+    //             return true;
+    //
+    //         } else {
+    //             return false;
+    //         }
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     removeConnectionNodeId(id) {
         const idSearchIn = 'node_in_' + id;
@@ -1953,22 +1672,23 @@ export default class Workflow {
         }
     }
 
-    getModuleFromNodeId(id) {
-        var nameModule;
-        const editor = this.drawflow.drawflow
-        Object.keys(editor).map(function (moduleName, index) {
-            Object.keys(editor[moduleName].data).map(function (node, index2) {
-                if (node == id) {
-                    nameModule = moduleName;
-                }
-            })
-        });
-        return nameModule;
-    }
+    // getModuleFromNodeId(id) {
+    //     var nameModule;
+    //     const editor = this.drawflow.drawflow
+    //     Object.keys(editor).map(function (moduleName, index) {
+    //         Object.keys(editor[moduleName].data).map(function (node, index2) {
+    //             if (node == id) {
+    //                 nameModule = moduleName;
+    //             }
+    //         })
+    //     });
+    //     return nameModule;
+    // }
 
 
     clear() {
-        this.precanvas.innerHTML = "";
+        if (this.precanvas)
+            this.precanvas.innerHTML = "";
         this.workflow = {steps: []};
     }
 
@@ -1981,7 +1701,7 @@ export default class Workflow {
     import(data) {
         this.clear();
         this.workflow = JSON.parse(JSON.stringify(data));
-        this.load();
+        this.start();
         this.dispatch('import', 'import');
     }
 

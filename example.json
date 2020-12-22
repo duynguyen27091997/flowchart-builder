@@ -1,11 +1,13 @@
 {
   "steps": [
     {
-      "id": 1,
+      "step_id": 1,
       "workflow_id": 1,
       "description": "Nhan su tao hs",
       "name": "Tao HS1",
       "data": {},
+      "html": "\n            <div>\n              <div class=\"title-box\"><h6>Tao HS1</h6>\n              <p>Nhan su tao hs</p>\n              </div>\n                  <div class=\"box\">\n                    <p class=\"box__target\">Đối tượng : editorial_board</p>\n                    <p class=\"box__action\">Tác vụ : create</p>\n                    <p class=\"box__check\">\n                       <input type=\"checkbox\" aria-label=\"\" onclick=\"return false;\" checked> <span>first</span>\n                    </p>\n                  </div>\n            </div>\n            ",
+      "is_first": true,
       "inputs": [
         {
           "name": "input_default",
@@ -33,15 +35,17 @@
           "action": "create"
         }
       ],
-      "pos_x": -434,
-      "pos_y": 482
+      "pos_x": -315,
+      "pos_y": 427
     },
     {
-      "id": 2,
+      "step_id": 2,
       "workflow_id": 1,
       "description": "",
       "name": "Duyet hs",
       "data": {},
+      "html": "\n            <div>\n              <div class=\"title-box\"><h6>Duyet hs</h6>\n              <p></p>\n              </div>\n                  <div class=\"box\">\n                    <p class=\"box__target\">Đối tượng : newsroom_secretary</p>\n                    <p class=\"box__action\">Tác vụ : confirm</p>\n                    <p class=\"box__check\">\n                       \n                    </p>\n                  </div>\n            </div>\n            ",
+      "is_first": false,
       "inputs": [
         {
           "name": "input_default",
@@ -69,15 +73,17 @@
           "action": "confirm"
         }
       ],
-      "pos_x": -185,
-      "pos_y": 113
+      "pos_x": 26,
+      "pos_y": 134
     },
     {
-      "id": 3,
+      "step_id": 3,
       "workflow_id": 1,
       "description": "",
       "name": "Luu HS",
       "data": {},
+      "html": "\n            <div>\n              <div class=\"title-box\"><h6>Luu HS</h6>\n              <p></p>\n              </div>\n                  <div class=\"box\">\n                    <p class=\"box__target\">Đối tượng : leader</p>\n                    <p class=\"box__action\">Tác vụ : confirm</p>\n                    <p class=\"box__check\">\n                       \n                    </p>\n                  </div>\n            </div>\n            ",
+      "is_first": false,
       "inputs": [
         {
           "name": "input_default",
@@ -91,8 +97,8 @@
       ],
       "actions": [
         {
-          "name": "update",
-          "target_type": "personal",
+          "name": "confirm",
+          "target_type": "leader",
           "pass": null,
           "reject": null
         }
@@ -101,12 +107,12 @@
         {
           "id": "",
           "name": "",
-          "type": "personal",
-          "action": "update"
+          "type": "leader",
+          "action": "confirm"
         }
       ],
-      "pos_x": 236.875,
-      "pos_y": 44.25000190734862
+      "pos_x": 406,
+      "pos_y": 446
     }
   ]
 }

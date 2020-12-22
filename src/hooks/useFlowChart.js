@@ -66,22 +66,8 @@ const useFlowChart = (workflowId) => {
 
     useEffect(() => {
         let id = document.getElementById(workflowId);
-        if (!editor)
-            setEditor(new DrawFlow(id,workflowId));
-        // else {
-        //     id.addEventListener('drop', drop, false)
-        //     id.addEventListener('dragover', allowDrop, false)
-        // }
-        // bindEvent(editor)
-        // let elements = document.getElementsByClassName(classElement)
-        // for (let i = 0; i < elements.length; i++) {
-        //     elements[i].addEventListener('dragstart', drag, false);
-        // }
-
-    }, [ editor])
-    useEffect(() => {
-        if (editor) {
-            editor.start();
+        if (!editor && id) {
+            setEditor(new DrawFlow(id, workflowId));
         }
     }, [editor])
 
