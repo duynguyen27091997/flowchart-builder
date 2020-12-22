@@ -1332,7 +1332,7 @@ export default class Workflow {
     }
 
     addNode(data, ele_pos_x, ele_pos_y, html) {
-        let {name = "", description = "", action, target,first = false} = data;
+        let {name = "", description = "", action, target,is_first} = data;
 
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
@@ -1352,20 +1352,22 @@ export default class Workflow {
 
         if (action && target) {
 
-            let inputItem = {
-                name:"",
-                steps:[]
-            };
+            if (!is_first){
+                let inputItem = {
+                    name:"",
+                    steps:[]
+                };
 
-            ['default'].forEach(value => {
-                let input = document.createElement('div');
-                input.classList.add("input");
-                input.classList.add(`input_${value}`);
-                inputItem.name = `input_${value}`;
-                inputs.appendChild(input);
-            });
+                ['default'].forEach(value => {
+                    let input = document.createElement('div');
+                    input.classList.add("input");
+                    input.classList.add(`input_${value}`);
+                    inputItem.name = `input_${value}`;
+                    inputs.appendChild(input);
+                });
 
-            jsonInput.push(inputItem);
+                jsonInput.push(inputItem);
+            }
 
             let outputItem = {
                 name:action,
@@ -1398,13 +1400,12 @@ export default class Workflow {
         this.precanvas.appendChild(parent);
 
         this.workflow.steps.push({
-            ...data,
             step_id: this.nodeId,
             workflow_id: this.workflowId,
             description: description,
             name: name,
             html:html,
-            is_first: first,
+            is_first: is_first,
             inputs: jsonInput,
             actions: jsonOutput,
             targets: [
@@ -1436,13 +1437,12 @@ export default class Workflow {
             node.classList.add(dataNode.class);
         }
 
+        //input
         const inputs = document.createElement('div');
         inputs.classList.add("inputs");
 
-        const outputs = document.createElement('div');
-        outputs.classList.add("outputs");
-
-        dataNode.inputs.forEach((input_item, index)=>{
+        if (!dataNode.is_first)
+            dataNode.inputs.forEach((input_item, index)=>{
             const input = document.createElement('div');
             input.classList.add("input");
             input.classList.add(input_item.name);
@@ -1473,6 +1473,9 @@ export default class Workflow {
             });
         });
 
+        //output
+        const outputs = document.createElement('div');
+        outputs.classList.add("outputs");
         dataNode.actions.forEach(action =>{
             ['pass', 'reject'].forEach(value => {
                 let output = document.createElement('div');

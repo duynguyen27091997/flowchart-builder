@@ -76,22 +76,19 @@ const useFlowChart = (workflowId) => {
         ev.preventDefault()
     }
 
-    const drag = (ev) => {
-
-        let currentNode = ev.target;
-        ev.dataTransfer.setData("node", JSON.stringify(currentNode.dataset));
+    const drag = (value,ev) => {
+        ev.dataTransfer.setData("node", JSON.stringify(value));
 
     }
 
     const addNodeToDrawFlow = (data, pos_x, pos_y) => {
-        let {name="",description="",action="",target="",checked} = data;
+        let {name="",description="",action="",target="",is_first} = data;
         if (editor.editor_mode === 'fixed') {
             return false;
         }
 
-        let first = (checked === 'true');
 
-        if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && first){
+        if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && is_first){
             alert('Đã tồn tại bước bắt đầu !');
             return false;
         }
@@ -106,9 +103,6 @@ const useFlowChart = (workflowId) => {
                   <div class="box">
                     <p class="box__target">Đối tượng : ${target}</p>
                     <p class="box__action">Tác vụ : ${action}</p>
-                    <p class="box__check">
-                       ${first ? '<input type="checkbox" aria-label="" onclick="return false;" checked> <span>first</span>' : ''}
-                    </p>
                   </div>
             </div>
             `;

@@ -12,14 +12,13 @@ const Node = ({drag}) => {
             description: '',
             action: '',
             target: '',
-
+            is_first:false
         };
         let [show, setShow] = useState(false)
         let [value, setValue] = useState(template)
 
-        let [checked, setChecked] = useState(false)
         const handleChecked = (e) => {
-            setChecked(!checked)
+            setValue({...value,is_first:e.target.checked})
         }
 
         const handleChange = (e) => {
@@ -30,18 +29,11 @@ const Node = ({drag}) => {
             setValue(template)
         }
 
-        useEffect(()=>{
-            if (!show)
-                setChecked(false)
-        },[show])
-
         return (
             <div>
                 {/*<h5>NODE</h5>*/}
-                <div className="node" data-node={'node'} data-checked={checked} data-name={value.name}
-                     data-description={value.description}
-                     data-action={value.action} data-target={value.target}
-                     draggable={show} onDragEnd={() => reset()} onDragStart={drag}>
+                <div className="node"
+                     draggable={show} onDragEnd={() => reset()} onDragStart={(e)=>drag(value,e)}>
                     {!show ? <div style={{textAlign: "center"}} onClick={() => setShow(true)}><FaPlus/></div> :
                         <div>
                             <div className={"node__form-group"}>
@@ -71,7 +63,7 @@ const Node = ({drag}) => {
                                 </select>
                             </div>
                             <div className={"node__form-group node__form-group-checked"}>
-                                <input type="checkbox" name={'checked'} value={checked}
+                                <input type="checkbox" name={'is_first'} value={value.is_first}
                                        onChange={handleChecked}/><label>first</label>
                             </div>
                         </div>
