@@ -62,6 +62,7 @@ export default class Workflow {
         console.info("Start workflow!!");
         this.container.classList.add("parent-workflow");
         this.container.tabIndex = 0;
+        this.container.innerHTML = "";
         this.precanvas = document.createElement('div');
         this.precanvas.classList.add("workflow");
         this.container.appendChild(this.precanvas);
@@ -1512,9 +1513,10 @@ export default class Workflow {
 
 
     removeNodeId(id) {
-        this.removeConnectionNodeId(id);
 
-        document.getElementById(id).remove();
+        this.removeConnectionNodeId(id);
+        let idElems = document.getElementById(id);
+        idElems && idElems.parentNode.remove();
 
         this.workflow.steps = this.workflow.steps.filter(step => step.step_id !== parseInt(id.slice(5)));
 
@@ -1692,20 +1694,22 @@ export default class Workflow {
 
 
     clear() {
-        if (this.precanvas)
+        if (this.precanvas) {
             this.precanvas.innerHTML = "";
+        }
         this.workflow = {steps: []};
     }
 
     export() {
-        const dataExport = JSON.parse(JSON.stringify(this.workflow));
+        const dataExport = this.workflow;
         this.dispatch('export', dataExport);
         return dataExport;
     }
 
     import(data) {
-        this.clear();
-        this.workflow = JSON.parse(JSON.stringify(data));
+
+        this.clear()
+        this.workflow = data;
         this.start();
         this.dispatch('import', 'import');
     }

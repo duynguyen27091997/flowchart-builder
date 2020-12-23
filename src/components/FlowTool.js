@@ -5,7 +5,7 @@ const FlowTool = ({editor}) => {
     return (
         <div>
             <div><div className="btn-clear" style={{userSelect:'none'}} onClick={()=>editor.clear()}>Xóa</div>
-                <div className="btn-save" style={{userSelect:'none'}} onClick={()=>{console.log(JSON.stringify(editor.export()))}}>Lưu</div></div>
+                <div className="btn-save" style={{userSelect:'none'}} onClick={()=>{console.log(editor.export())}}>Lưu</div></div>
             {/*<div className="btn-lock">*/}
             {/*    {(editor && editor.editor_mode === 'edit') ? <FaLock onClick={() => {*/}
             {/*            editor.lock();*/}
