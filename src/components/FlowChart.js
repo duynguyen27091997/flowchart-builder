@@ -81,6 +81,7 @@ const FlowChart = ({workflowId = null}) => {
                     setSwalText('Create workflow successful')
                     setLoading(false);
                     setSwal(true);
+                    editor.clear()
                 },
                 err => {
                     setSwalTitle('Error')

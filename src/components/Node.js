@@ -12,7 +12,8 @@ const animatedComponents = makeAnimated();
 
 const loadOptions = (inputValue, callback) => {
     callback([
-        {label: 'Phòng nhân sự', value: 11}
+        {label: 'Phòng nhân sự', value: 11},
+        {label: 'Văn Tuấn', value: 111}
     ])
 };
 
