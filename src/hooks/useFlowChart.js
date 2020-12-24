@@ -76,36 +76,33 @@ const useFlowChart = (workflowId) => {
         ev.preventDefault()
     }
 
-    const drag = (value,ev) => {
+    const drag = (value, ev) => {
         ev.dataTransfer.setData("node", JSON.stringify(value));
 
     }
 
     const addNodeToDrawFlow = (data, pos_x, pos_y) => {
-        let {name="",description="",action="",target="",is_first} = data;
+        let {
+            name = '',
+            description = '',
+            action = {},
+            action_target = {},
+            targets = [],
+            is_first = false
+        } = data;
         if (editor.editor_mode === 'fixed') {
             return false;
         }
 
 
-        if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && is_first){
+        if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && is_first) {
             alert('Đã tồn tại bước bắt đầu !');
             return false;
         }
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-        let template = `
-            <div>
-              <div class="title-box"><h6>${name}</h6>
-              <p>${description}</p>
-              </div>
-                  <div class="box">
-                    <p class="box__target">Đối tượng : ${target}</p>
-                    <p class="box__action">Tác vụ : ${action}</p>
-                  </div>
-            </div>
-            `;
+        let template = `<div><div class="title-box"><h6>${name}</h6><p>${description}</p></div><div class="box"><p class="box__target">Đối tượng chung: ${action_target.name}</p><p class="box__action">Tác vụ : ${action.name}</p>${targets.length > 0 ? `<p class="box__action">Đối tượng cụ thể : <br>${targets.map(item => `<strong> ${item.name}</strong>`)}</p></div></div>` : ''}`;
         editor.addNode(data, pos_x, pos_y, template);
 
     }
@@ -116,7 +113,7 @@ const useFlowChart = (workflowId) => {
     }
 
 
-    return [editor,drag,drop,allowDrop];
+    return [editor, drag, drop, allowDrop];
 };
 
 export default useFlowChart;
