@@ -17,10 +17,14 @@ const options = [
 const animatedComponents = makeAnimated();
 
 const loadOptions = (inputValue, callback) => {
-    setTimeout(() => {
-        callback(options)
-    }, 3000);
+    fetch('https://jsonplaceholder.typicode.com/users')
+        .then(res => res.json())
+        .then(data => {
+            data = data.map(item => ({value: item.id, label: item.name}))
+            callback(data)
+        })
 };
+
 const Node = ({drag}) => {
         let template = {
             name: '',
@@ -47,39 +51,38 @@ const Node = ({drag}) => {
         }
 
         const getData = async () => {
-            const targets = await fetch('http://workflow.chut/api/step/get-action-target-types')
-            const actions = await fetch('http://workflow.chut/api/step/get-action-types')
+            const targets = await fetch('https://workflow.tuoitre.vn/api/step/get-action-target-types')
+            const actions = await fetch('https://workflow.tuoitre.vn/api/step/get-action-types')
             return Promise.all([targets.json(), actions.json()])
-        }
-
-        const renderSelectByTarget = () => {
-            switch (value['target']) {
-                case 'personal': {
-                    return <div className={"node__form-group"}>
-                        <label>Đối tượng cụ thể</label>
-                        <AsyncSelect closeMenuOnSelect={true}
-                                     components={animatedComponents}
-                                     cacheOptions
-                                     isMulti
-                                     loadOptions={loadOptions}/>
-                    </div>
-                }
-            }
         }
 
         useEffect(() => {
             getData().then(res => {
-                setTargets(Object.keys(res[0]).reduce((init, current) => {
+                let targets = Object.keys(res[0]).reduce((init, current) => {
                     return [...init, {value: current, label: res[0][current]}]
-                }, []));
-                setActions(Object.keys(res[1]).reduce((init, current) => {
+                }, []);
+                setTargets(targets);
+                let actions = Object.keys(res[1]).reduce((init, current) => {
                     return [...init, {value: current, label: res[1][current]}]
-                }, []));
+                }, []);
+                setActions(actions);
             })
         }, []);
 
-       const handleSelectChange = (val, action) => {
-           setValue({...value, [action.name]: val.value});
+        const handleSelectChange = (val, action) => {
+            let tmp = null;
+            switch (action.name) {
+                case 'action_target':
+                case 'action': {
+                    tmp = {value: val.value, name: val.label};
+                    break;
+                }
+                case 'targets': {
+                    tmp = val ? val.map(item => ({id: item.value, name: item.label, action: value.action.value, type: value.action_target.value})) : [];
+                    break;
+                }
+            }
+            setValue({...value, [action.name]: tmp});
         };
 
         return (
@@ -103,18 +106,27 @@ const Node = ({drag}) => {
                                 <label>Đối tượng</label>
                                 <Select
                                     onChange={handleSelectChange}
-                                    name={'target'}
-                                    options={targets}
-                                    defaultValue={targets.length > 0 ? targets[0] : null}/>
+                                    name={'action_target'}
+                                    options={targets}/>
                             </div>
-                            {renderSelectByTarget()}
                             <div className={"node__form-group"}>
                                 <label>Hành động</label>
                                 <Select
                                     name={'action'}
                                     onChange={handleSelectChange}
-                                    options={actions}
-                                    defaultValue={actions.length > 0 ? actions[0] : null}/>
+                                    options={actions}/>
+                            </div>
+                            <div className={"node__form-group"}>
+                                <label>Đối tượng cụ thể</label>
+                                <AsyncSelect closeMenuOnSelect={true}
+                                             onChange={handleSelectChange}
+                                             name={'targets'}
+                                             defaultOptions
+                                             components={animatedComponents}
+                                             cacheOptions
+                                             isMulti
+                                             disabled
+                                             loadOptions={loadOptions}/>
                             </div>
                             <div className={"node__form-group node__form-group-checked"}>
                                 <input type="checkbox" name={'is_first'} value={value.is_first}

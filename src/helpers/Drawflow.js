@@ -154,7 +154,7 @@ export default class Workflow {
     load() {
         this.workflow.steps.forEach((item, index, array) => {
             this.addNodeImport(item, this.precanvas);
-            this.nodeId+=1;
+            this.nodeId += 1;
         });
 
         this.workflow.steps.forEach((item, index, array) => {
@@ -484,7 +484,7 @@ export default class Workflow {
                         this.connection_ele.classList.add(output_class);
                         this.connection_ele.classList.add(input_class);
 
-                        let [action,,status] = output_class.split("_");
+                        let [action, , status] = output_class.split("_");
 
                         let id_input = input_id.slice(5);
                         let id_output = output_id.slice(5);
@@ -647,19 +647,19 @@ export default class Workflow {
         // let hx1 = line_x + Math.abs(x - line_x) * curvature;
         // let hx2 = x - Math.abs(x - line_x) * curvature;
 
-        let hx1 = Math.max(line_x + 70,line_x + Math.abs(x - line_x)/2);
-        let hx2 = Math.min(x-70,x - Math.abs(x - line_x)/2);
-        let mid =line_y - (line_y - y)/2;
+        let hx1 = Math.max(line_x + 70, line_x + Math.abs(x - line_x) / 2);
+        let hx2 = Math.min(x - 70, x - Math.abs(x - line_x) / 2);
+        let mid = line_y - (line_y - y) / 2;
 
-        if (line_x > (x+70))
-            mid = line_y - Math.abs(line_y - y)/2;
+        if (line_x > (x + 70))
+            mid = line_y - Math.abs(line_y - y) / 2;
 
         // return ' M ' + line_x + ' ' + line_y + ' L ' + hx1 + ' ' + line_y + ' ' + hx2 + ' ' + y + ' ' + x + '  ' + y + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 5) + '  L' + (x - 20) + ' ' + (y + 5) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 3) + '  L' + (x - 20) + ' ' + (y + 3) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 1) + '  L' + (x - 20) + ' ' + (y + 1) + ' Z';
         // if (!mid)
         //  return ' M '+ line_x +' '+ line_y +' L '+ hx1 +' '+ line_y +' '+ hx2 +' ' + y +' ' + x +'  ' + y;
         // else
-         return ' M '+ line_x +' '+ line_y +' L '+ hx1 +' '+ line_y +' '+ hx1 +' ' + mid +' '+ hx2 +' ' + mid +' '+ hx2 +' ' + y +' ' + x +'  ' + y
-        +'M '+ (x-11)  + ' ' + y + ' L'+(x-20)+' '+ (y-5)+'  L'+(x-20)+' '+ (y+5)+' Z' +' M '+ (x-11)  + ' ' + y + ' L'+(x-20)+' '+ (y-3)+'  L'+(x-20)+' '+ (y+3)+' Z' +' M '+ (x-11)  + ' ' + y + ' L'+(x-20)+' '+ (y-1)+'  L'+(x-20)+' '+ (y+1)+' Z';
+        return ' M ' + line_x + ' ' + line_y + ' L ' + hx1 + ' ' + line_y + ' ' + hx1 + ' ' + mid + ' ' + hx2 + ' ' + mid + ' ' + hx2 + ' ' + y + ' ' + x + '  ' + y
+            + 'M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 5) + '  L' + (x - 20) + ' ' + (y + 5) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 3) + '  L' + (x - 20) + ' ' + (y + 3) + ' Z' + ' M ' + (x - 11) + ' ' + y + ' L' + (x - 20) + ' ' + (y - 1) + '  L' + (x - 20) + ' ' + (y + 1) + ' Z';
     }
 
     drawConnection(ele) {
@@ -668,11 +668,11 @@ export default class Workflow {
         let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
         path.classList.add("main-path");
         path.setAttributeNS(null, 'd', '');
-        let [_,outputClass] = ele.classList;
-        let [,,status] = outputClass.split("_");
+        let [_, outputClass] = ele.classList;
+        let [, , status] = outputClass.split("_");
         connection.classList.add("connection");
         if (status)
-            connection.setAttribute('status',status);
+            connection.setAttribute('status', status);
         connection.appendChild(path);
         this.precanvas.appendChild(connection);
 
@@ -781,7 +781,7 @@ export default class Workflow {
 
 
         const elemsOut = document.getElementsByClassName(idSearchOut);
-        Object.keys(elemsOut).forEach((item, index)=>  {
+        Object.keys(elemsOut).forEach((item, index) => {
             if (elemsOut[item].querySelector('.point') === null) {
 
                 var elemtsearchId_out = document.getElementById(id);
@@ -980,7 +980,7 @@ export default class Workflow {
         })
 
         const elems = document.getElementsByClassName(idSearch);
-        Object.keys(elems).forEach( (item, index) => {
+        Object.keys(elems).forEach((item, index) => {
             // console.log("In")
             if (elems[item].querySelector('.point') === null) {
                 var elemtsearchId_in = document.getElementById(id);
@@ -1333,7 +1333,14 @@ export default class Workflow {
     }
 
     addNode(data, ele_pos_x, ele_pos_y, html) {
-        let {name = "", description = "", action, target,is_first} = data;
+        let {
+            name = '',
+            description = '',
+            action,
+            action_target,
+            targets = [],
+            is_first
+        } = data;
 
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
@@ -1351,12 +1358,12 @@ export default class Workflow {
         let jsonInput = [];
         let jsonOutput = [];
 
-        if (action && target) {
+        if (action && action_target) {
 
-            if (!is_first){
+            if (!is_first) {
                 let inputItem = {
-                    name:"",
-                    steps:[]
+                    name: "",
+                    steps: []
                 };
 
                 ['default'].forEach(value => {
@@ -1371,14 +1378,14 @@ export default class Workflow {
             }
 
             let outputItem = {
-                name:action,
-                target_type: target
+                name: action.value,
+                target_type: action_target.value
             };
 
             ['pass', 'reject'].forEach(value => {
                 let output = document.createElement('div');
                 output.classList.add("output");
-                output.classList.add(`${action}_output_${value}`);
+                output.classList.add(`${action.value}_output_${value}`);
                 outputItem[value] = null;
                 outputs.appendChild(output)
             })
@@ -1405,18 +1412,16 @@ export default class Workflow {
             workflow_id: this.workflowId,
             description: description,
             name: name,
-            html:html,
+            html: html,
             is_first: is_first,
             inputs: jsonInput,
             actions: jsonOutput,
-            targets: [
-                {
-                    id: '',
-                    name: '',
-                    type: target,
-                    action: action
-                },
-            ],
+            targets: targets.length > 0 ? targets.map(target => ({
+                id: target.id,
+                name: target.name,
+                type: target.type,
+                action: target.action
+            })) : [],
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         });
@@ -1443,41 +1448,41 @@ export default class Workflow {
         inputs.classList.add("inputs");
 
         if (!dataNode.is_first)
-            dataNode.inputs.forEach((input_item, index)=>{
-            const input = document.createElement('div');
-            input.classList.add("input");
-            input.classList.add(input_item.name);
-            inputs.appendChild(input);
+            dataNode.inputs.forEach((input_item, index) => {
+                const input = document.createElement('div');
+                input.classList.add("input");
+                input.classList.add(input_item.name);
+                inputs.appendChild(input);
 
-            input_item['steps'].forEach((output_item, index) => {
+                input_item['steps'].forEach((output_item, index) => {
 
-                let connection = document.createElementNS('http://www.w3.org/2000/svg', "svg");
-                let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
-                path.classList.add("main-path");
-                path.setAttributeNS(null, 'd', '');
-                // path.innerHTML = 'a';
-                connection.classList.add("connection");
-                connection.classList.add("node_in_node-" + dataNode.step_id);
-                connection.classList.add("node_out_node-" + output_item.step_id);
-                let [,,status] = output_item.output.split("_");
+                    let connection = document.createElementNS('http://www.w3.org/2000/svg', "svg");
+                    let path = document.createElementNS('http://www.w3.org/2000/svg', "path");
+                    path.classList.add("main-path");
+                    path.setAttributeNS(null, 'd', '');
+                    // path.innerHTML = 'a';
+                    connection.classList.add("connection");
+                    connection.classList.add("node_in_node-" + dataNode.step_id);
+                    connection.classList.add("node_out_node-" + output_item.step_id);
+                    let [, , status] = output_item.output.split("_");
 
-                connection.classList.add("connection");
-                if (status)
-                    connection.setAttribute('status',status);
+                    connection.classList.add("connection");
+                    if (status)
+                        connection.setAttribute('status', status);
 
-                connection.classList.add(output_item.output);
-                connection.classList.add(input_item.name);
+                    connection.classList.add(output_item.output);
+                    connection.classList.add(input_item.name);
 
-                connection.appendChild(path);
-                preCanvas.appendChild(connection);
+                    connection.appendChild(path);
+                    preCanvas.appendChild(connection);
 
+                });
             });
-        });
 
         //output
         const outputs = document.createElement('div');
         outputs.classList.add("outputs");
-        dataNode.actions.forEach(action =>{
+        dataNode.actions.forEach(action => {
             ['pass', 'reject'].forEach(value => {
                 let output = document.createElement('div');
                 output.classList.add("output");
@@ -1527,9 +1532,9 @@ export default class Workflow {
         if (this.connection_selected != null) {
             let listClass = this.connection_selected.parentElement.classList;
             this.connection_selected.parentElement.remove();
-            const [,nodeIn,nodeOut,output_class,input_class] = listClass;
+            const [, nodeIn, nodeOut, output_class, input_class] = listClass;
 
-            let [action,,status] = output_class.split("_");
+            let [action, , status] = output_class.split("_");
 
             let id_input = nodeIn.slice(13);
             let id_output = nodeOut.slice(14);
@@ -1540,11 +1545,11 @@ export default class Workflow {
             let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
 
 
-            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item=>{
+            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
                 return item["step_id"] === id_output && item["output"] === output_class
             });
 
-            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex,1);
+            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex, 1);
 
             this.workflow.steps[stepOut].actions[portOut][status] = null;
 
@@ -1610,9 +1615,9 @@ export default class Workflow {
         for (let i = elemsOut.length - 1; i >= 0; i--) {
             let listClass = elemsOut[i].classList;
 
-            const [,nodeIn,nodeOut,output_class,input_class] = listClass;
+            const [, nodeIn, nodeOut, output_class, input_class] = listClass;
 
-            let [action,,status] = output_class.split("_");
+            let [action, , status] = output_class.split("_");
 
             let id_input = nodeIn.slice(13);
             let id_output = nodeOut.slice(14);
@@ -1623,11 +1628,11 @@ export default class Workflow {
             let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
 
 
-            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item=>{
+            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
                 return item["step_id"] === id_output && item["output"] === output_class
             });
 
-            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex,1);
+            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex, 1);
 
             this.workflow.steps[stepOut].actions[portOut][status] = null;
 
@@ -1647,9 +1652,9 @@ export default class Workflow {
 
             let listClass = elemsIn[i].classList;
 
-            const [,nodeIn,nodeOut,output_class,input_class] = listClass;
+            const [, nodeIn, nodeOut, output_class, input_class] = listClass;
 
-            let [action,,status] = output_class.split("_");
+            let [action, , status] = output_class.split("_");
 
             let id_input = nodeIn.slice(13);
             let id_output = nodeOut.slice(14);
@@ -1660,11 +1665,11 @@ export default class Workflow {
             let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
 
 
-            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item=>{
+            let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
                 return item["step_id"] === id_output && item["output"] === output_class
             });
 
-            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex,1);
+            this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex, 1);
 
             this.workflow.steps[stepOut].actions[portOut][status] = null;
 
