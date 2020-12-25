@@ -3,40 +3,32 @@ import React, {useEffect} from 'react';
 import "./Node.scss"
 import {useState} from "react";
 import {FaPlus} from "react-icons/fa";
-import {actions, targets} from "../helpers/helpers";
 
 import Select from 'react-select'
 import AsyncSelect from 'react-select/async';
 import makeAnimated from 'react-select/animated';
 
-const options = [
-    {value: 'chocolate', label: 'Chocolate'},
-    {value: 'strawberry', label: 'Strawberry'},
-    {value: 'vanilla', label: 'Vanilla'}
-]
 const animatedComponents = makeAnimated();
 
 const loadOptions = (inputValue, callback) => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-        .then(res => res.json())
-        .then(data => {
-            data = data.map(item => ({value: item.id, label: item.name}))
-            callback(data)
-        })
+    callback([
+        {label: 'Phòng nhân sự', value: 11},
+        {label: 'Văn Tuấn', value: 111}
+    ])
 };
 
-const Node = ({drag}) => {
+const Node = ({drag, setWorkflow, dataTargets, dataActions, dataWorkflowTypes}) => {
         let template = {
             name: '',
             description: '',
-            action: '',
-            target: '',
+            actions: '',
+            targets: '',
             is_first: false
         };
+
         let [show, setShow] = useState(false)
         let [value, setValue] = useState(template);
-        let [targets, setTargets] = useState([]);
-        let [actions, setActions] = useState([]);
+        let [workflowLocal, setWorkflowLocal] = useState({});
 
         const handleChecked = (e) => {
             setValue({...value, is_first: e.target.checked})
@@ -45,29 +37,22 @@ const Node = ({drag}) => {
         const handleChange = (e) => {
             setValue({...value, [e.target.name]: e.target.value})
         }
+
+        const handleChangeWorkflow = (e) => {
+            setWorkflowLocal({...workflowLocal, [e.target.name]: e.target.value});
+            setWorkflow({...workflowLocal, [e.target.name]: e.target.value})
+        }
+
+        const handleSelectChangeWorkflow = (val, action) => {
+            setWorkflowLocal({...workflowLocal, [action.name]: {value: val.value, name: val.label}});
+            setWorkflow({...workflowLocal, [action.name]: val.value});
+        };
+
         const reset = () => {
             setShow(false);
             setValue(template)
         }
 
-        const getData = async () => {
-            const targets = await fetch('https://workflow.tuoitre.vn/api/step/get-action-target-types')
-            const actions = await fetch('https://workflow.tuoitre.vn/api/step/get-action-types')
-            return Promise.all([targets.json(), actions.json()])
-        }
-
-        useEffect(() => {
-            getData().then(res => {
-                let targets = Object.keys(res[0]).reduce((init, current) => {
-                    return [...init, {value: current, label: res[0][current]}]
-                }, []);
-                setTargets(targets);
-                let actions = Object.keys(res[1]).reduce((init, current) => {
-                    return [...init, {value: current, label: res[1][current]}]
-                }, []);
-                setActions(actions);
-            })
-        }, []);
 
         const handleSelectChange = (val, action) => {
             let tmp = null;
@@ -78,7 +63,12 @@ const Node = ({drag}) => {
                     break;
                 }
                 case 'targets': {
-                    tmp = val ? val.map(item => ({id: item.value, name: item.label, action: value.action.value, type: value.action_target.value})) : [];
+                    tmp = val ? val.map(item => ({
+                        id: item.value,
+                        name: item.label,
+                        action: value.action.value,
+                        type: value.action_target.value
+                    })) : [];
                     break;
                 }
             }
@@ -87,6 +77,27 @@ const Node = ({drag}) => {
 
         return (
             <div>
+                <div className="node">
+                    <div>
+                        <div className={"node__form-group"}>
+                            <label>Workflow name</label>
+                            <input type="text" value={workflowLocal.workflow_name} onChange={handleChangeWorkflow}
+                                   name={'workflow_name'}/>
+                        </div>
+                        <div className={"node__form-group"}>
+                            <label>Workflow description</label>
+                            <input type="text" value={workflowLocal.workflow_description} onChange={handleChangeWorkflow}
+                                   name={'workflow_description'}/>
+                        </div>
+                        <div className={"node__form-group"}>
+                            <label>Type</label>
+                            <Select
+                                onChange={handleSelectChangeWorkflow}
+                                name={'workflow_type'}
+                                options={dataWorkflowTypes}/>
+                        </div>
+                    </div>
+                </div>
                 {/*<h5>NODE</h5>*/}
                 <div className="node"
                      draggable={show} onDragEnd={() => reset()} onDragStart={(e) => drag(value, e)}>
@@ -107,14 +118,14 @@ const Node = ({drag}) => {
                                 <Select
                                     onChange={handleSelectChange}
                                     name={'action_target'}
-                                    options={targets}/>
+                                    options={dataTargets}/>
                             </div>
                             <div className={"node__form-group"}>
                                 <label>Hành động</label>
                                 <Select
                                     name={'action'}
                                     onChange={handleSelectChange}
-                                    options={actions}/>
+                                    options={dataActions}/>
                             </div>
                             <div className={"node__form-group"}>
                                 <label>Đối tượng cụ thể</label>

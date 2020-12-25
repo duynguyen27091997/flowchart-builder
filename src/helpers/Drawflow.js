@@ -59,7 +59,6 @@ export default class Workflow {
     }
 
     start() {
-        console.info("Start workflow!!");
         this.container.classList.add("parent-workflow");
         this.container.tabIndex = 0;
         this.container.innerHTML = "";
@@ -1409,7 +1408,6 @@ export default class Workflow {
 
         this.workflow.steps.push({
             step_id: this.nodeId,
-            workflow_id: this.workflowId,
             description: description,
             name: name,
             html: html,
