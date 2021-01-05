@@ -11,6 +11,12 @@ const loadOptions = (inputValue, callback) => {
     ])
 };
 
+// const getData = async () => {
+//     const targets = await fetch('https://workflow.tuoitre.vn/api/step/get-action-target-types');
+//     const actions = await fetch('https://workflow.tuoitre.vn/api/step/get-action-types');
+//     return Promise.all([targets.json(), actions.json(), workflowTypes.json()])
+// }
+
 const Node = ({drag}) => {
         let template = {
             name: '',

@@ -1,9 +1,8 @@
 /* eslint-disable */
 export default class Workflow {
-    constructor(container, workflowId, render = null) {
+    constructor(container, render = null) {
         this.events = {};
         this.container = container;
-        this.workflowId = workflowId;
         this.precanvas = null;
         this.nodeId = 1;
         this.ele_selected = null;

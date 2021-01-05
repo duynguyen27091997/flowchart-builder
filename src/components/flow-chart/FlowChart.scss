@@ -1,7 +1,163 @@
-.workflow,.workflow .parent-node{position:relative}.parent-workflow{display:flex;overflow:hidden;touch-action:none;outline:0}.workflow{width:100%;height:100%;user-select:none}.workflow .workflow-node{display:flex;align-items:center;position:absolute;background:#0ff;width:160px;min-height:40px;border-radius:4px;border:2px solid #000;color:#000;z-index:2;padding:15px}.workflow .workflow-node.selected{background:red}.workflow .workflow-node:hover{cursor:move}.workflow .workflow-node .inputs,.workflow .workflow-node .outputs{width:0}.workflow .workflow-node .workflow_content_node{width:100%;display:block}.workflow .workflow-node .input,.workflow .workflow-node .output{position:relative;width:20px;height:20px;background:#fff;border-radius:50%;border:2px solid #000;cursor:crosshair;z-index:1;margin-bottom:5px}.workflow .workflow-node .input{left:-27px;top:2px;background:#ff0}.workflow .workflow-node .output{right:-3px;top:2px}.workflow svg{z-index:0;position:absolute;overflow:visible!important}.workflow .connection{position:absolute;transform:translate(9999px,9999px)}.workflow .connection .main-path{fill:none;stroke-width:5px;stroke:#4682b4;transform:translate(-9999px,-9999px)}.workflow .connection .main-path:hover{stroke:#1266ab;cursor:pointer}.workflow .connection .main-path.selected{stroke:#43b993}.workflow .connection .point{cursor:move;stroke:#000;stroke-width:2;fill:#fff;transform:translate(-9999px,-9999px)}.workflow .connection .point.selected,.workflow .connection .point:hover{fill:#1266ab}.workflow .main-path{fill:none;stroke-width:5px;stroke:#4682b4}.workflow .selectbox{z-index:3;position:absolute;transform:translate(9999px,9999px)}.workflow .selectbox rect{fill:#00f;opacity:.5;stroke:#ff0;stroke-width:5;stroke-opacity:.5;transform:translate(-9999px,-9999px)}.workflow-delete{position:absolute;display:block;width:30px;height:30px;background:#000;color:#fff;z-index:4;border:2px solid #fff;line-height:30px;font-weight:700;text-align:center;border-radius:50%;font-family:monospace;cursor:pointer}.workflow>.workflow-delete{margin-left:-15px;margin-top:15px}.parent-node .workflow-delete{right:-15px;top:-15px}
+.workflow, .workflow .parent-node {
+  position: relative
+}
 
-$color-pass : #27ae60;
-$color-reject : #e74c3c;
+.parent-workflow {
+  display: flex;
+  overflow: hidden;
+  touch-action: none;
+  outline: 0
+}
+
+.workflow {
+  width: 100%;
+  height: 100%;
+  user-select: none
+}
+
+.workflow .workflow-node {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  background: #0ff;
+  width: 160px;
+  min-height: 40px;
+  border-radius: 4px;
+  border: 2px solid #000;
+  color: #000;
+  z-index: 2;
+  padding: 15px
+}
+
+.workflow .workflow-node.selected {
+  background: red
+}
+
+.workflow .workflow-node:hover {
+  cursor: move
+}
+
+.workflow .workflow-node .inputs, .workflow .workflow-node .outputs {
+  width: 0
+}
+
+.workflow .workflow-node .workflow_content_node {
+  width: 100%;
+  display: block
+}
+
+.workflow .workflow-node .input, .workflow .workflow-node .output {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  border: 2px solid #000;
+  cursor: crosshair;
+  z-index: 1;
+  margin-bottom: 5px
+}
+
+.workflow .workflow-node .input {
+  left: -27px;
+  top: 2px;
+  background: #ff0
+}
+
+.workflow .workflow-node .output {
+  right: -3px;
+  top: 2px
+}
+
+.workflow svg {
+  z-index: 0;
+  position: absolute;
+  overflow: visible !important
+}
+
+.workflow .connection {
+  position: absolute;
+  transform: translate(9999px, 9999px)
+}
+
+.workflow .connection .main-path {
+  fill: none;
+  stroke-width: 5px;
+  stroke: #4682b4;
+  transform: translate(-9999px, -9999px)
+}
+
+.workflow .connection .main-path:hover {
+  stroke: #1266ab;
+  cursor: pointer
+}
+
+.workflow .connection .main-path.selected {
+  stroke: #43b993
+}
+
+.workflow .connection .point {
+  cursor: move;
+  stroke: #000;
+  stroke-width: 2;
+  fill: #fff;
+  transform: translate(-9999px, -9999px)
+}
+
+.workflow .connection .point.selected, .workflow .connection .point:hover {
+  fill: #1266ab
+}
+
+.workflow .main-path {
+  fill: none;
+  stroke-width: 5px;
+  stroke: #4682b4
+}
+
+.workflow .selectbox {
+  z-index: 3;
+  position: absolute;
+  transform: translate(9999px, 9999px)
+}
+
+.workflow .selectbox rect {
+  fill: #00f;
+  opacity: .5;
+  stroke: #ff0;
+  stroke-width: 5;
+  stroke-opacity: .5;
+  transform: translate(-9999px, -9999px)
+}
+
+.workflow-delete {
+  position: absolute;
+  display: block;
+  width: 30px;
+  height: 30px;
+  background: #000;
+  color: #fff;
+  z-index: 4;
+  border: 2px solid #fff;
+  line-height: 30px;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 50%;
+  font-family: monospace;
+  cursor: pointer
+}
+
+.workflow > .workflow-delete {
+  margin-left: -15px;
+  margin-top: 15px
+}
+
+.parent-node .workflow-delete {
+  right: -15px;
+  top: -15px
+}
+
+$color-pass: #27ae60;
+$color-reject: #e74c3c;
 :root {
   --border-color: #cacaca;
   --background-color: #ffffff;
@@ -23,13 +179,16 @@ header {
   border-bottom: 1px solid var(--border-color);
   padding-left: 20px;
 }
+
 header h2 {
   margin: 0px;
   line-height: 66px;
 }
+
 header a {
   color: black;
 }
+
 .them-edit-link {
   position: absolute;
   top: 10px;
@@ -37,11 +196,12 @@ header a {
   color: black;
   font-size: 40px;
 }
+
 .them-edit-link a {
   text-decoration: none;
 }
 
-.github-link{
+.github-link {
   position: absolute;
   top: 10px;
   right: 20px;
@@ -68,6 +228,7 @@ header a {
   background: white;
   width: 100%;
 }
+
 .menu ul {
   padding: 0px;
   margin: 0px;
@@ -102,7 +263,7 @@ header a {
   z-index: 5;
 }
 
-.btn-clear,.btn-save {
+.btn-clear, .btn-save {
   float: right;
   position: absolute;
   top: 10px;
@@ -116,13 +277,15 @@ header a {
   cursor: pointer;
   z-index: 5;
 }
-.btn-save{
+
+.btn-save {
   right: 25px;
-  border:1px solid #27ae60;
-  background:#27ae60;
+  border: 1px solid #27ae60;
+  background: #27ae60;
 }
-.swal-wide{
-  width:80% !important;
+
+.swal-wide {
+  width: 80% !important;
 }
 
 .btn-lock {
@@ -155,9 +318,10 @@ header a {
   border-right: 1px solid var(--border-color);
   z-index: 5;
 }
+
 .bar-zoom svg {
   cursor: pointer;
-  margin:0 5px;
+  margin: 0 5px;
 }
 
 
@@ -168,9 +332,8 @@ header a {
   top: 40px;
   background: var(--background-color);
   background-size: 25px 25px;
-  background-image:
-          linear-gradient(to right, #f1f1f1 1px, transparent 1px),
-          linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
+  background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px),
+  linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
 }
 
 @media only screen and (max-width: 768px) {
@@ -178,7 +341,7 @@ header a {
     width: 50px;
   }
   .col .drag-workflow span {
-    display:none;
+    display: none;
   }
   #workflow {
     width: calc(100vw - 51px);
@@ -196,7 +359,7 @@ header a {
   width: 250px;
 }
 
-.workflow .workflow-node.selected  {
+.workflow .workflow-node.selected {
   background: white;
   border: 1px solid #4ea9ff;
   -webkit-box-shadow: 0 2px 20px 2px #4ea9ff;
@@ -225,11 +388,13 @@ header a {
 
 .workflow .workflow-node .output {
   right: 10px;
-  &[class$='pass']{
+
+  &[class$='pass'] {
     background: $color-pass;
     border-color: $color-pass;
   }
-  &[class$='reject']{
+
+  &[class$='reject'] {
     background: $color-reject;
     border-color: $color-reject;
   }
@@ -257,43 +422,52 @@ header a {
 }
 
 .workflow-node .title-box {
-  padding:5px 10px;
-  h6{
+  padding: 5px 10px;
+
+  h6 {
     margin: 0;
     font-size: 17px;
   }
-  p{
+
+  p {
     margin: 0;
   }
+
   line-height: 25px;
   background: var(--background-box-title);
   border-bottom: 1px solid #e9e9e9;
   border-radius: 4px 4px 0 0;
 }
+
 .workflow .title-box svg {
   position: initial;
 }
+
 .workflow-node .box {
   padding: 10px 20px 20px 20px;
   font-size: 14px;
   color: #555555;
   font-weight: 600;
-  &__target{
+
+  &__target {
     font-size: 15px;
     padding: 10px 0;
     border-bottom: 1px solid #BDC3C7;
   }
-  &__action{
+
+  &__action {
     padding: 5px 0;
     font-size: 15px;
   }
-  &__check{
-    input{
+
+  &__check {
+    input {
       width: unset;
       height: unset;
     }
   }
 }
+
 .workflow-node .box p {
   margin: 0;
 }
@@ -327,9 +501,11 @@ header a {
   text-align: center;
   color: white;
 }
+
 .workflow-node.personalized .input {
   background: yellow;
 }
+
 .workflow-node.personalized .output {
   background: green;
 }
@@ -337,14 +513,17 @@ header a {
 .workflow-node.personalized.selected {
   background: blue;
 }
-.workflow .connection{
-  &[status='pass'] .main-path{
+
+.workflow .connection {
+  &[status='pass'] .main-path {
     stroke: $color-pass;
   }
-  &[status='reject'] .main-path{
+
+  &[status='reject'] .main-path {
     stroke: $color-reject;
   }
 }
+
 .workflow .connection .point {
   stroke: var(--border-color);
   stroke-width: 2;
@@ -356,57 +535,20 @@ header a {
   fill: #4ea9ff;
 }
 
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 7;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.7);
-
-}
-
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 400px; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button */
-.modal .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor:pointer;
-}
-
-@media only screen and (max-width: 768px) {
-  .modal-content {
-    width: 80%;
-  }
-}
-
-.flow{
+.flow {
   display: flex;
-  $color-gray:#bdc3c7;
-  $color-blue:#3498db;
-  $color-red:#c0392b;
-  $color-green:#27ae60;
-  &__sidebar{
+  position: relative;
+  $color-gray: #bdc3c7;
+  $color-blue: #3498db;
+  $color-red: #c0392b;
+  $color-green: #27ae60;
+
+  &__sidebar {
     flex: 0 0 290px;
     padding: 5px;
     border-right: 1px solid $color-gray;
   }
+
   &__draw {
     flex-grow: 1;
     position: relative;
@@ -414,5 +556,32 @@ header a {
     background-size: 25px 25px;
     background-color: #ffffff;
     background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px), linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
+  }
+}
+
+.btn--back {
+  display: inline-block;
+  background: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 15px;
+  -webkit-border-radius: 3px;
+  cursor: pointer;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 0 2px #888888;
+  -moz-box-shadow: 0 0 2px #888888;
+  box-shadow: 0 0 2px #888888;
+
+  svg {
+    color: #0e5ba3;
+  }
+
+  &:hover {
+    background: #0e5ba3;
+
+    svg {
+      color: #ffffff;
+    }
   }
 }

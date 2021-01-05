@@ -9,8 +9,10 @@ $color-gray: #bdc3c7;
   border-radius: 5px;
   border: 2px solid $color-gray;
   margin-bottom: 10px;
+  svg{
+    color :#0e5ba3;
+  }
   &:hover{
-    color: #ffffff;
     border: 2px solid #0e5ba3;
   }
   &__form-group{
@@ -34,7 +36,6 @@ $color-gray: #bdc3c7;
     }
   }
   input[type='checkbox']{
-    margin-top: -1px;
     margin-right: 10px;
   }
   input,select{
@@ -42,6 +43,7 @@ $color-gray: #bdc3c7;
     width: 100%;
     vertical-align: middle;
     height: 35px;
+    outline: none;
     border: 1px solid $color-gray;
     padding: 5px 10px;
     margin-bottom: 5px;
