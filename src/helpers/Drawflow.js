@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default class Workflow {
     constructor(container, workflowId, render = null) {
         this.events = {};
