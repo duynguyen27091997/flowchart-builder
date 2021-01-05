@@ -48,7 +48,7 @@ const FlowChart = ({workflow = null,unselectWorkflow}) => {
         //description
         if (workflow.workflow_description)
             data.workflow_description = workflow.workflow_description;
-        
+
         data.workflow_pos_x = editor.pos_x;
         data.workflow_pos_y = editor.pos_y;
 
