@@ -69,7 +69,7 @@ const useFlowChart = (workflowId) => {
         if (!editor && id) {
             setEditor(new DrawFlow(id, workflowId));
         }
-    }, [editor])
+    }, [editor, workflowId])
 
 
     const allowDrop = (ev) => {
