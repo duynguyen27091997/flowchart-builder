@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a7d0c26b-4ee3-4966-b5c0-6c258e23c778" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/CreateWorkflow.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/Flow.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/Flow.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/flow-chart/FlowChart.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/flow-chart/FlowChart.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/flow-list/FlowList.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/flow-list/FlowList.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/flow-tool/FlowTool.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/loading/Loading.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/loading/Loading.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/modal/Modal.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/modal/Modal.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/node/Node.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/node/Node.scss" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="SCSS File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="ProjectId" id="1lp37JdpcOq3gEQbT2cyILMu9pe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../react/test-flowchart" />
+    <property name="list.type.of.created.stylesheet" value="SCSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="yarn" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/node_modules" />
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/components/flow-tool" />
+      <recent name="$PROJECT_DIR$/src/components/node" />
+      <recent name="$PROJECT_DIR$/src/components/loading" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a7d0c26b-4ee3-4966-b5c0-6c258e23c778" name="Default Changelist" comment="" />
+      <created>1608280039984</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1608280039984</updated>
+      <workItem from="1608280043091" duration="113000" />
+      <workItem from="1608280167473" duration="12000" />
+      <workItem from="1608280180399" duration="1411000" />
+      <workItem from="1608282019028" duration="12104000" />
+      <workItem from="1608546275588" duration="143000" />
+      <workItem from="1608546432637" duration="11692000" />
+      <workItem from="1608782975519" duration="1347000" />
+      <workItem from="1608865355003" duration="2796000" />
+      <workItem from="1609212873795" duration="733000" />
+      <workItem from="1609224651978" duration="1107000" />
+      <workItem from="1609226927475" duration="85000" />
+      <workItem from="1609227024423" duration="1208000" />
+      <workItem from="1609314554164" duration="2607000" />
+      <workItem from="1609751425214" duration="38331000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>

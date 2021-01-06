@@ -1,10 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-ReactDOM.render(
+import React from 'react'
+import styles from './styles.module.css'
 
-    <App />
-  ,
-  document.getElementById('root')
-);
+export const ExampleComponent = ({ text }) => {
+  return <div className={styles.test}>Example Component: {text}</div>
+}
