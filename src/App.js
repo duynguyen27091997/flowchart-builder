@@ -1,11 +1,12 @@
-import FlowChart from "./components/FlowChart";
+import React from 'react';
+import Flow from "./components/Flow";
 
-function App() {
-  return (
-    <div className="App">
-      <FlowChart />
-    </div>
-  );
-}
+const App = () => {
+    return (
+        <div>
+            <Flow/>
+        </div>
+    );
+};
 
 export default App;

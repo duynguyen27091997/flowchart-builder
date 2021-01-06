@@ -9,9 +9,11 @@ $color-gray: #bdc3c7;
   border-radius: 5px;
   border: 2px solid $color-gray;
   margin-bottom: 10px;
+  svg{
+    color :#0e5ba3;
+  }
   &:hover{
-    color: #27ae60;
-    border: 2px solid #27ae60;
+    border: 2px solid #0e5ba3;
   }
   &__form-group{
     display: block;
@@ -19,7 +21,6 @@ $color-gray: #bdc3c7;
     label{
       display: block;
       text-align: left;
-      font-size: 14px;
       color: #151515;
       margin-bottom: 4px;
     }
@@ -34,9 +35,15 @@ $color-gray: #bdc3c7;
       }
     }
   }
+  input[type='checkbox']{
+    margin-right: 10px;
+  }
   input,select{
     background: #ffffff;
     width: 100%;
+    vertical-align: middle;
+    height: 35px;
+    outline: none;
     border: 1px solid $color-gray;
     padding: 5px 10px;
     margin-bottom: 5px;

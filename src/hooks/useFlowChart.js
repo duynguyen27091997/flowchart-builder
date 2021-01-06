@@ -65,11 +65,11 @@ const useFlowChart = (workflowId) => {
     //set up editor
 
     useEffect(() => {
-        let id = document.getElementById(workflowId);
+        let id = document.getElementById('draw-main');
         if (!editor && id) {
             setEditor(new DrawFlow(id, workflowId));
         }
-    }, [editor])
+    }, [editor, workflowId])
 
 
     const allowDrop = (ev) => {

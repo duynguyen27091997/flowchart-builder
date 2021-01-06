@@ -1,12 +1,16 @@
 import React from 'react';
 import {FaSearch, FaSearchMinus, FaSearchPlus} from "react-icons/fa";
 
-const FlowTool = ({editor}) => {
+const FlowTool = ({editor, handleSave}) => {
     return (
         <div>
-            <div><div className="btn-clear" style={{userSelect:'none'}} onClick={()=>editor.clear()}>Xóa</div>
-                <div className="btn-save" style={{userSelect:'none'}} onClick={()=>{
-                    console.log(JSON.stringify(editor.export()))}}>Lưu</div></div>
+            <div>
+                <div className="btn-clear" style={{userSelect: 'none'}} onClick={() => editor.clear()}>Xóa</div>
+                <div className="btn-save" style={{userSelect: 'none'}} onClick={() => {
+                    handleSave(editor.export())
+                }}>Lưu
+                </div>
+            </div>
             {/*<div className="btn-lock">*/}
             {/*    {(editor && editor.editor_mode === 'edit') ? <FaLock onClick={() => {*/}
             {/*            editor.lock();*/}
