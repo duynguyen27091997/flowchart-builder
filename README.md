@@ -7,24 +7,41 @@
 ## Install
 
 ```bash
-npm install --save @tuoitre/flowchart-builder
+npm install @tuoitre/flowchart-builder
+```
+or
+```bash
+yarn add @tuoitre/flowchart-builder
 ```
 
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react'
 
-import MyComponent from '@tuoitre/flowchart-builder'
+import { TTFlow } from '@tuoitre/flowchart-builder'
 import '@tuoitre/flowchart-builder/dist/index.css'
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
+const Example = () => {
+  return (
+    <div>
+      <TTFlow />
+    </div>
+  )
+
 }
 ```
 
+## Config
+
+```
+
+```
+
+## Repo
+
+[https://github.com/duynguyen27091997/flowchart-builder](https://github.com/duynguyen27091997/flowchart-builder)
+
 ## License
 
-MIT © [Duynguyen](https://github.com/Duynguyen)
+MIT © [duynguyen27091997](https://github.com/duynguyen27091997)
