@@ -9,15 +9,22 @@ import {AiOutlineRollback} from "react-icons/ai";
 import Loading from "../loading/Loading";
 
 
-const FlowChart = ({workflow = null,unselectWorkflow}) => {
+
+const FlowChart = ({workflow = null,unselectWorkflow,storeStepsUrl,workflowDetailUrl,targetTypesUrl,actionTypeUrl}) => {
 
     let [editor, drag, drop, allowDrop] = useFlowChart()
     let [loading,setLoading] = useState(false);
 
+    const getData = async () => {
+        const targets = await axios(targetTypesUrl).then(res => res.data);
+        const actions = await axios(actionTypeUrl).then(res => res.data);
+        return [targets, actions];
+    }
+
     useEffect(() => {
         if (workflow.value && !workflow.workflow_new) {
             setLoading(true)
-            axios.get(`https://workflow.tuoitre.vn/api/workflow/detail?type=${workflow.value}`)
+            axios.get(`${workflowDetailUrl}${workflow.value}`)
                 .then(res => {
                     if (res.status === 200) {
                         editor.clear()
@@ -53,7 +60,7 @@ const FlowChart = ({workflow = null,unselectWorkflow}) => {
         data.workflow_pos_y = editor.pos_y;
 
 
-        axios.post('https://workflow.tuoitre.vn/api/step/store-steps', data)
+        axios.post(storeStepsUrl, data)
             .then(res => {
                 editor.clear()
             })
@@ -72,7 +79,7 @@ const FlowChart = ({workflow = null,unselectWorkflow}) => {
                 <button onClick={unselectWorkflow} className={'btn btn--back'}>
                     <AiOutlineRollback size={'25'}/>
                 </button>
-                <Node drag={drag}/>
+                <Node drag={drag} getData={getData}/>
                 <FlowTool editor={editor} handleSave={handleSave}/>
             </aside>
             <main id={'draw-main'} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>

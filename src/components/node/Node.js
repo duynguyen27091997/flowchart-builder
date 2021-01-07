@@ -10,13 +10,8 @@ const specificTargets = [
     {label: 'Văn Tuấn', value: 111}
 ];
 
-const getData = async () => {
-    const targets = await axios('https://workflow.tuoitre.vn/api/step/get-action-target-types').then(res => res.data);
-    const actions = await axios('https://workflow.tuoitre.vn/api/step/get-action-types').then(res => res.data);
-    return [targets, actions];
-}
 
-const Node = ({drag}) => {
+const Node = ({drag,getData}) => {
         let template = {
             name: '',
             description: '',

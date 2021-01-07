@@ -4,7 +4,8 @@ import Flow from "./components/Flow";
 const App = () => {
     return (
         <div>
-            <Flow/>
+            <Flow urls={{
+            }}/>
         </div>
     );
 };

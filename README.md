@@ -29,19 +29,33 @@ import '@tuoitre/flowchart-builder/dist/index.css'
 const Example = () => {
   return (
     <div>
-      <TTFlow />
+      <TTFlow urls={
+        {
+          workflowTypesUrl : '.../api/workflow/get-workflow-types',
+          storeStepsUrl:'.../api/step/store-steps',
+          workflowDetailUrl:'.../api/workflow/detail?type=',
+          targetTypeUrl : '.../api/step/get-action-target-types',
+          actionTypeUrl : '.../api/step/get-action-types',
+        }
+      }/>
     </div>
   )
 
 }
 ```
 
-## Config
+## Props
 
-```
+### urls : Object
+> workflowTypesUrl : url get workflow types
 
-```
+> storeStepsUrl : url save workflow
 
+> workflowDetailUrl : url get workflow detail
+
+> targetTypeUrl : url get list target
+
+> actionTypeUrl : url get action target
 ## Repo
 
 [https://github.com/duynguyen27091997/flowchart-builder](https://github.com/duynguyen27091997/flowchart-builder)
