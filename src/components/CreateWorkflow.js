@@ -1,12 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 
-const CreateWorkflow = ({listType,createWorkflow}) => {
+const CreateWorkflow = ({workflow,listType,createWorkflow}) => {
         let template = {
             workflow_name: '',
             workflow_description: '',
             workflow_type: '',
-            workflow_new:true
         };
+
+        useEffect(()=>{
+          if(workflow && workflow.type)
+          setValue({...value, workflow_type: workflow.type})
+        },[workflow])
+
         let [value, setValue] = useState(template);
         const handleChange = (e) => {
             setValue({...value, [e.target.name]: e.target.value})

@@ -95,6 +95,7 @@ export default class Workflow {
         this.container.onpointercancel = this.pointerup_handler.bind(this);
         this.container.onpointerout = this.pointerup_handler.bind(this);
         this.container.onpointerleave = this.pointerup_handler.bind(this);
+        this.precanvas.style.transform = "translate(" + this.pos_x + "px, " + this.pos_y + "px) scale(" + this.zoom + ")";
 
         this.load();
     }
@@ -1712,7 +1713,9 @@ export default class Workflow {
     import(data) {
 
         this.clear()
-        this.workflow = data;
+        this.workflow.steps = data.steps;
+        this.pos_x = data.workflow_pos_x || 0;
+        this.pos_y = data.workflow_pos_y || 0;
         this.start();
         this.dispatch('import', 'import');
     }

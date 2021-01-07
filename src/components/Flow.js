@@ -12,7 +12,7 @@ function Flow({urls={}}) {
 
     let {
       workflowTypesUrl = 'https://workflow.tuoitre.vn/api/workflow/get-workflow-types',
-      storeStepsUrl='https://workflow.tuoitre.vn/api/step/store-steps',
+      storeStepsUrl='https://workflow.tuoitre.vn/api/workflow/store',
       workflowDetailUrl='https://workflow.tuoitre.vn/api/workflow/detail?type=',
       targetTypeUrl = 'https://workflow.tuoitre.vn/api/step/get-action-target-types',
       actionTypeUrl = 'https://workflow.tuoitre.vn/api/step/get-action-types',
@@ -39,21 +39,39 @@ function Flow({urls={}}) {
             .catch()
             .finally(()=>setLoading(false))
     },[])
+
+    const selectWorkflow = (workflow)=>{
+
+      axios.get(`${workflowDetailUrl}${workflow.value}`)
+        .then(res => {
+          if (res.status === 200) {
+              setWorkflow(res.data)
+          } else {
+              setWorkflow({ type:workflow.value })
+              toggle();
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => setLoading(false))
+    }
+
     return (
         <div className="flow-container">
             <Loading show={loading} />
             {
-                workflow ? <FlowChart workflow={workflow} unselectWorkflow={()=>setWorkflow(null)} workflowDetailUrl={workflowDetailUrl} storeStepsUrl={storeStepsUrl}
+                workflow ? <FlowChart setWorkflow={setWorkflow} workflow={workflow} createWorkflow={()=>{toggle();}} unselectWorkflow={()=>setWorkflow(null)} workflowDetailUrl={workflowDetailUrl} storeStepsUrl={storeStepsUrl}
                     targetTypesUrl={targetTypeUrl} actionTypeUrl={actionTypeUrl}
                   />
                     :
-                    <FlowList list={listWorkflow} selectWorkflow={(workflow)=> setWorkflow(workflow)} createWorkflow={()=>toggle()} />
+                    <FlowList list={listWorkflow} selectWorkflow={(workflow)=>selectWorkflow(workflow)} createWorkflow={()=>toggle()} />
             }
             <Modal
                 isShowing={isShowing}
-                hide={toggle}
+                hide={()=>{toggle();setWorkflow(null)}}
             >
-             <CreateWorkflow listType={listWorkflow} createWorkflow={workflow => {
+             <CreateWorkflow workflow={workflow} listType={listWorkflow} createWorkflow={workflow => {
                  setWorkflow(workflow);toggle()}} />
             </Modal>
 

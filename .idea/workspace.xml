@@ -2,20 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a7d0c26b-4ee3-4966-b5c0-6c258e23c778" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintcache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.prettierrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/example/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/example/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CreateWorkflow.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CreateWorkflow.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Flow.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Flow.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/flow-chart/FlowChart.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/flow-chart/FlowChart.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/node/Node.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/node/Node.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/helpers/Drawflow.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers/Drawflow.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +88,7 @@
       <workItem from="1609314554164" duration="2607000" />
       <workItem from="1609751425214" duration="38331000" />
       <workItem from="1609929348004" duration="10602000" />
+      <workItem from="1610001665111" duration="6894000" />
     </task>
     <servers />
   </component>
@@ -120,7 +113,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/index.js</url>
           <line>4</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
