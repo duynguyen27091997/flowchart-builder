@@ -18,7 +18,6 @@ const FlowChart = ({
                    }) => {
 
   let [editor, drag, drop, allowDrop] = useFlowChart();
-  let [loading, setLoading] = useState(false);
 
   const getData = async () => {
     const targets = await axios(targetTypesUrl).then(res => res.data);
@@ -64,13 +63,13 @@ const FlowChart = ({
 
 
   return (<div className={"flow"}>
-      <Loading show={loading} />
       <aside className="flow__sidebar">
         <button onClick={unselectWorkflow} className={"btn btn--back"}>
           <AiOutlineRollback size={"25"} />
         </button>
-        <p>Tên : {workflow.workflow_name || workflow.name}</p>
-        <p>Mô tả : {workflow.workflow_description || workflow.description}</p>
+        <p>Tên workflow : {workflow.workflow_name || workflow.name}</p>
+        <p>Mô tả workflow : {workflow.workflow_description || workflow.description}</p>
+        <p style={{display:'none'}}>Loại workflow : {workflow.workflow_type || workflow.type}</p>
         <Node drag={drag} getData={getData} />
         <FlowTool editor={editor} handleSave={handleSave} />
       </aside>
