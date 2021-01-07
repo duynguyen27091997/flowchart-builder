@@ -5,6 +5,7 @@
   "description": "Flowchart Builder for TuoiTre ERP",
   "author": "duynguyen27091997",
   "license": "MIT",
+  "keywords": ["drawflow","flowchart"],
   "repository": {
     "type": "git",
     "url": "Duynguyen/@tuoitre/flowchart-builder"

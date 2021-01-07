@@ -1,6 +1,10 @@
 # @tuoitre/flowchart-builder
 
-> Flowchart Builder for TuoiTre ERP
+<div align="center"> 
+    <img src="https://cdn.tgdd.vn/GameApp/3/222501/Screentshots/bao-tuoi-tre-online-222501-logo-13-05-2020.png" alt="">
+    <h3>Flowchart Builder for TuoiTre ERP </h3> 
+</div>
+
 
 [![NPM](https://img.shields.io/npm/v/@tuoitre/flowchart-builder.svg)](https://www.npmjs.com/package/@tuoitre/flowchart-builder) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 

@@ -38,7 +38,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../react/test-flowchart" />
     <property name="list.type.of.created.stylesheet" value="SCSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -81,7 +81,7 @@
       <workItem from="1609227024423" duration="1208000" />
       <workItem from="1609314554164" duration="2607000" />
       <workItem from="1609751425214" duration="38331000" />
-      <workItem from="1609929348004" duration="5999000" />
+      <workItem from="1609929348004" duration="7069000" />
     </task>
     <servers />
   </component>
