@@ -5,7 +5,10 @@
   "description": "Flowchart Builder for TuoiTre ERP",
   "author": "Duynguyen",
   "license": "MIT",
-  "repository": "Duynguyen/@tuoitre/flowchart-builder",
+  "repository": {
+    "type": "git",
+    "url": "Duynguyen/@tuoitre/flowchart-builder"
+  },
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
@@ -56,5 +59,8 @@
     "drawflow": "^0.0.32",
     "node-sass": "4.14.1",
     "react-icons": "^4.1.0"
+  },
+  "directories": {
+    "example": "example"
   }
 }
