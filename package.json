@@ -1,11 +1,14 @@
 {
   "name": "@tuoitre/flowchart-builder",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "description": "Flowchart Builder for TuoiTre ERP",
   "author": "duynguyen27091997",
   "license": "MIT",
-  "keywords": ["drawflow","flowchart"],
+  "keywords": [
+    "drawflow",
+    "flowchart"
+  ],
   "repository": {
     "type": "git",
     "url": "Duynguyen/@tuoitre/flowchart-builder"
