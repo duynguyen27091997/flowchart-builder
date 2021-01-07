@@ -1,6 +1,7 @@
 {
   "name": "@tuoitre/flowchart-builder",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "private": false,
   "description": "Flowchart Builder for TuoiTre ERP",
   "author": "Duynguyen",
   "license": "MIT",
