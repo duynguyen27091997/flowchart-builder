@@ -47,8 +47,8 @@ const FlowChart = ({
     //description
     data.workflow_description = workflow.workflow_description || workflow.description;
 
-    data.workflow_pos_x = editor.pos_x;
-    data.workflow_pos_y = editor.pos_y;
+    data.workflow_pos_x = editor.canvas_x;
+    data.workflow_pos_y = editor.canvas_y;
 
 
     axios.post(storeStepsUrl, data)
