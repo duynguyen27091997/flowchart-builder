@@ -1,58 +1,60 @@
-*{
-  box-sizing: border-box;
-}
-$color-gray: #bdc3c7;
-.node {
+.flow-container{
+  *{
+    box-sizing: border-box;
+  }
+  $color-gray: #bdc3c7;
+  .node {
 
-  cursor: pointer;
-  user-select: none;
-  padding: 10px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  border: 2px solid $color-gray;
-  margin-bottom: 10px;
-  svg{
-    color :#0e5ba3;
-  }
-  &:hover{
-    border: 2px solid #0e5ba3;
-  }
-  &__form-group{
-    display: block;
+    cursor: pointer;
+    user-select: none;
+    padding: 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 2px solid $color-gray;
     margin-bottom: 10px;
-    label{
+    svg{
+      color :#0e5ba3;
+    }
+    &:hover{
+      border: 2px solid #0e5ba3;
+    }
+    &__form-group{
       display: block;
-      text-align: left;
-      color: #151515;
-      margin-bottom: 4px;
-    }
-    &-checked{
-      input{
-        width: unset !important;
-        display: inline-block;
-      }
+      margin-bottom: 10px;
       label{
-        vertical-align: middle;
-        display: inline-block;
+        display: block;
+        text-align: left;
+        color: #151515;
+        margin-bottom: 4px;
+      }
+      &-checked{
+        input{
+          width: unset !important;
+          display: inline-block;
+        }
+        label{
+          vertical-align: middle;
+          display: inline-block;
+        }
       }
     }
-  }
-  input[type='checkbox']{
-    margin-right: 10px;
-  }
-  input,select{
-    background: #ffffff;
-    width: 100%;
-    vertical-align: middle;
-    height: 35px;
-    outline: none;
-    border: 1px solid $color-gray;
-    padding: 5px 10px;
-    margin-bottom: 5px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-  }
+    input[type='checkbox']{
+      margin-right: 10px;
+    }
+    input,select{
+      background: #ffffff;
+      width: 100%;
+      vertical-align: middle;
+      height: 35px;
+      outline: none;
+      border: 1px solid $color-gray;
+      padding: 5px 10px;
+      margin-bottom: 5px;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+    }
 
+  }
 }

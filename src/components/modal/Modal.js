@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './Modal.scss';
 
 const Modal = ({ isShowing, hide,children }) => isShowing ? ReactDOM.createPortal(
-    <React.Fragment>
+    <div className={'flow-modal'}>
         <div className="modal-overlay"/>
         <div className="modal-wrapper" aria-modal aria-hidden tabIndex={-1} role="dialog">
             <div className="modal">
@@ -17,7 +17,7 @@ const Modal = ({ isShowing, hide,children }) => isShowing ? ReactDOM.createPorta
                 </div>
             </div>
         </div>
-    </React.Fragment>, document.body
+    </div>, document.body
 ) : null;
 
 export default Modal;
