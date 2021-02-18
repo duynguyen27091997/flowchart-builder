@@ -3,14 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="a7d0c26b-4ee3-4966-b5c0-6c258e23c778" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Flow.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Flow.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/flow-chart/FlowChart.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/flow-chart/FlowChart.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/flow-list/FlowList.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/flow-list/FlowList.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/loading/Loading.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/loading/Loading.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/modal/Modal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/Modal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/modal/Modal.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modal/Modal.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/node/Node.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/node/Node.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Flow.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Flow.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +85,9 @@
       <workItem from="1609751425214" duration="38331000" />
       <workItem from="1609929348004" duration="10602000" />
       <workItem from="1610001665111" duration="14360000" />
-      <workItem from="1611655156088" duration="2437000" />
+      <workItem from="1611655156088" duration="3160000" />
+      <workItem from="1611803283697" duration="599000" />
+      <workItem from="1613632623095" duration="152000" />
     </task>
     <servers />
   </component>

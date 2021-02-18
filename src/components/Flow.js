@@ -47,7 +47,7 @@ function Flow({ urls = {} }) {
     setLoading(true);
     axios.get(`${workflowDetailUrl}${workflow.value}`)
       .then(res => {
-        if (res.status === 200) {
+        if (res.status === 200 && res.data) {
           setWorkflow(res.data);
         } else {
           setSelectedWorkflowType(workflow.value);
