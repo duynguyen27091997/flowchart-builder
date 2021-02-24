@@ -67,8 +67,8 @@ const FlowChart = ({
         <button onClick={unselectWorkflow} className={"btn btn--back"}>
           <AiOutlineRollback size={"25"} />
         </button>
-        <p>Tên workflow : {workflow.workflow_name || workflow.name}</p>
-        <p>Mô tả workflow : {workflow.workflow_description || workflow.description}</p>
+        <h4>Tên workflow : {workflow.workflow_name || workflow.name}</h4>
+        <h4>Mô tả workflow : {workflow.workflow_description || workflow.description}</h4>
         <p style={{display:'none'}}>Loại workflow : {workflow.workflow_type || workflow.type}</p>
         <Node drag={drag} getData={getData} />
         <FlowTool editor={editor} handleSave={handleSave} />

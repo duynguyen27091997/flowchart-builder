@@ -84,8 +84,8 @@ const Node = ({drag,getData}) => {
                 {/*<h5>NODE</h5>*/}
                 <div className="node"
                      draggable={show} onDragEnd={() => reset()} onDragStart={(e) => drag(value, e)}>
-                    {!show ? <div style={{textAlign: "center"}} onClick={() => setShow(true)}><FaPlus/></div> :
-                        <div>
+                    {!show ? <div style={{textAlign: "center",padding:"10px"}} onClick={() => setShow(true)}><FaPlus/></div> :
+                        <div style={{padding:"10px"}}>
                             <div className={"node__form-group"}>
                                 <label>Title</label>
                                 <input type="text" value={value.name} placeholder={'Tiêu đề'} onChange={handleChange}
@@ -119,7 +119,7 @@ const Node = ({drag,getData}) => {
                             </div>
                             <div className={"node__form-group node__form-group-checked"}>
                                 <input type="checkbox" name={'is_first'} value={value.is_first}
-                                       onChange={handleChange}/><label>first</label>
+                                       onChange={handleChange}/><label>Khởi tạo</label>
                             </div>
                         </div>
                     }

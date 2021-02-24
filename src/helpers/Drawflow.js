@@ -154,7 +154,7 @@ export default class Workflow {
     load() {
         this.workflow.steps.forEach((item, index, array) => {
             this.addNodeImport(item, this.precanvas);
-            this.nodeId += 1;
+            this.nodeId = Math.max.apply(Math, array.map(function(o) { return o.step_id; })) + 1;
         });
 
         this.workflow.steps.forEach((item, index, array) => {
