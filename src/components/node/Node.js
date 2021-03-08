@@ -1,132 +1,230 @@
-import React, {useEffect} from 'react';
-
-import "./Node.scss"
-import {useState} from "react";
+import React, {useEffect, useState} from 'react';
 import {FaPlus} from "react-icons/fa";
-import axios from "axios";
+import {Button, Form} from "react-bootstrap";
+import Select from 'react-select'
+import * as data from './../data';
 
-const specificTargets = [
-    {label: 'Phòng nhân sự', value: 11},
-    {label: 'Văn Tuấn', value: 111}
-];
+const Node = ({drag}) => {
 
+    let defaultData = {
+        name: '',
+        description: '',
+        department: null,
+        position: null,
+        action: null,
+        is_first: false
+    };
 
-const Node = ({drag,getData}) => {
-        let template = {
-            name: '',
-            description: '',
-            action_target:'',
-            action: '',
-            targets: '',
-            is_first: false
-        };
-
-        let [show, setShow] = useState(false)
-        let [value, setValue] = useState(template);
-
-        let [targets, setTargets] = useState([]);
-        let [actions, setActions] = useState([]);
-
-        useEffect(() => {
-            getData().then(([resTargets, resActions]) => {
-                let tmpTargets = Object.keys(resTargets).map((key, index) => {
-                    return {value: key, label: resTargets[key]}
-                }, [])
-                setTargets(tmpTargets);
-
-                let tmpActions = Object.keys(resActions).map((key, index) => {
-                    return {value: key, label: resActions[key]}
-                }, [])
-                setActions(tmpActions);
-            })
-        }, []);
-
-        const handleChange = (e) => {
-            let tmp = null;
-            switch (e.target.name) {
-                case 'is_first':
-                    setValue({...value, [e.target.name]: e.target.checked})
-                    break;
-                case 'action':
-                    tmp = {value: actions[e.target.value].value, name: actions[e.target.value].label};
-                    setValue({...value, [e.target.name]: tmp})
-                    break;
-                case 'action_target':
-                    tmp = {value: targets[e.target.value].value, name: targets[e.target.value].label};
-                    setValue({...value, [e.target.name]: tmp})
-                    break;
-                case 'targets': {
-                    let findTarget = {};
-                    findTarget.id = specificTargets[e.target.value].value;
-                    findTarget.name = specificTargets[e.target.value].label;
-                    findTarget.action =  value.action.value;
-                    findTarget.type =  value.action_target.value
-
-                    setValue({...value, [e.target.name]: [findTarget]})
-                    break;
-                }
-                default:
-                    setValue({...value, [e.target.name]: e.target.value})
-                    break;
-            }
-
-        }
+    let [showCreatePanel, setShowCreatePanel] = useState(false)
+    let [stepData, setStepData] = useState(defaultData);
+    let [listDataSelect, setListDataSelect] = useState({
+        departments: [],
+        positions: [],
+        actions: []
+    });
+    let [selectedData, setSelectedData] = useState({
+        department: null,
+        position: null,
+        action: null
+    });
+    let [disableSelect, setDisableSelect] = useState({
+        position: true,
+        action: true
+    })
 
 
-        const reset = () => {
-            setShow(false);
-            setValue(template)
-        }
-
-
-        return (
-            <div>
-                {/*<h5>NODE</h5>*/}
-                <div className="node"
-                     draggable={show} onDragEnd={() => reset()} onDragStart={(e) => drag(value, e)}>
-                    {!show ? <div style={{textAlign: "center",padding:"10px"}} onClick={() => setShow(true)}><FaPlus/></div> :
-                        <div style={{padding:"10px"}}>
-                            <div className={"node__form-group"}>
-                                <label>Title</label>
-                                <input type="text" value={value.name} placeholder={'Tiêu đề'} onChange={handleChange}
-                                       name={'name'}/>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Description</label>
-                                <input type="text" value={value.description} placeholder={'Mô tả'} onChange={handleChange}
-                                       name={'description'}/>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Đối tượng</label>
-                                <select defaultValue={''} name="action_target"  onChange={handleChange}>
-                                    <option value="" disabled>...</option>
-                                    {targets.map((item,index)=> <option value={index} key={item.value}>{item.label}</option>)}
-                                </select>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Hành động</label>
-                                <select defaultValue={''} name="action"  onChange={handleChange}>
-                                    <option value="" disabled>...</option>
-                                    {actions.map((item,index)=> <option value={index} key={item.value}>{item.label}</option>)}
-                                </select>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Đối tượng cụ thể</label>
-                                <select name="targets" defaultValue={''}  onChange={handleChange}>
-                                    <option value="" disabled>...</option>
-                                    {specificTargets.map((item,index)=> <option value={index} key={item.value}>{item.label}</option>)}
-                                </select>
-                            </div>
-                            <div className={"node__form-group node__form-group-checked"}>
-                                <input type="checkbox" name={'is_first'} value={value.is_first}
-                                       onChange={handleChange}/><label>Khởi tạo</label>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        );
+    const getDepartmentData = () => {
+        setListDataSelect({
+            ...listDataSelect,
+            departments: data.departments.map(department => ({value: department.id, label: department.name}))
+        });
     }
-;
+
+    const getPositionData = (id) => {
+        setTimeout(() => {
+            let positions = data.positions.filter(item => item.department_id === parseInt(id))
+            setListDataSelect({
+                ...listDataSelect,
+                positions: positions.map(item => ({value: item.id, label: item.name}))
+            });
+            setDisableSelect({
+                ...disableSelect,
+                position: false
+            })
+        }, 0)
+    }
+
+    const getActionData = (depart, pos) => {
+        setTimeout(() => {
+            let actions = [];
+            let num = randomNum(1, 10)
+            for (let i = 1; i <= num; i++) {
+                let tmp = {
+                    id: i,
+                    name: 'Action ' + i,
+                    department_id: depart,
+                    position_id: pos,
+                };
+                actions.push(tmp)
+            }
+            setListDataSelect({
+                ...listDataSelect,
+                actions: actions.map(item => ({value: item.id, label: item.name}))
+            });
+            setDisableSelect({
+                ...disableSelect,
+                action: false
+            })
+        }, 0)
+    }
+
+    const randomNum = (Min, Max) => {
+        let Range = Max - Min;
+        let Rand = Math.random();
+        return (Min + Math.round(Rand * Range));
+    }
+
+    useEffect(() => {
+        getDepartmentData();
+    }, []);
+
+    const handleChange = (name, value, showName = null) => {
+        switch (name) {
+            case 'department': {
+                setStepData({
+                    ...stepData,
+                    department: {
+                        id: value.value,
+                        name: value.label
+                    }
+                })
+                setSelectedData({...selectedData, department: value, position: null, action: null});
+                setDisableSelect({...disableSelect, position: true, action: true})
+                getPositionData(value.value);
+                break;
+            }
+            case 'position': {
+                setStepData({
+                    ...stepData,
+                    position: {
+                        id: value.value,
+                        name: value.label
+                    }
+                })
+                setSelectedData({...selectedData, position: value});
+                getActionData(selectedData.department.value, value.value)
+                break;
+            }
+            case 'action': {
+                setStepData({
+                    ...stepData,
+                    action: {
+                        id: value.value,
+                        name: value.label
+                    }
+                });
+                setSelectedData({...selectedData, action: value});
+                break;
+            }
+            case 'is_first': {
+                setStepData({
+                    ...stepData,
+                    is_first: value
+                })
+            }
+            default:
+                setStepData({...stepData, [name]: value})
+                break;
+        }
+    }
+    const resetPanelCreate = () => {
+        setShowCreatePanel(false);
+        setStepData(defaultData);
+        setSelectedData({
+            department: null,
+            position: null,
+            action: null
+        });
+        setDisableSelect({
+            position: true,
+            action: true
+        })
+    }
+
+    return (
+        <div>
+            <div className="node"
+                 draggable={showCreatePanel}
+                 onDragEnd={resetPanelCreate}
+                 onDragStart={event => drag(stepData, event)}>
+                {!showCreatePanel ?
+                    <Button
+                        variant="outline-dark"
+                        style={{width: '100%'}}
+                        onClick={() => setShowCreatePanel(true)}>
+                        <FaPlus/>
+                    </Button> :
+                    <div style={{padding: "10px", border: '1px solid black'}}>
+                        <Form.Group>
+                            <Form.Label>Tên</Form.Label>
+                            <Form.Control
+                                name="name"
+                                type="text"
+                                placeholder="Tên"
+                                onChange={({target}) => handleChange(target.name, target.value)}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Mô tả</Form.Label>
+                            <Form.Control
+                                name="description"
+                                placeholder="Mô tả"
+                                as="textarea"
+                                rows={3}
+                                onChange={({target}) => handleChange(target.name, target.value)}/>
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Phòng ban</Form.Label>
+                            <Select
+                                name="department"
+                                placeholder="Chọn phòng ban"
+                                options={listDataSelect.departments}
+                                onChange={option => handleChange('department', option)}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Chức vụ</Form.Label>
+                            <Select
+                                name="position"
+                                placeholder="Chọn chức vụ"
+                                isDisabled={disableSelect.position}
+                                options={listDataSelect.positions}
+                                value={selectedData.position}
+                                onChange={option => handleChange('position', option)}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Hành động</Form.Label>
+                            <Select
+                                name="action"
+                                placeholder="Hành động"
+                                isDisabled={disableSelect.action}
+                                options={listDataSelect.actions}
+                                value={selectedData.action}
+                                onChange={option => handleChange('action', option)}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Check
+                                name="is_first"
+                                type="checkbox"
+                                label="Step đầu"
+                                onChange={({target}) => handleChange(target.name, target.checked)}/>
+                        </Form.Group>
+                    </div>
+                }
+            </div>
+        </div>
+    );
+};
 
 export default Node;
