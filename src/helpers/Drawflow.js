@@ -1,4 +1,6 @@
 /* eslint-disable */
+import {ACTION_CLASS_PREFIX} from '../helpers/constants';
+
 export default class Workflow {
     constructor(container, render = null) {
         this.events = {};
@@ -154,7 +156,9 @@ export default class Workflow {
     load() {
         this.workflow.steps.forEach((item, index, array) => {
             this.addNodeImport(item, this.precanvas);
-            this.nodeId = Math.max.apply(Math, array.map(function(o) { return o.step_id; })) + 1;
+            this.nodeId = Math.max.apply(Math, array.map(function (o) {
+                return o.step_id;
+            })) + 1;
         });
 
         this.workflow.steps.forEach((item, index, array) => {
@@ -473,10 +477,8 @@ export default class Workflow {
                 }
                 let output_id = this.ele_selected.parentElement.parentElement.id;
                 let output_class = this.ele_selected.classList[1];
-
                 if (output_id !== input_id && input_class !== false) {
-
-                    if (this.container.querySelectorAll('.connection.node_in_' + input_id + '.node_out_' + output_id + '.' + output_class + '.' + input_class).length === 0) {
+                    if (this.container.querySelectorAll(`.connection.node_in_${input_id}.node_out_${output_id}.${output_class}.${input_class}`).length === 0) {
                         // Connection no exist save connection
 
                         this.connection_ele.classList.add("node_in_" + input_id);
@@ -486,19 +488,20 @@ export default class Workflow {
 
                         let [action, , status] = output_class.split("_");
 
+
                         let id_input = input_id.slice(5);
                         let id_output = output_id.slice(5);
 
                         let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
                         let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
                         let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-                        let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+                        let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
 
                         this.workflow.steps[stepIn].inputs[portIn]['steps'].push({
-                            "step_id": id_output,
+                            "step_id": parseInt(id_output),
                             "output": output_class
                         });
-                        this.workflow.steps[stepOut].actions[portOut][status] = id_input;
+                        this.workflow.steps[stepOut].actions[portOut][status] = parseInt(id_input);
 
                         this.updateConnectionNodes('node-' + id_output);
                         this.updateConnectionNodes('node-' + id_input);
@@ -795,7 +798,6 @@ export default class Workflow {
                 var eY = elemtsearch.offsetHeight/2 + line_path + elemtsearch.parentElement.parentElement.offsetTop + elemtsearch.offsetTop;*/
                 var eX = elemtsearch.offsetWidth / 2 + (elemtsearch.getBoundingClientRect().x - precanvas.getBoundingClientRect().x) * precanvasWitdhZoom;
                 var eY = elemtsearch.offsetHeight / 2 + (elemtsearch.getBoundingClientRect().y - precanvas.getBoundingClientRect().y) * precanvasHeightZoom;
-
 
                 var elemtsearchOut = elemtsearchId_out.querySelectorAll('.' + elemsOut[item].classList[3])[0]
                 /*var line_x = elemtsearchId_out.offsetLeft + elemtsearchId_out.querySelectorAll('.'+elemsOut[item].classList[3])[0].offsetLeft + elemtsearchId_out.querySelectorAll('.'+elemsOut[item].classList[3])[0].offsetWidth/2 + line_path;
@@ -1324,7 +1326,7 @@ export default class Workflow {
         const editor = this.workflow.workflow
         Object.keys(editor).map(function (moduleName, index) {
             for (let node in editor[moduleName].steps) {
-                if (editor[moduleName].steps[node].name == name) {
+                if (editor[moduleName].steps[node].name === name) {
                     nodes.push(editor[moduleName].steps[node].id);
                 }
             }
@@ -1333,15 +1335,6 @@ export default class Workflow {
     }
 
     addNode(data, ele_pos_x, ele_pos_y, html) {
-        let {
-            name = '',
-            description = '',
-            action,
-            action_target,
-            targets = [],
-            is_first
-        } = data;
-
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
 
@@ -1358,41 +1351,42 @@ export default class Workflow {
         let jsonInput = [];
         let jsonOutput = [];
 
-        if (action && action_target) {
 
-            if (!is_first) {
-                let inputItem = {
-                    name: "",
-                    steps: []
-                };
-
-                ['default'].forEach(value => {
-                    let input = document.createElement('div');
-                    input.classList.add("input");
-                    input.classList.add(`input_${value}`);
-                    inputItem.name = `input_${value}`;
-                    inputs.appendChild(input);
-                });
-
-                jsonInput.push(inputItem);
-            }
-
-            let outputItem = {
-                name: action.value,
-                target_type: action_target.value
+        if (!data.is_first) {
+            let inputItem = {
+                name: "",
+                steps: []
             };
 
-            ['pass', 'reject'].forEach(value => {
-                let output = document.createElement('div');
-                output.classList.add("output");
-                output.classList.add(`${action.value}_output_${value}`);
-                outputItem[value] = null;
-                outputs.appendChild(output)
-            })
+            ['default'].forEach(value => {
+                let input = document.createElement('div');
+                input.classList.add("input");
+                input.classList.add(`input_${value}`);
+                inputItem.name = `input_${value}`;
+                inputs.appendChild(input);
+            });
 
-            jsonOutput.push(outputItem)
+            jsonInput.push(inputItem);
         }
 
+        let outputItem = {
+            action_id: data.action.id,
+            action_name: data.action.name,
+            department_id: data.department.id,
+            department_name: data.department.name,
+            position_id: data.position.id,
+            position_name: data.position.name
+        };
+
+        ['pass', 'reject'].forEach(value => {
+            let output = document.createElement('div');
+            output.classList.add("output");
+            output.classList.add(`${ACTION_CLASS_PREFIX}${data.action.id}_output_${value}`);
+            outputItem[value] = null;
+            outputs.appendChild(output)
+        });
+
+        jsonOutput.push(outputItem)
 
         const content = document.createElement('div');
         content.classList.add("workflow_content_node");
@@ -1409,18 +1403,18 @@ export default class Workflow {
 
         this.workflow.steps.push({
             step_id: this.nodeId,
-            description: description,
-            name: name,
+            description: data.description,
+            name: data.name,
             html: html,
-            is_first: is_first,
+            is_first: data.is_first,
             inputs: jsonInput,
             actions: jsonOutput,
-            targets: targets.length > 0 ? targets.map(target => ({
-                id: target.id,
-                name: target.name,
-                type: target.type,
-                action: target.action
-            })) : [],
+            // targets: targets.length > 0 ? targets.map(target => ({
+            //     id: target.id,
+            //     name: target.name,
+            //     type: target.type,
+            //     action: target.action
+            // })) : [],
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         });
@@ -1485,7 +1479,7 @@ export default class Workflow {
             ['pass', 'reject'].forEach(value => {
                 let output = document.createElement('div');
                 output.classList.add("output");
-                output.classList.add(`${action.name}_output_${value}`);
+                output.classList.add(`${ACTION_CLASS_PREFIX}${action.action_id}_output_${value}`);
                 outputs.appendChild(output)
             })
         })
@@ -1541,7 +1535,7 @@ export default class Workflow {
             let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
             let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
             let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
 
 
             let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
@@ -1624,7 +1618,7 @@ export default class Workflow {
             let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
             let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
             let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
 
 
             let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
@@ -1661,7 +1655,7 @@ export default class Workflow {
             let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
             let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
             let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => step.name === action);
+            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
 
 
             let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {

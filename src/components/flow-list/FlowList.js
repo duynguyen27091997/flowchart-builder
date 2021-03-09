@@ -1,17 +1,29 @@
 import React from 'react';
 import './FlowList.scss';
-import {AiOutlinePlus} from "react-icons/ai";
 
-const FlowList = ({list, selectWorkflow,createWorkflow}) => {
+const FlowList = props => {
+    let {
+        list = [],
+        clickHandle
+    } = props;
     return (
-        <div>
-            <ul className={'workflow-list'}>
-                <li onClick={createWorkflow} className={'workflow-item create'}><AiOutlinePlus/> <span>Tạo</span></li>
-                {list.map((item, index) => {
-                    return <li onClick={() => selectWorkflow(item)} key={index}
-                               className={'workflow-item'}>{(index + 1) + '. '}{item.label}</li>
-                })}
-            </ul>
+        <div className="list-type">
+            <ol className="dd-list">
+                {
+                    list.map((item, index) =>
+                        <li
+                            className={`dd-item ${item.children.length > 0 && 'dd-parent'}`}
+                            onClick={() => {
+                                if (item.children.length === 0) {
+                                    clickHandle && clickHandle(item)
+                                }
+                            }}
+                            key={index}>
+                            <div className={`dd-handle ${item.children.length > 0 && 'parent-title'}`}>{item.display_name}</div>
+                            {item.children.length > 0 && <FlowList list={item.children} clickHandle={clickHandle}/>}
+                        </li>)
+                }
+            </ol>
         </div>
     );
 };

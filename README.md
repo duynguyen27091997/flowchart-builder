@@ -31,11 +31,10 @@ const Example = () => {
     <div>
       <TTFlow urls={
         {
-          workflowTypesUrl : '.../api/workflow/get-workflow-types',
-          storeStepsUrl:'.../api/step/store-steps',
-          workflowDetailUrl:'.../api/workflow/detail?type=',
-          targetTypeUrl : '.../api/step/get-action-target-types',
-          actionTypeUrl : '.../api/step/get-action-types',
+            get_list_document_types: '{domain}/api/document-type/get-document-types',
+            get_one_document_type: '{domain}/api/document-type/get',
+            get_workflow_detail: '{domain}/api/workflow/detail',
+            store_work_flow: '{domain}/api/workflow/store',
         }
       }/>
     </div>
@@ -47,15 +46,14 @@ const Example = () => {
 ## Props
 
 ### urls : Object
-> workflowTypesUrl : url get workflow types
+> get_list_document_types : url get list document type
 
-> storeStepsUrl : url save workflow
+> get_one_document_type : url get single document typr
 
-> workflowDetailUrl : url get workflow detail
+> get_workflow_detail : url get workflow detail
 
-> targetTypeUrl : url get list target
+> store_work_flow : url store workflow with step
 
-> actionTypeUrl : url get action target
 ## Repo
 
 [https://github.com/duynguyen27091997/flowchart-builder](https://github.com/duynguyen27091997/flowchart-builder)
