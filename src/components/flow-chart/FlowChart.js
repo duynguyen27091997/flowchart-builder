@@ -82,8 +82,8 @@ const FlowChart = props => {
 
     return (<div className={"flow"}>
             <aside className="flow__sidebar">
-                <div className="d-flex justify-content-center">
-                    <Button variant="outline-dark" onClick={() => setShowModal(true)}>
+                <div className="d-flex justify-content-center mt-3">
+                    <Button variant="dark" onClick={() => setShowModal(true)}>
                         <AiOutlineSelect size={"25"}/> Chọn loại tài liệu
                     </Button>
                 </div>

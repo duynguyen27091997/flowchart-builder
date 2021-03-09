@@ -162,7 +162,7 @@ const Node = ({drag}) => {
                         variant="outline-dark"
                         style={{width: '100%'}}
                         onClick={() => setShowCreatePanel(true)}>
-                        <FaPlus/>
+                        <FaPlus/> Tạo step
                     </Button> :
                     <div style={{padding: "10px", border: '1px solid black'}}>
                         <Form.Group>

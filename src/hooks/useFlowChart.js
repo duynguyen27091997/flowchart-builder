@@ -104,7 +104,7 @@ const useFlowChart = (workflowId) => {
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-        let template = `<div><div class="title-box"><h6>${data.name}</h6><p>${data.description}</p></div><div class="box"><p class="box__target">Phòng ban: ${data.department.name}</p><p class="box__action">Chức vụ : ${data.position.name}</p><p class="box__action">Hành động : ${data.action.name}</p></div></div>`;
+        let template = `<div><div class="title-box"><h6 class="mt-1"><strong>Tên:</strong> ${data.name}</h6><p class="mt-2"><strong>Mô tả:</strong> ${data.description}</p></div><div class="box"><p class="box__target">Phòng ban: ${data.department.name}</p><p class="box__action">Chức vụ: ${data.position.name}</p><p class="box__action">Hành động: ${data.action.name}</p></div></div>`;
         editor.addNode(data, pos_x, pos_y, template);
     }
 
