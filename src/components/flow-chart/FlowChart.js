@@ -88,7 +88,7 @@ const FlowChart = props => {
                     </Button>
                 </div>
                 {documentType && renderType(documentType)}
-                {documentType && <Node drag={drag} actions={listActions} actionTargets={listActionTargets}/>}
+                {documentType && <Node urls={urls} drag={drag} actions={listActions} actionTargets={listActionTargets}/>}
                 <FlowTool editor={editor} handleSave={handleSave}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>
