@@ -35,6 +35,9 @@ const Example = () => {
             get_one_document_type: '{domain}/api/document-type/get',
             get_workflow_detail: '{domain}/api/workflow/detail',
             store_work_flow: '{domain}/api/workflow/store',
+            get_list_departments: '{domain}/api/list/departments',
+            get_list_positions: '{domain}/api/list/positions',
+            get_list_actions: '{domain}/api/list/actions/dep/pos/tab'
         }
       }/>
     </div>
@@ -53,6 +56,12 @@ const Example = () => {
 > get_workflow_detail : url get workflow detail
 
 > store_work_flow : url store workflow with step
+
+> get_list_departments : url get list departments
+
+> get_list_positions : url get list positions
+
+> get_list_actions : url get list action by department and position
 
 ## Repo
 
