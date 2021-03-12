@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {FaPlus} from "react-icons/fa";
 import {Button, Form} from "react-bootstrap";
 import Select from 'react-select'
-import * as data from './../data';
+import axios from "axios";
 
-const Node = ({drag}) => {
+const Node = ({drag, urls}) => {
 
     let defaultData = {
         name: '',
@@ -34,48 +34,44 @@ const Node = ({drag}) => {
 
 
     const getDepartmentData = () => {
-        setListDataSelect({
-            ...listDataSelect,
-            departments: data.departments.map(department => ({value: department.id, label: department.name}))
-        });
+        !listDataSelect.departments.length > 0 && axios.get(urls.get_list_departments).then(
+            ({data}) => {
+                setListDataSelect({
+                    ...listDataSelect,
+                    departments: data.data.map(item => ({value: item.id, label: item.dep_name}))
+                })
+            }
+        )
     }
 
     const getPositionData = (id) => {
-        setTimeout(() => {
-            let positions = data.positions.filter(item => item.department_id === parseInt(id))
-            setListDataSelect({
-                ...listDataSelect,
-                positions: positions.map(item => ({value: item.id, label: item.name}))
-            });
-            setDisableSelect({
-                ...disableSelect,
-                position: false
-            })
-        }, 0)
+        !listDataSelect.positions.length > 0 && axios.get(urls.get_list_positions).then(
+            ({data}) => {
+                setListDataSelect({
+                    ...listDataSelect,
+                    positions: data.data.map(item => ({value: item.id, label: item.pos_name}))
+                })
+            }
+        )
     }
 
     const getActionData = (depart, pos) => {
-        setTimeout(() => {
-            let actions = [];
-            let num = randomNum(1, 10)
-            for (let i = 1; i <= num; i++) {
-                let tmp = {
-                    id: i,
-                    name: 'Action ' + i,
-                    department_id: depart,
-                    position_id: pos,
-                };
-                actions.push(tmp)
+        axios.get(urls.get_list_actions, {
+            params: {
+                dep_id: depart,
+                pos_id: pos,
+                table_id: 1
             }
+        }).then(({data}) => {
             setListDataSelect({
                 ...listDataSelect,
-                actions: actions.map(item => ({value: item.id, label: item.name}))
+                actions: data.map(item => ({value: item.id, label: item.name}))
             });
             setDisableSelect({
                 ...disableSelect,
                 action: false
             })
-        }, 0)
+        });
     }
 
     const randomNum = (Min, Max) => {
@@ -99,7 +95,7 @@ const Node = ({drag}) => {
                     }
                 })
                 setSelectedData({...selectedData, department: value, position: null, action: null});
-                setDisableSelect({...disableSelect, position: true, action: true})
+                setDisableSelect({...disableSelect, position: false, action: true})
                 getPositionData(value.value);
                 break;
             }
