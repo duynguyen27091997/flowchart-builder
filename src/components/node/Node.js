@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useAlert} from 'react-alert';
 import {FaPlus} from "react-icons/fa";
 import {Button, Form} from "react-bootstrap";
 import Select from 'react-select'
@@ -14,7 +15,7 @@ const Node = ({drag, urls}) => {
         action: null,
         is_first: false
     };
-
+    let alert = useAlert();
     let [showCreatePanel, setShowCreatePanel] = useState(false)
     let [stepData, setStepData] = useState(defaultData);
     let [listDataSelect, setListDataSelect] = useState({
@@ -40,6 +41,9 @@ const Node = ({drag, urls}) => {
                     ...listDataSelect,
                     departments: data.data.map(item => ({value: item.id, label: item.dep_name}))
                 })
+            },
+            err => {
+                alert.show('Có lỗi xyar ra')
             }
         )
     }
@@ -50,7 +54,11 @@ const Node = ({drag, urls}) => {
                 setListDataSelect({
                     ...listDataSelect,
                     positions: data.data.map(item => ({value: item.id, label: item.pos_name}))
-                })
+                });
+            },
+            err => {
+                alert.show('Có lỗi xảy ra');
+                setDisableSelect({...disableSelect, position: true, action: true});
             }
         )
     }
@@ -67,10 +75,9 @@ const Node = ({drag, urls}) => {
                 ...listDataSelect,
                 actions: data.map(item => ({value: item.id, label: item.name}))
             });
-            setDisableSelect({
-                ...disableSelect,
-                action: false
-            })
+            setDisableSelect({...disableSelect, action: false})
+        }).catch(err => {
+            alert.show('Có lỗi xảy ra');
         });
     }
 
@@ -95,7 +102,7 @@ const Node = ({drag, urls}) => {
                     }
                 })
                 setSelectedData({...selectedData, department: value, position: null, action: null});
-                setDisableSelect({...disableSelect, position: false, action: true})
+                setDisableSelect({...disableSelect, position: false, action: true});
                 getPositionData(value.value);
                 break;
             }
