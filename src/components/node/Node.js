@@ -169,7 +169,7 @@ const Node = ({drag, urls}) => {
                     </Button> :
                     <div style={{padding: "10px", border: '1px solid black'}}>
                         <Form.Group>
-                            <Form.Label>Tên</Form.Label>
+                            <Form.Label>Tên <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Form.Control
                                 name="name"
                                 type="text"
@@ -186,7 +186,7 @@ const Node = ({drag, urls}) => {
                                 onChange={({target}) => handleChange(target.name, target.value)}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Phòng ban</Form.Label>
+                            <Form.Label>Phòng ban <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Select
                                 name="department"
                                 placeholder="Chọn phòng ban"
@@ -195,7 +195,7 @@ const Node = ({drag, urls}) => {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Chức vụ</Form.Label>
+                            <Form.Label>Chức vụ <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Select
                                 name="position"
                                 placeholder="Chọn chức vụ"
@@ -206,7 +206,7 @@ const Node = ({drag, urls}) => {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Hành động</Form.Label>
+                            <Form.Label>Hành động <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Select
                                 name="action"
                                 placeholder="Hành động"

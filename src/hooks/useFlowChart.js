@@ -91,7 +91,7 @@ const useFlowChart = (workflowId) => {
             return false;
         }
 
-        if (!data.department || !data.position || !data.action) {
+        if (!data.department || !data.position || !data.action || !data.name) {
             alert.show('Chưa nhập đủ trường cần thiết');
             return false;
         }
