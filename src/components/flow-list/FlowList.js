@@ -7,7 +7,7 @@ const FlowList = props => {
         clickHandle
     } = props;
     return (
-        <div className="list-type">
+        <div className="list-type-select">
             <ol className="dd-list">
                 {
                     list.map((item, index) =>

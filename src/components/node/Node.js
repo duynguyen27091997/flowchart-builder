@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {useAlert} from 'react-alert';
 import {FaPlus} from "react-icons/fa";
 import {Button, Form} from "react-bootstrap";
 import Select from 'react-select'
@@ -14,7 +15,7 @@ const Node = ({drag, urls}) => {
         action: null,
         is_first: false
     };
-
+    let alert = useAlert();
     let [showCreatePanel, setShowCreatePanel] = useState(false)
     let [stepData, setStepData] = useState(defaultData);
     let [listDataSelect, setListDataSelect] = useState({
@@ -40,6 +41,9 @@ const Node = ({drag, urls}) => {
                     ...listDataSelect,
                     departments: data.data.map(item => ({value: item.id, label: item.dep_name}))
                 })
+            },
+            err => {
+                alert.show('Có lỗi xyar ra')
             }
         )
     }
@@ -50,7 +54,11 @@ const Node = ({drag, urls}) => {
                 setListDataSelect({
                     ...listDataSelect,
                     positions: data.data.map(item => ({value: item.id, label: item.pos_name}))
-                })
+                });
+            },
+            err => {
+                alert.show('Có lỗi xảy ra');
+                setDisableSelect({...disableSelect, position: true, action: true});
             }
         )
     }
@@ -67,10 +75,9 @@ const Node = ({drag, urls}) => {
                 ...listDataSelect,
                 actions: data.map(item => ({value: item.id, label: item.name}))
             });
-            setDisableSelect({
-                ...disableSelect,
-                action: false
-            })
+            setDisableSelect({...disableSelect, action: false})
+        }).catch(err => {
+            alert.show('Có lỗi xảy ra');
         });
     }
 
@@ -95,7 +102,7 @@ const Node = ({drag, urls}) => {
                     }
                 })
                 setSelectedData({...selectedData, department: value, position: null, action: null});
-                setDisableSelect({...disableSelect, position: false, action: true})
+                setDisableSelect({...disableSelect, position: false, action: true});
                 getPositionData(value.value);
                 break;
             }
@@ -162,7 +169,7 @@ const Node = ({drag, urls}) => {
                     </Button> :
                     <div style={{padding: "10px", border: '1px solid black'}}>
                         <Form.Group>
-                            <Form.Label>Tên</Form.Label>
+                            <Form.Label>Tên <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Form.Control
                                 name="name"
                                 type="text"
@@ -179,7 +186,7 @@ const Node = ({drag, urls}) => {
                                 onChange={({target}) => handleChange(target.name, target.value)}/>
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Phòng ban</Form.Label>
+                            <Form.Label>Phòng ban <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Select
                                 name="department"
                                 placeholder="Chọn phòng ban"
@@ -188,7 +195,7 @@ const Node = ({drag, urls}) => {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Chức vụ</Form.Label>
+                            <Form.Label>Chức vụ <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Select
                                 name="position"
                                 placeholder="Chọn chức vụ"
@@ -199,7 +206,7 @@ const Node = ({drag, urls}) => {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.Label>Hành động</Form.Label>
+                            <Form.Label>Hành động <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                             <Select
                                 name="action"
                                 placeholder="Hành động"
