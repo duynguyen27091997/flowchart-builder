@@ -13,7 +13,10 @@ const App = () => {
         get_list_positions: 'https://employee.tuoitre.vn/api/list/positions',
         get_list_actions: 'https://employee.tuoitre.vn/api/list/actions/dep/pos/tab'
     };
-    return <TTFlow urls={urls}/>
+
+    let tableId = 11;
+
+    return <TTFlow urls={urls} tableId={tableId}/>
 }
 
 export default App

@@ -12,15 +12,39 @@ import {Button, Modal} from "react-bootstrap";
 
 const FlowChart = props => {
     let {
-        urls
+        urls,
+        tableId
     } = props;
+
+    function countArray(arr = []){
+        if(arr.length > 0){
+
+            //get unique element in array
+            let tmp = [...new Set([...arr])].map(item=>({[item]: 0}));
+
+            // loop & count element is appear again
+            let result = arr.reduce((current,next)=>{
+                if(current.length > 0){
+                    current.map(item=>{
+                        if(Object.keys(item).join('') == next)
+                            item[Object.keys(item)] = parseInt(item[Object.keys(item)])+1;
+                    })
+                }
+                return current;
+            },tmp);
+            return result;
+        }
+        return arr;
+    }
+
+    let data = ['a', 'b', 'c', 'a123', 'd', 'd', 'b', 'bbb'];
+
+    console.log(countArray(data))
 
     let alert = useAlert();
     let [editor, drag, drop, allowDrop] = useFlowChart();
     let [showModal, setShowModal] = useState(false);
     let [listDocumentTypes, setListDocumentTypes] = useState([]);
-    let [listActionTargets, setListActionTargets] = useState([]);
-    let [listActions, setListActions] = useState([]);
     let [documentType, setDocumentType] = useState(null);
 
     const onClickSelectDocumentType = item => {
@@ -88,7 +112,7 @@ const FlowChart = props => {
                     </Button>
                 </div>
                 {documentType && renderType(documentType)}
-                {documentType && <Node urls={urls} drag={drag} actions={listActions} actionTargets={listActionTargets}/>}
+                {documentType && <Node urls={urls} drag={drag} tableId={tableId}/>}
                 <FlowTool editor={editor} handleSave={handleSave}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>

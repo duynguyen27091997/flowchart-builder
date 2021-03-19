@@ -5,7 +5,7 @@ import {Button, Form} from "react-bootstrap";
 import Select from 'react-select'
 import axios from "axios";
 
-const Node = ({drag, urls}) => {
+const Node = ({drag, urls, tableId}) => {
 
     let defaultData = {
         name: '',
@@ -68,7 +68,7 @@ const Node = ({drag, urls}) => {
             params: {
                 dep_id: depart,
                 pos_id: pos,
-                table_id: 1
+                table_id: tableId
             }
         }).then(({data}) => {
             setListDataSelect({
