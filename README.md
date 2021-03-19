@@ -39,7 +39,7 @@ const Example = () => {
             get_list_positions: '{domain}/api/list/positions',
             get_list_actions: '{domain}/api/list/actions/dep/pos/tab'
         }
-      }/>
+      } tableId={11}/>
     </div>
   )
 
@@ -62,6 +62,8 @@ const Example = () => {
 > get_list_positions : url get list positions
 
 > get_list_actions : url get list action by department and position
+
+> tableId: id of table Workflow on service-management
 
 ## Repo
 
