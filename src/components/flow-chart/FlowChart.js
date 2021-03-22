@@ -9,6 +9,8 @@ import {AiOutlineSelect} from "react-icons/ai";
 import FlowList from "../flow-list/FlowList";
 import {useAlert} from 'react-alert'
 import {Button, Modal} from "react-bootstrap";
+import StepWizard from 'react-step-wizard';
+import Step from '../Step'
 
 const FlowChart = props => {
     let {
@@ -16,36 +18,138 @@ const FlowChart = props => {
         tableId
     } = props;
 
-    function countArray(arr = []){
-        if(arr.length > 0){
-
-            //get unique element in array
-            let tmp = [...new Set([...arr])].map(item=>({[item]: 0}));
-
-            // loop & count element is appear again
-            let result = arr.reduce((current,next)=>{
-                if(current.length > 0){
-                    current.map(item=>{
-                        if(Object.keys(item).join('') == next)
-                            item[Object.keys(item)] = parseInt(item[Object.keys(item)])+1;
-                    })
-                }
-                return current;
-            },tmp);
-            return result;
-        }
-        return arr;
-    }
-
-    let data = ['a', 'b', 'c', 'a123', 'd', 'd', 'b', 'bbb'];
-
-    console.log(countArray(data))
-
     let alert = useAlert();
     let [editor, drag, drop, allowDrop] = useFlowChart();
     let [showModal, setShowModal] = useState(false);
     let [listDocumentTypes, setListDocumentTypes] = useState([]);
     let [documentType, setDocumentType] = useState(null);
+    let [show, setShow] = useState(false);
+
+    let data = {
+        "created_by_id": null,
+        "created_by_name": null,
+        "document_type_id": 20,
+        "updated_at": "2021-03-22 09:58:06",
+        "created_at": "2021-03-22 09:58:06",
+        "id": 1,
+        "steps": [
+            {
+                "id": 1,
+                "workflow_id": 1,
+                "name": "Phònng nhân sự tạo hồ sơ cho nhân viên",
+                "description": "Phònng nhân sự tạo hồ sơ cho nhân viên",
+                "created_by_id": null,
+                "created_by_name": null,
+                "is_first": 1,
+                "created_at": "2021-03-22 09:58:06",
+                "updated_at": "2021-03-22 09:58:06",
+                "actions": [
+                    {
+                        "id": 1,
+                        "action_id": 1,
+                        "action_name": "Thao tác tạo mới với quyền đã chọn",
+                        "department_id": 115,
+                        "department_name": "Phòng Tổ chức nhân sự",
+                        "position_id": 73,
+                        "position_name": "Nhân viên",
+                        "pass": 6,
+                        "reject": null
+                    }
+                ],
+                "default_data_step_id": 1,
+                "default_targets": [],
+                "inputs": [],
+                "step_id": 5,
+                "pos_x": 189,
+                "pos_y": 136,
+                "html": "<div><div class=\"title-box\"><h6 class=\"mt-1\"><strong>Tên:</strong> Phònng nhân sự tạo hồ sơ cho nhân viên</h6><p class=\"mt-2\"><strong>Mô tả:</strong> Phònng nhân sự tạo hồ sơ cho nhân viên</p></div><div class=\"box\"><p class=\"box__target\">Phòng ban: Phòng Tổ chức nhân sự</p><p class=\"box__action\">Chức vụ: Nhân viên</p><p class=\"box__action\">Hành động: Thao tác tạo mới với quyền đã chọn</p></div></div>"
+            },
+            {
+                "id": 2,
+                "workflow_id": 1,
+                "name": "Nhân viên cập nhật hồ sơ",
+                "description": "Nhân viên cập nhật hồ sơ",
+                "created_by_id": null,
+                "created_by_name": null,
+                "is_first": 0,
+                "created_at": "2021-03-22 09:58:06",
+                "updated_at": "2021-03-22 09:58:06",
+                "actions": [
+                    {
+                        "id": 2,
+                        "action_id": 2,
+                        "action_name": "Thao tác chỉnh sửa với quyền đã chọn",
+                        "department_id": null,
+                        "department_name": null,
+                        "position_id": null,
+                        "position_name": null,
+                        "pass": 7,
+                        "reject": null
+                    }
+                ],
+                "default_data_step_id": 2,
+                "default_targets": [],
+                "inputs": [
+                    {
+                        "name": "input_default",
+                        "steps": [
+                            {
+                                "step_id": 5,
+                                "output": "action-1_output_pass"
+                            }
+                        ]
+                    }
+                ],
+                "step_id": 6,
+                "pos_x": 663,
+                "pos_y": 138,
+                "html": "<div><div class=\"title-box\"><h6 class=\"mt-1\"><strong>Tên:</strong> Nhân viên cập nhật hồ sơ</h6><p class=\"mt-2\"><strong>Mô tả:</strong> Nhân viên cập nhật hồ sơ</p></div><div class=\"box\"><p class=\"box__target\">Phòng ban: Bất kỳ</p><p class=\"box__action\">Chức vụ: Bất kỳ</p><p class=\"box__action\">Hành động: Thao tác chỉnh sửa với quyền đã chọn</p></div></div>"
+            },
+            {
+                "id": 3,
+                "workflow_id": 1,
+                "name": "Phòng nhân sự xác nhận",
+                "description": "Phòng nhân sự xác nhận",
+                "created_by_id": null,
+                "created_by_name": null,
+                "is_first": 0,
+                "created_at": "2021-03-22 09:58:06",
+                "updated_at": "2021-03-22 09:58:06",
+                "actions": [
+                    {
+                        "id": 3,
+                        "action_id": 5,
+                        "action_name": "Thao tác xác nhận với quyền đã chọn",
+                        "department_id": 115,
+                        "department_name": "Phòng Tổ chức nhân sự",
+                        "position_id": 73,
+                        "position_name": "Nhân viên",
+                        "pass": null,
+                        "reject": null
+                    }
+                ],
+                "default_data_step_id": 3,
+                "default_targets": [],
+                "inputs": [
+                    {
+                        "name": "input_default",
+                        "steps": [
+                            {
+                                "step_id": 6,
+                                "output": "action-2_output_pass"
+                            }
+                        ]
+                    }
+                ],
+                "step_id": 7,
+                "pos_x": 1263,
+                "pos_y": 135,
+                "html": "<div><div class=\"title-box\"><h6 class=\"mt-1\"><strong>Tên:</strong> Phòng nhân sự xác nhận</h6><p class=\"mt-2\"><strong>Mô tả:</strong> Phòng nhân sự xác nhận</p></div><div class=\"box\"><p class=\"box__target\">Phòng ban: Phòng Tổ chức nhân sự</p><p class=\"box__action\">Chức vụ: Nhân viên</p><p class=\"box__action\">Hành động: Thao tác xác nhận với quyền đã chọn</p></div></div>"
+            }
+        ],
+        "workflow_pos_x": 4,
+        "workflow_pos_y": 122
+    };
 
     const onClickSelectDocumentType = item => {
         axios.get(urls.get_workflow_detail, {params: {type_id: item.id}}).then(
@@ -102,7 +206,7 @@ const FlowChart = props => {
             });
 
     };
-
+    let [step, setStep] = useState(data.steps.find(item => item.is_first));
 
     return (<div className={"flow"}>
             <aside className="flow__sidebar">
@@ -112,7 +216,12 @@ const FlowChart = props => {
                     </Button>
                 </div>
                 {documentType && renderType(documentType)}
-                {documentType && <Node urls={urls} drag={drag} tableId={tableId}/>}
+                {documentType && <Node urls={urls} drag={drag} tableId={tableId} editor={editor}/>}
+                {/*<div className="d-flex justify-content-center mt-3">*/}
+                {/*    <Button variant="dark" onClick={() => setShow(true)}>*/}
+                {/*        <AiOutlineSelect size={"25"}/> Create issue*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
                 <FlowTool editor={editor} handleSave={handleSave}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>
@@ -125,6 +234,21 @@ const FlowChart = props => {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModal}>
+                        Đóng
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={show} onHide={() => setShow(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Nhập thông tin tạo issue</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{overflow: 'hidden'}}>
+                    <StepWizard>
+                        {data.steps.map((_, index) => <Step step={step} setStep={setStep} key={index} data={data}/>)}
+                    </StepWizard>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShow(false)}>
                         Đóng
                     </Button>
                 </Modal.Footer>
