@@ -204,8 +204,8 @@ const FlowChart = props => {
             .catch(err => {
                 alert.show('Có lỗi xảy ra');
             });
-
     };
+
     let [step, setStep] = useState(data.steps.find(item => item.is_first));
 
     return (<div className={"flow"}>
