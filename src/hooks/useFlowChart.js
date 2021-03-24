@@ -92,10 +92,14 @@ const useFlowChart = (workflowId) => {
             return false;
         }
 
-        if ((!data.action || !data.name) || (data.mode === 'department-position' && (!data.department || !data.position))) {
+        if ((!data.action || !data.name)) {
             alert.show('Chưa nhập đủ trường cần thiết');
             return false;
         }
+        // if ((!data.action || !data.name) || (data.mode === 'department-position' && (!data.department || !data.position))) {
+        //     alert.show('Chưa nhập đủ trường cần thiết');
+        //     return false;
+        // }
 
         if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && data.is_first) {
             alert.show('Đã tồn tại bước bắt đầu !');

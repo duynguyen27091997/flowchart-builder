@@ -10,7 +10,8 @@ const DepartmentPosition = props => {
         url,
         tableId,
         setParentData,
-        reset
+        reset,
+        allActions
     } = props;
 
     let [disableSelect, setDisableSelect] = useState({
@@ -92,7 +93,7 @@ const DepartmentPosition = props => {
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
                         placeholder="Chọn chức vụ"
                         options={positions}
-                        isDisabled={disableSelect.position}
+                        // isDisabled={disableSelect.position}
                         value={selectedData.position}
                         onChange={option => {
                             setDisableSelect({
@@ -111,8 +112,8 @@ const DepartmentPosition = props => {
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
                         placeholder="Hành động"
                         value={selectedData.action}
-                        options={listActionByPosDep}
-                        isDisabled={disableSelect.action}
+                        options={allActions}
+                        // isDisabled={disableSelect.action}
                         onChange={option => handleChange('action', option)}
                     />
                 </Form.Group>

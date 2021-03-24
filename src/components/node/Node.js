@@ -150,24 +150,25 @@ const Node = ({drag, urls, tableId, editor}) => {
                                 tableId={tableId}
                                 setParentData={handleSetStepData}
                                 reset={reset}
+                                allActions={listDataSelect.actions_all}
                             />
                         </Tab>
-                        <Tab eventKey="position" title="Đối tượng theo chức vụ">
-                            <Position
-                                positions={listDataSelect.positions}
-                                actions={listDataSelect.actions_all}
-                                editor={editor}
-                                reset={reset}
-                                setParentData={handleSetStepData}
-                            />
-                        </Tab>
-                        <Tab eventKey="personal" title="Đối tượng bất ký">
-                            <AnyOne
-                                actions={listDataSelect.actions_all}
-                                editor={editor}
-                                reset={reset}
-                                setParentData={handleSetStepData}/>
-                        </Tab>
+                        {/*<Tab eventKey="position" title="Đối tượng theo chức vụ">*/}
+                        {/*    <Position*/}
+                        {/*        positions={listDataSelect.positions}*/}
+                        {/*        actions={listDataSelect.actions_all}*/}
+                        {/*        editor={editor}*/}
+                        {/*        reset={reset}*/}
+                        {/*        setParentData={handleSetStepData}*/}
+                        {/*    />*/}
+                        {/*</Tab>*/}
+                        {/*<Tab eventKey="personal" title="Đối tượng bất ký">*/}
+                        {/*    <AnyOne*/}
+                        {/*        actions={listDataSelect.actions_all}*/}
+                        {/*        editor={editor}*/}
+                        {/*        reset={reset}*/}
+                        {/*        setParentData={handleSetStepData}/>*/}
+                        {/*</Tab>*/}
                     </Tabs>
                 </Modal.Body>
                 <Modal.Footer>
