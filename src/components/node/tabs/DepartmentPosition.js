@@ -100,7 +100,7 @@ const DepartmentPosition = props => {
                                 ...disableSelect,
                                 action: false
                             })
-                            getActionData(selectedData.department.value, option.value);
+                            // getActionData(selectedData.department.value, option.value);
                             handleChange('position', option);
                         }}
                     />
