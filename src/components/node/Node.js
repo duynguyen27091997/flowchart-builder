@@ -1,11 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {useAlert} from 'react-alert';
 import {FaPlus} from "react-icons/fa";
-import {Button, Form} from "react-bootstrap";
-import Select from 'react-select'
+import {Button, Form, Modal, Tab, Tabs} from "react-bootstrap";
 import axios from "axios";
+import _ from 'lodash';
 
-const Node = ({drag, urls, tableId}) => {
+import DepartmentPosition from "./tabs/DepartmentPosition";
+import Position from "./tabs/Position";
+import AnyOne from "./tabs/Anyone";
+import PanelCreate from "./PanelCreate";
+
+const Node = ({drag, urls, tableId, editor}) => {
 
     let defaultData = {
         name: '',
@@ -13,122 +18,48 @@ const Node = ({drag, urls, tableId}) => {
         department: null,
         position: null,
         action: null,
-        is_first: false
+        is_first: false,
+        current_process_user_is_target: false,
+        same_department_on_step: null,
+        same_target_on_step: null
     };
+
     let alert = useAlert();
     let [showCreatePanel, setShowCreatePanel] = useState(false)
     let [stepData, setStepData] = useState(defaultData);
     let [listDataSelect, setListDataSelect] = useState({
         departments: [],
         positions: [],
-        actions: []
+        actions: [],
+        actions_all: [],
     });
-    let [selectedData, setSelectedData] = useState({
-        department: null,
-        position: null,
-        action: null
-    });
-    let [disableSelect, setDisableSelect] = useState({
-        position: true,
-        action: true
-    })
+    let [showModal, setShowModal] = useState(false);
+    let [tabType, setTabType] = useState('department-position');
+    let [display, setDisplay] = useState(null);
+    let [reset, setReset] = useState(false);
 
-
-    const getDepartmentData = () => {
-        !listDataSelect.departments.length > 0 && axios.get(urls.get_list_departments).then(
-            ({data}) => {
-                setListDataSelect({
-                    ...listDataSelect,
-                    departments: data.data.map(item => ({value: item.id, label: item.dep_name}))
-                })
-            },
-            err => {
-                alert.show('Có lỗi xyar ra')
-            }
-        )
-    }
-
-    const getPositionData = (id) => {
-        !listDataSelect.positions.length > 0 && axios.get(urls.get_list_positions).then(
-            ({data}) => {
-                setListDataSelect({
-                    ...listDataSelect,
-                    positions: data.data.map(item => ({value: item.id, label: item.pos_name}))
-                });
-            },
-            err => {
-                alert.show('Có lỗi xảy ra');
-                setDisableSelect({...disableSelect, position: true, action: true});
-            }
-        )
-    }
-
-    const getActionData = (depart, pos) => {
-        axios.get(urls.get_list_actions, {
-            params: {
-                dep_id: depart,
-                pos_id: pos,
-                table_id: tableId
-            }
-        }).then(({data}) => {
-            setListDataSelect({
-                ...listDataSelect,
-                actions: data.map(item => ({value: item.id, label: item.name}))
-            });
-            setDisableSelect({...disableSelect, action: false})
-        }).catch(err => {
-            alert.show('Có lỗi xảy ra');
-        });
-    }
-
-    const randomNum = (Min, Max) => {
-        let Range = Max - Min;
-        let Rand = Math.random();
-        return (Min + Math.round(Rand * Range));
+    const getData = async () => {
+        let departments = await axios.get(urls.get_list_departments);
+        let positions = await axios.get(urls.get_list_positions);
+        let actions = await axios.get('https://employee.tuoitre.vn/api/action');
+        return Promise.all([departments, positions, actions]);
     }
 
     useEffect(() => {
-        getDepartmentData();
+        getData().then(res => {
+            let departments = res[0];
+            let positions = res[1];
+            let actionAll = res[2];
+            setListDataSelect({
+                actions_all: actionAll.data.data.map(item => ({value: item.id, label: item.note})),
+                departments: departments.data.data.map(item => ({value: item.id, label: item.dep_name})),
+                positions: positions.data.data.map(item => ({value: item.id, label: item.pos_name})),
+            });
+        });
     }, []);
 
     const handleChange = (name, value, showName = null) => {
         switch (name) {
-            case 'department': {
-                setStepData({
-                    ...stepData,
-                    department: {
-                        id: value.value,
-                        name: value.label
-                    }
-                })
-                setSelectedData({...selectedData, department: value, position: null, action: null});
-                setDisableSelect({...disableSelect, position: false, action: true});
-                getPositionData(value.value);
-                break;
-            }
-            case 'position': {
-                setStepData({
-                    ...stepData,
-                    position: {
-                        id: value.value,
-                        name: value.label
-                    }
-                })
-                setSelectedData({...selectedData, position: value});
-                getActionData(selectedData.department.value, value.value)
-                break;
-            }
-            case 'action': {
-                setStepData({
-                    ...stepData,
-                    action: {
-                        id: value.value,
-                        name: value.label
-                    }
-                });
-                setSelectedData({...selectedData, action: value});
-                break;
-            }
             case 'is_first': {
                 setStepData({
                     ...stepData,
@@ -140,18 +71,50 @@ const Node = ({drag, urls, tableId}) => {
                 break;
         }
     }
+
     const resetPanelCreate = () => {
+        setTabType('department-position');
         setShowCreatePanel(false);
         setStepData(defaultData);
-        setSelectedData({
+        setDisplay(null);
+    }
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        if (stepData.action) {
+            setDisplay(<div className="mt-5">
+                <p style={{marginBottom: 0}}><strong>Phòng
+                    ban:</strong> {_.get(stepData, 'department.name', 'Bất kỳ')}</p>
+                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', 'Bất kỳ')}
+                </p>
+                <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
+                <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
+                {stepData.current_process_user_is_target && <p style={{marginBottom: 0}}>Lấy người đang thực hiện làm đối tượng cụ thể</p>}
+                {stepData.same_department_on_step && <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
+                {stepData.same_target_on_step && <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
+            </div>);
+        }
+    }
+
+    const handleSetStepData = (key, data) => {
+        setStepData({
+            ...stepData,
+            [key]: data
+        })
+    }
+
+    const handleTabChange = key => {
+        setReset(!reset);
+        setTabType(key);
+        setStepData({
+            ...stepData,
             department: null,
             position: null,
-            action: null
+            action: null,
+            current_process_user_is_target: false,
+            connect_to_step: null,
+            same_department_on: null
         });
-        setDisableSelect({
-            position: true,
-            action: true
-        })
     }
 
     return (
@@ -159,7 +122,7 @@ const Node = ({drag, urls, tableId}) => {
             <div className="node"
                  draggable={showCreatePanel}
                  onDragEnd={resetPanelCreate}
-                 onDragStart={event => drag(stepData, event)}>
+                 onDragStart={event => drag({...stepData, mode: tabType}, event)}>
                 {!showCreatePanel ?
                     <Button
                         variant="outline-dark"
@@ -167,65 +130,53 @@ const Node = ({drag, urls, tableId}) => {
                         onClick={() => setShowCreatePanel(true)}>
                         <FaPlus/> Tạo step
                     </Button> :
-                    <div style={{padding: "10px", border: '1px solid black'}}>
-                        <Form.Group>
-                            <Form.Label>Tên <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
-                            <Form.Control
-                                name="name"
-                                type="text"
-                                placeholder="Tên"
-                                onChange={({target}) => handleChange(target.name, target.value)}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Mô tả</Form.Label>
-                            <Form.Control
-                                name="description"
-                                placeholder="Mô tả"
-                                as="textarea"
-                                rows={3}
-                                onChange={({target}) => handleChange(target.name, target.value)}/>
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Phòng ban <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
-                            <Select
-                                name="department"
-                                placeholder="Chọn phòng ban"
-                                options={listDataSelect.departments}
-                                onChange={option => handleChange('department', option)}
-                            />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Chức vụ <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
-                            <Select
-                                name="position"
-                                placeholder="Chọn chức vụ"
-                                isDisabled={disableSelect.position}
-                                options={listDataSelect.positions}
-                                value={selectedData.position}
-                                onChange={option => handleChange('position', option)}
-                            />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Label>Hành động <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
-                            <Select
-                                name="action"
-                                placeholder="Hành động"
-                                isDisabled={disableSelect.action}
-                                options={listDataSelect.actions}
-                                value={selectedData.action}
-                                onChange={option => handleChange('action', option)}
-                            />
-                        </Form.Group>
-                        <Form.Group>
-                            <Form.Check
-                                name="is_first"
-                                type="checkbox"
-                                label="Step đầu"
-                                onChange={({target}) => handleChange(target.name, target.checked)}/>
-                        </Form.Group>
-                    </div>
+                    <PanelCreate editor={editor} setShowModal={setShowModal} change={handleChange} display={display}/>
                 }
             </div>
+            <Modal show={showModal} onHide={handleCloseModal} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Đối tượng và hành động</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{overflow: 'hidden'}}>
+                    <Tabs
+                        activeKey={tabType}
+                        onSelect={handleTabChange}>
+                        <Tab eventKey="department-position" title="Đối tượng theo phòng ban - chức vụ">
+                            <DepartmentPosition
+                                key={'department-position'}
+                                departments={listDataSelect.departments}
+                                positions={listDataSelect.positions}
+                                url={urls.get_list_actions}
+                                tableId={tableId}
+                                setParentData={handleSetStepData}
+                                reset={reset}
+                                allActions={listDataSelect.actions_all}
+                            />
+                        </Tab>
+                        {/*<Tab eventKey="position" title="Đối tượng theo chức vụ">*/}
+                        {/*    <Position*/}
+                        {/*        positions={listDataSelect.positions}*/}
+                        {/*        actions={listDataSelect.actions_all}*/}
+                        {/*        editor={editor}*/}
+                        {/*        reset={reset}*/}
+                        {/*        setParentData={handleSetStepData}*/}
+                        {/*    />*/}
+                        {/*</Tab>*/}
+                        {/*<Tab eventKey="personal" title="Đối tượng bất ký">*/}
+                        {/*    <AnyOne*/}
+                        {/*        actions={listDataSelect.actions_all}*/}
+                        {/*        editor={editor}*/}
+                        {/*        reset={reset}*/}
+                        {/*        setParentData={handleSetStepData}/>*/}
+                        {/*</Tab>*/}
+                    </Tabs>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Xác nhận
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

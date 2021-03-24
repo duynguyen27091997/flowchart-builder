@@ -1,6 +1,7 @@
 import DrawFlow from "../helpers/Drawflow";
 import {useState, useEffect} from "react";
-import {useAlert} from 'react-alert'
+import {useAlert} from 'react-alert';
+import _ from 'lodash'
 
 // function bindEvent(editor) {
 //     // Events!
@@ -91,10 +92,14 @@ const useFlowChart = (workflowId) => {
             return false;
         }
 
-        if (!data.department || !data.position || !data.action || !data.name) {
+        if ((!data.action || !data.name)) {
             alert.show('Chưa nhập đủ trường cần thiết');
             return false;
         }
+        // if ((!data.action || !data.name) || (data.mode === 'department-position' && (!data.department || !data.position))) {
+        //     alert.show('Chưa nhập đủ trường cần thiết');
+        //     return false;
+        // }
 
         if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && data.is_first) {
             alert.show('Đã tồn tại bước bắt đầu !');
@@ -104,7 +109,7 @@ const useFlowChart = (workflowId) => {
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-        let template = `<div><div class="title-box"><h6 class="mt-1"><strong>Tên:</strong> ${data.name}</h6><p class="mt-2"><strong>Mô tả:</strong> ${data.description}</p></div><div class="box"><p class="box__target">Phòng ban: ${data.department.name}</p><p class="box__action">Chức vụ: ${data.position.name}</p><p class="box__action">Hành động: ${data.action.name}</p></div></div>`;
+        let template = `<div><div class="title-box"><h6 class="mt-1"><strong>Tên:</strong> ${_.get(data, 'name', '')}</h6><p class="mt-2"><strong>Mô tả:</strong> ${_.get(data, 'description', '')}</p></div><div class="box"><p class="box__target">Phòng ban: ${_.get(data, 'department.name', 'Bất kỳ')}</p><p class="box__action">Chức vụ: ${_.get(data, 'position.name', 'Bất kỳ')}</p><p class="box__action">Hành động: ${data.action.name}</p><p>Mô tả</p>${data.current_process_user_is_target ? '<p>Lấy người đang thực hiện làm đối tượng cụ thể</p>' : ''}${data.same_department_on_step ? `<p>Đối tượng có liên hệ tới bước: ${data.same_department_on_step.name}</p>` : ''}${data.same_target_on_step ? `<p>Đối tượng lấy từ bước: ${data.same_target_on_step.name}</p>` : ''}</div></div>`;
         editor.addNode(data, pos_x, pos_y, template);
     }
 

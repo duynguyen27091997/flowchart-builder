@@ -1,6 +1,6 @@
 {
   "name": "@tuoitre/flowchart-builder",
-  "version": "0.2.2",
+  "version": "0.3.3",
   "private": false,
   "description": "Flowchart Builder for TuoiTre ERP",
   "author": "duynguyen27091997",
@@ -62,12 +62,14 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "drawflow": "^0.0.32",
+    "lodash": "^4.17.21",
     "node-sass": "4.14.1",
     "react-alert": "^7.0.2",
     "react-alert-template-basic": "^1.0.0",
     "react-bootstrap": "^1.5.1",
     "react-icons": "^4.1.0",
-    "react-select": "^4.2.1"
+    "react-select": "^4.2.1",
+    "react-step-wizard": "^5.3.5"
   },
   "directories": {
     "example": "example"

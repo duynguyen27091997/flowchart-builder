@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {ACTION_CLASS_PREFIX} from '../helpers/constants';
+import _ from 'lodash'
 
 export default class Workflow {
     constructor(container, render = null) {
@@ -1372,10 +1373,10 @@ export default class Workflow {
         let outputItem = {
             action_id: data.action.id,
             action_name: data.action.name,
-            department_id: data.department.id,
-            department_name: data.department.name,
-            position_id: data.position.id,
-            position_name: data.position.name
+            department_id: _.get(data, 'department.id', null),
+            department_name: _.get(data, 'department.name', null),
+            position_id: _.get(data, 'position.id', null),
+            position_name: _.get(data, 'position.name', null)
         };
 
         ['pass', 'reject'].forEach(value => {
@@ -1409,12 +1410,9 @@ export default class Workflow {
             is_first: data.is_first,
             inputs: jsonInput,
             actions: jsonOutput,
-            // targets: targets.length > 0 ? targets.map(target => ({
-            //     id: target.id,
-            //     name: target.name,
-            //     type: target.type,
-            //     action: target.action
-            // })) : [],
+            current_process_user_is_target: data.current_process_user_is_target,
+            same_department_on_step: data.same_department_on_step,
+            same_target_on_step: data.same_target_on_step,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         });
