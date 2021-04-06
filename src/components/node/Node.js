@@ -141,27 +141,28 @@ const Node = ({drag, urls, tableId, editor}) => {
                     <Tabs
                         activeKey={tabType}
                         onSelect={handleTabChange}>
-                        <Tab eventKey="department-position" title="Đối tượng theo phòng ban - chức vụ">
+                        <Tab eventKey="department-position" title="Đối tượng theo phòng ban - chức danh">
                             <DepartmentPosition
                                 key={'department-position'}
                                 departments={listDataSelect.departments}
                                 positions={listDataSelect.positions}
-                                url={urls.get_list_actions}
+                                url={urls.get_list_actions_by_post_dep}
                                 tableId={tableId}
                                 setParentData={handleSetStepData}
                                 reset={reset}
                                 allActions={listDataSelect.actions_all}
                             />
                         </Tab>
-                        {/*<Tab eventKey="position" title="Đối tượng theo chức vụ">*/}
-                        {/*    <Position*/}
-                        {/*        positions={listDataSelect.positions}*/}
-                        {/*        actions={listDataSelect.actions_all}*/}
-                        {/*        editor={editor}*/}
-                        {/*        reset={reset}*/}
-                        {/*        setParentData={handleSetStepData}*/}
-                        {/*    />*/}
-                        {/*</Tab>*/}
+                        <Tab eventKey="position" title="Đối tượng theo chức danh">
+                            <Position
+                                positions={listDataSelect.positions}
+                                actions={listDataSelect.actions_all}
+                                editor={editor}
+                                reset={reset}
+                                url={urls.get_list_actions_by_post}
+                                setParentData={handleSetStepData}
+                            />
+                        </Tab>
                         {/*<Tab eventKey="personal" title="Đối tượng bất ký">*/}
                         {/*    <AnyOne*/}
                         {/*        actions={listDataSelect.actions_all}*/}

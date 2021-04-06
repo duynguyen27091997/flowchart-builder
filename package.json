@@ -61,6 +61,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "chroma-js": "^2.1.1",
     "drawflow": "^0.0.32",
     "lodash": "^4.17.21",
     "node-sass": "4.14.1",

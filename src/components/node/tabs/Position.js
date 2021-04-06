@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {Form} from "react-bootstrap";
 import Select from "react-select";
+import axios from "axios";
 
 const Position = props => {
     let {
@@ -8,7 +9,8 @@ const Position = props => {
         actions,
         editor,
         setParentData,
-        reset
+        reset,
+        url
     } = props;
 
     let [disableSelect, setDisableSelect] = useState({
@@ -21,6 +23,8 @@ const Position = props => {
         same_department_on_step: null
     });
 
+    let [listActionByPos, setListActionByPos] = useState([]);
+
     useEffect(() => {
         setDisableSelect({
             action: true
@@ -32,6 +36,52 @@ const Position = props => {
             same_department_on_step: null
         })
     }, [reset])
+
+    const getActionData = pos => {
+        axios.get(`${url.trim('/')}/${pos}`).then(({data}) => {
+            let options = [];
+            data = Object.values(data)
+            if (data.length) {
+                options = data[0].groups.map(group => {
+                    return {
+                        label: group.name,
+                        options: group.permissions.map(permission => ({value: permission.id, label: permission.name}))
+                    };
+                })
+            }
+            setListActionByPos(options);
+        }).catch(err => {
+            alert.show('Có lỗi xảy ra');
+        });
+    };
+
+    const formatGroupLabel = data => (
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#d2d2d2',
+            padding: 10,
+            color: 'white',
+            margin: 0,
+            fontSize: 15,
+            fontWeight: 800
+        }}>
+            <span>{data.label}</span>
+            <span style={{
+                backgroundColor: '#EBECF0',
+                borderRadius: '2em',
+                color: '#172B4D',
+                display: 'inline-block',
+                fontSize: 12,
+                fontWeight: 'normal',
+                lineHeight: '1',
+                minWidth: 1,
+                padding: '0.16666666666667em 0.5em',
+                textAlign: 'center',
+            }}>{data.options.length}</span>
+        </div>
+    );
 
 
     return (
@@ -53,6 +103,7 @@ const Position = props => {
                             setDisableSelect({
                                 action: false
                             });
+                            getActionData(option.value);
                             setParentData('position', {id: option.value, name: option.label});
                         }}
                     />
@@ -62,8 +113,9 @@ const Position = props => {
                     <Select
                         menuPortalTarget={document.body}
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
+                        formatGroupLabel={formatGroupLabel}
                         placeholder="Chọn"
-                        options={actions}
+                        options={listActionByPos}
                         isDisabled={disableSelect.action}
                         value={selectedData.action}
                         onChange={option => {
