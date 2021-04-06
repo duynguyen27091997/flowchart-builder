@@ -11,7 +11,8 @@ const App = () => {
         store_work_flow: 'https://workflow.tuoitre.vn/api/workflow/store',
         get_list_departments: 'https://employee.tuoitre.vn/api/departments',
         get_list_positions: 'https://employee.tuoitre.vn/api/positions',
-        get_list_actions: 'https://employee.tuoitre.vn/api/list/actions/dep/pos/tab'
+        get_list_actions_by_post_dep: 'https://employee.tuoitre.vn/api/permission/departments/positions',
+        get_list_actions_by_post: 'https://employee.tuoitre.vn/api/list/permission/work-formality',
     };
 
     let tableId = 11;

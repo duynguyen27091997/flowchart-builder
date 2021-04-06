@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Form} from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
+import {useAlert} from 'react-alert'
 
 const DepartmentPosition = props => {
     let {
@@ -13,6 +14,8 @@ const DepartmentPosition = props => {
         reset,
         allActions
     } = props;
+
+    let alert = useAlert();
 
     let [disableSelect, setDisableSelect] = useState({
         position: true,
@@ -55,15 +58,52 @@ const DepartmentPosition = props => {
         axios.get(url, {
             params: {
                 dep_id: depart,
-                pos_id: pos,
-                table_id: tableId
+                pos_id: pos
             }
         }).then(({data}) => {
-            setListActionByPosDep(data.map(item => ({value: item.id, label: item.note})));
+            let options = [];
+            data = Object.values(data)
+            if (data.length) {
+                options = data[0].groups.map(group => {
+                    return {
+                        label: group.name,
+                        options: group.permissions.map(permission => ({value: permission.id, label: permission.name}))
+                    };
+                })
+            }
+            setListActionByPosDep(options);
         }).catch(err => {
             alert.show('Có lỗi xảy ra');
         });
     }
+
+    const formatGroupLabel = data => (
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#d2d2d2',
+            padding: 10,
+            color: 'white',
+            margin: 0,
+            fontSize: 15,
+            fontWeight: 800
+        }}>
+            <span>{data.label}</span>
+            <span style={{
+                backgroundColor: '#EBECF0',
+                borderRadius: '2em',
+                color: '#172B4D',
+                display: 'inline-block',
+                fontSize: 12,
+                fontWeight: 'normal',
+                lineHeight: '1',
+                minWidth: 1,
+                padding: '0.16666666666667em 0.5em',
+                textAlign: 'center',
+            }}>{data.options.length}</span>
+        </div>
+    );
 
     return (
         <div className="row">
@@ -93,14 +133,14 @@ const DepartmentPosition = props => {
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
                         placeholder="Chọn chức vụ"
                         options={positions}
-                        // isDisabled={disableSelect.position}
+                        isDisabled={disableSelect.position}
                         value={selectedData.position}
                         onChange={option => {
                             setDisableSelect({
                                 ...disableSelect,
                                 action: false
                             })
-                            // getActionData(selectedData.department.value, option.value);
+                            getActionData(selectedData.department.value, option.value);
                             handleChange('position', option);
                         }}
                     />
@@ -108,12 +148,13 @@ const DepartmentPosition = props => {
                 <Form.Group>
                     <Form.Label>Hành động <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
                     <Select
+                        formatGroupLabel={formatGroupLabel}
                         menuPortalTarget={document.body}
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
                         placeholder="Hành động"
                         value={selectedData.action}
-                        options={allActions}
-                        // isDisabled={disableSelect.action}
+                        options={listActionByPosDep}
+                        isDisabled={disableSelect.action}
                         onChange={option => handleChange('action', option)}
                     />
                 </Form.Group>
