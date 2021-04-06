@@ -37,7 +37,8 @@ const Example = () => {
             store_work_flow: '{domain}/api/workflow/store',
             get_list_departments: '{domain}/api/list/departments',
             get_list_positions: '{domain}/api/list/positions',
-            get_list_actions: '{domain}/api/list/actions/dep/pos/tab'
+            get_list_actions_by_post_dep: '{domain}/api/permission/departments/positions',
+            get_list_actions_by_post: '{domain}/api/list/permission/work-formality',
         }
       } tableId={11}/>
     </div>
@@ -61,10 +62,12 @@ const Example = () => {
 
 > get_list_positions : url get list positions
 
-> get_list_actions : url get list action by department and position
+> get_list_actions_by_post_dep : url get list action by department and position
+
+> get_list_actions_by_post : url get list action by position
 
 > tableId: id of table Workflow on service-management
-
+> 
 ## Repo
 
 [https://github.com/duynguyen27091997/flowchart-builder](https://github.com/duynguyen27091997/flowchart-builder)
