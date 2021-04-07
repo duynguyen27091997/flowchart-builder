@@ -62,14 +62,21 @@ const DepartmentPosition = props => {
             }
         }).then(({data}) => {
             let options = [];
-            data = Object.values(data)
+            data = Object.values(data);
             if (data.length) {
-                options = data[0].groups.map(group => {
-                    return {
-                        label: group.name,
-                        options: group.permissions.map(permission => ({value: permission.id, label: permission.name}))
-                    };
-                })
+                options = data.map(item => {
+                    let serviceName = item.name;
+                    let metaOption = {};
+                    item.groups.map(group => {
+                        let groupName = group.name;
+                        metaOption.label = serviceName + ' - ' + groupName
+                        metaOption.options = group.permissions.map(permission => ({
+                            label: permission.name,
+                            value: permission.id
+                        }));
+                    });
+                    return metaOption;
+                });
             }
             setListActionByPosDep(options);
         }).catch(err => {

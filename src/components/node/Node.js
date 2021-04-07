@@ -24,14 +24,12 @@ const Node = ({drag, urls, tableId, editor}) => {
         same_target_on_step: null
     };
 
-    let alert = useAlert();
     let [showCreatePanel, setShowCreatePanel] = useState(false)
     let [stepData, setStepData] = useState(defaultData);
     let [listDataSelect, setListDataSelect] = useState({
         departments: [],
         positions: [],
         actions: [],
-        actions_all: [],
     });
     let [showModal, setShowModal] = useState(false);
     let [tabType, setTabType] = useState('department-position');
@@ -41,17 +39,14 @@ const Node = ({drag, urls, tableId, editor}) => {
     const getData = async () => {
         let departments = await axios.get(urls.get_list_departments);
         let positions = await axios.get(urls.get_list_positions);
-        let actions = await axios.get('https://employee.tuoitre.vn/api/action');
-        return Promise.all([departments, positions, actions]);
+        return Promise.all([departments, positions]);
     }
 
     useEffect(() => {
         getData().then(res => {
             let departments = res[0];
             let positions = res[1];
-            let actionAll = res[2];
             setListDataSelect({
-                actions_all: actionAll.data.data.map(item => ({value: item.id, label: item.note})),
                 departments: departments.data.data.map(item => ({value: item.id, label: item.dep_name})),
                 positions: positions.data.data.map(item => ({value: item.id, label: item.pos_name})),
             });
@@ -150,13 +145,11 @@ const Node = ({drag, urls, tableId, editor}) => {
                                 tableId={tableId}
                                 setParentData={handleSetStepData}
                                 reset={reset}
-                                allActions={listDataSelect.actions_all}
                             />
                         </Tab>
                         <Tab eventKey="position" title="Đối tượng theo chức danh">
                             <Position
                                 positions={listDataSelect.positions}
-                                actions={listDataSelect.actions_all}
                                 editor={editor}
                                 reset={reset}
                                 url={urls.get_list_actions_by_post}
@@ -165,7 +158,6 @@ const Node = ({drag, urls, tableId, editor}) => {
                         </Tab>
                         {/*<Tab eventKey="personal" title="Đối tượng bất ký">*/}
                         {/*    <AnyOne*/}
-                        {/*        actions={listDataSelect.actions_all}*/}
                         {/*        editor={editor}*/}
                         {/*        reset={reset}*/}
                         {/*        setParentData={handleSetStepData}/>*/}
