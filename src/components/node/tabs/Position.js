@@ -6,7 +6,6 @@ import axios from "axios";
 const Position = props => {
     let {
         positions,
-        actions,
         editor,
         setParentData,
         reset,
@@ -37,23 +36,46 @@ const Position = props => {
         })
     }, [reset])
 
+    let as = [
+        {
+            label: 'asdasdsadas',
+            options: [
+                {
+                    label: 'czx',
+                    value: 'asdasda'
+                }
+            ]
+        }
+    ];
     const getActionData = pos => {
         axios.get(`${url.trim('/')}/${pos}`).then(({data}) => {
             let options = [];
-            data = Object.values(data)
+            data = Object.values(data);
             if (data.length) {
-                options = data[0].groups.map(group => {
-                    return {
-                        label: group.name,
-                        options: group.permissions.map(permission => ({value: permission.id, label: permission.name}))
-                    };
-                })
+                options = data.map(item => {
+                    let serviceName = item.name;
+                    let metaOption = {};
+                    item.groups.map(group => {
+                        let groupName = group.name;
+                        metaOption.label = serviceName + ' - ' + groupName
+                        metaOption.options = group.permissions.map(permission => ({
+                            label: permission.name,
+                            value: permission.id
+                        }));
+                    });
+                    return metaOption;
+                });
             }
             setListActionByPos(options);
         }).catch(err => {
             alert.show('Có lỗi xảy ra');
         });
     };
+
+
+    const convertData = () => {
+
+    }
 
     const formatGroupLabel = data => (
         <div style={{
@@ -98,8 +120,10 @@ const Position = props => {
                         onChange={option => {
                             setSelectedData({
                                 ...selectedData,
-                                position: option
+                                position: option,
+                                action: null
                             });
+                            setParentData('actions', []);
                             setDisableSelect({
                                 action: false
                             });
