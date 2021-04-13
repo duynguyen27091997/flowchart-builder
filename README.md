@@ -27,6 +27,7 @@ import { TTFlow } from '@tuoitre/flowchart-builder'
 import '@tuoitre/flowchart-builder/dist/index.css'
 
 const Example = () => {
+    let permissions = [];
   return (
     <div>
       <TTFlow urls={
@@ -40,7 +41,7 @@ const Example = () => {
             get_list_actions_by_post_dep: '{domain}/api/permission/departments/positions',
             get_list_actions_by_post: '{domain}/api/list/permission/work-formality',
         }
-      } tableId={11}/>
+      } tableId={11} permissions={permissions}/>
     </div>
   )
 

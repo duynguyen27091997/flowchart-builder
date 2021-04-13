@@ -13,7 +13,8 @@ import {Button, Modal} from "react-bootstrap";
 const FlowChart = props => {
     let {
         urls,
-        tableId
+        tableId,
+        permissions = []
     } = props;
 
     let alert = useAlert();
@@ -77,6 +78,10 @@ const FlowChart = props => {
             });
     };
 
+    const checkPermission = action => {
+        return permissions.find(permission => permission.action.toLowerCase() === action) !== undefined
+    }
+
     return (<div className={"flow"}>
             <aside className="flow__sidebar">
                 <div className="d-flex justify-content-center mt-3">
@@ -86,7 +91,7 @@ const FlowChart = props => {
                 </div>
                 {documentType && renderType(documentType)}
                 {documentType && <Node urls={urls} drag={drag} tableId={tableId} editor={editor}/>}
-                <FlowTool editor={editor} handleSave={handleSave}/>
+                <FlowTool editor={editor} handleSave={handleSave} permissions={permissions} checkPermission={checkPermission}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
