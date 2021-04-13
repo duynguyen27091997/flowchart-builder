@@ -78,10 +78,10 @@ const Node = ({drag, urls, tableId, editor}) => {
     const handleCloseModal = () => {
         setShowModal(false);
         if (stepData.action) {
-            let text = _.get(stepData, 'not_part_of_department', true) ? 'Không thuộc phòng ban nào' : 'Bất kỳ';
+            let text = _.get(stepData, 'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Thuộc phòng ban hiện tại';
             setDisplay(<div className="mt-5">
                 <p style={{marginBottom: 0}}><strong>Phòng
-                    ban:</strong> {_.get(stepData, 'department.name', 'Bất kỳ')}</p>
+                    ban:</strong> {_.get(stepData, 'department.name', text)}</p>
                 <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', text)}
                 </p>
                 <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>

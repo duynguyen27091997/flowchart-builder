@@ -162,14 +162,14 @@ const Position = props => {
                         className="mt-3"
                         name="is_first"
                         type="checkbox"
-                        checked={selectedData.not_part_of_department}
-                        label="Không thuộc phòng ban nào"
+                        checked={!selectedData.not_part_of_department}
+                        label="Chức vụ thuộc phòng ban hiện tại"
                         onChange={({target}) => {
                             setSelectedData({
                                 ...selectedData,
-                                not_part_of_department: target.checked
+                                not_part_of_department: !target.checked
                             });
-                            setParentData('not_part_of_department', target.checked)}
+                            setParentData('not_part_of_department', !target.checked)}
                         }/>
                 </Form.Group>
             </div>
