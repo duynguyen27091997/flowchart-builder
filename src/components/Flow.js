@@ -2,7 +2,7 @@ import React from "react";
 import FlowChart from "./flow-chart/FlowChart";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import {transitions, positions, Provider as AlertProvider} from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 
 const options = {
@@ -12,7 +12,7 @@ const options = {
     transition: transitions.SCALE
 }
 
-function Flow(props) {
+const Flow = props => {
     return (
         <AlertProvider template={AlertTemplate} {...options}>
             <div className="flow-container">

@@ -1,11 +1,10 @@
 import React from 'react';
 import Flow from "./components/Flow";
 
-const App = () => {
+const App = props => {
     return (
         <div>
-            <Flow urls={{
-            }}/>
+            <Flow {...props}/>
         </div>
     );
 };

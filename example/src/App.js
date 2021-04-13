@@ -17,7 +17,9 @@ const App = () => {
 
     let tableId = 11;
 
-    return <TTFlow urls={urls} tableId={tableId}/>
+    let permissions = [];
+
+    return <TTFlow urls={urls} tableId={tableId} permissions={permissions}/>
 }
 
 export default App

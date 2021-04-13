@@ -82,7 +82,9 @@ const FlowChart = props => {
         return permissions.find(permission => permission.action.toLowerCase() === action) !== undefined
     }
 
-    return (<div className={"flow"}>
+
+    const renderFlow = () => {
+        return <div className={"flow"}>
             <aside className="flow__sidebar">
                 <div className="d-flex justify-content-center mt-3">
                     <Button variant="dark" onClick={() => setShowModal(true)}>
@@ -91,7 +93,8 @@ const FlowChart = props => {
                 </div>
                 {documentType && renderType(documentType)}
                 {documentType && <Node urls={urls} drag={drag} tableId={tableId} editor={editor}/>}
-                <FlowTool editor={editor} handleSave={handleSave} permissions={permissions} checkPermission={checkPermission}/>
+                <FlowTool editor={editor} handleSave={handleSave} permissions={permissions}
+                          checkPermission={checkPermission}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>
             <Modal show={showModal} onHide={handleCloseModal} size="lg">
@@ -108,6 +111,18 @@ const FlowChart = props => {
                 </Modal.Footer>
             </Modal>
         </div>
+    }
+
+    const renderNoAccess = () => {
+        return <div className='card'>
+            <div className='card-body d-flex justify-content-center align-items-center'>
+                <h5 className='text-center font-weight-bold'>Không có quyền truy cập</h5>
+            </div>
+        </div>
+    }
+
+    return (
+        checkPermission('view') ? renderFlow() : renderNoAccess()
     );
 };
 
