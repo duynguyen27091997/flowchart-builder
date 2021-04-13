@@ -26,7 +26,7 @@ const PanelCreate = ({editor, change, setShowModal, display}) => {
                     onChange={({target}) => change(target.name, target.value)}/>
             </Form.Group>
             <Button variant="outline-dark" onClick={() => setShowModal(true)}>
-                Thêm đói tượng và hành động
+                Thêm đối tượng và hành động
             </Button>
             {display}
             {
