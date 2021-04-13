@@ -548,11 +548,13 @@
       flex: 0 0 290px;
       padding: 10px;
       border-right: 1px solid $color-gray;
-      h4{
-        color:#4ea9ff;
+
+      h4 {
+        color: #4ea9ff;
         margin: 10px 0;
       }
-      .node{
+
+      .node {
         margin-top: 25px;
       }
     }
@@ -593,5 +595,4 @@
       }
     }
   }
-
 }

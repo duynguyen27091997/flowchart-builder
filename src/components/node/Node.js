@@ -1,132 +1,177 @@
-import React, {useEffect} from 'react';
-
-import "./Node.scss"
-import {useState} from "react";
+import React, {useEffect, useState} from 'react';
+import {useAlert} from 'react-alert';
 import {FaPlus} from "react-icons/fa";
+import {Button, Form, Modal, Tab, Tabs} from "react-bootstrap";
 import axios from "axios";
+import _ from 'lodash';
 
-const specificTargets = [
-    {label: 'Phòng nhân sự', value: 11},
-    {label: 'Văn Tuấn', value: 111}
-];
+import DepartmentPosition from "./tabs/DepartmentPosition";
+import Position from "./tabs/Position";
+import AnyOne from "./tabs/Anyone";
+import PanelCreate from "./PanelCreate";
 
+const Node = ({drag, urls, tableId, editor}) => {
 
-const Node = ({drag,getData}) => {
-        let template = {
-            name: '',
-            description: '',
-            action_target:'',
-            action: '',
-            targets: '',
-            is_first: false
-        };
+    let defaultData = {
+        name: '',
+        description: '',
+        department: null,
+        position: null,
+        action: null,
+        is_first: false,
+        current_process_user_is_target: false,
+        same_department_on_step: null,
+        same_target_on_step: null
+    };
 
-        let [show, setShow] = useState(false)
-        let [value, setValue] = useState(template);
+    let [showCreatePanel, setShowCreatePanel] = useState(false)
+    let [stepData, setStepData] = useState(defaultData);
+    let [listDataSelect, setListDataSelect] = useState({
+        departments: [],
+        positions: [],
+        actions: [],
+    });
+    let [showModal, setShowModal] = useState(false);
+    let [tabType, setTabType] = useState('department-position');
+    let [display, setDisplay] = useState(null);
+    let [reset, setReset] = useState(false);
 
-        let [targets, setTargets] = useState([]);
-        let [actions, setActions] = useState([]);
-
-        useEffect(() => {
-            getData().then(([resTargets, resActions]) => {
-                let tmpTargets = Object.keys(resTargets).map((key, index) => {
-                    return {value: key, label: resTargets[key]}
-                }, [])
-                setTargets(tmpTargets);
-
-                let tmpActions = Object.keys(resActions).map((key, index) => {
-                    return {value: key, label: resActions[key]}
-                }, [])
-                setActions(tmpActions);
-            })
-        }, []);
-
-        const handleChange = (e) => {
-            let tmp = null;
-            switch (e.target.name) {
-                case 'is_first':
-                    setValue({...value, [e.target.name]: e.target.checked})
-                    break;
-                case 'action':
-                    tmp = {value: actions[e.target.value].value, name: actions[e.target.value].label};
-                    setValue({...value, [e.target.name]: tmp})
-                    break;
-                case 'action_target':
-                    tmp = {value: targets[e.target.value].value, name: targets[e.target.value].label};
-                    setValue({...value, [e.target.name]: tmp})
-                    break;
-                case 'targets': {
-                    let findTarget = {};
-                    findTarget.id = specificTargets[e.target.value].value;
-                    findTarget.name = specificTargets[e.target.value].label;
-                    findTarget.action =  value.action.value;
-                    findTarget.type =  value.action_target.value
-
-                    setValue({...value, [e.target.name]: [findTarget]})
-                    break;
-                }
-                default:
-                    setValue({...value, [e.target.name]: e.target.value})
-                    break;
-            }
-
-        }
-
-
-        const reset = () => {
-            setShow(false);
-            setValue(template)
-        }
-
-
-        return (
-            <div>
-                {/*<h5>NODE</h5>*/}
-                <div className="node"
-                     draggable={show} onDragEnd={() => reset()} onDragStart={(e) => drag(value, e)}>
-                    {!show ? <div style={{textAlign: "center",padding:"10px"}} onClick={() => setShow(true)}><FaPlus/></div> :
-                        <div style={{padding:"10px"}}>
-                            <div className={"node__form-group"}>
-                                <label>Title</label>
-                                <input type="text" value={value.name} placeholder={'Tiêu đề'} onChange={handleChange}
-                                       name={'name'}/>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Description</label>
-                                <input type="text" value={value.description} placeholder={'Mô tả'} onChange={handleChange}
-                                       name={'description'}/>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Đối tượng</label>
-                                <select defaultValue={''} name="action_target"  onChange={handleChange}>
-                                    <option value="" disabled>...</option>
-                                    {targets.map((item,index)=> <option value={index} key={item.value}>{item.label}</option>)}
-                                </select>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Hành động</label>
-                                <select defaultValue={''} name="action"  onChange={handleChange}>
-                                    <option value="" disabled>...</option>
-                                    {actions.map((item,index)=> <option value={index} key={item.value}>{item.label}</option>)}
-                                </select>
-                            </div>
-                            <div className={"node__form-group"}>
-                                <label>Đối tượng cụ thể</label>
-                                <select name="targets" defaultValue={''}  onChange={handleChange}>
-                                    <option value="" disabled>...</option>
-                                    {specificTargets.map((item,index)=> <option value={index} key={item.value}>{item.label}</option>)}
-                                </select>
-                            </div>
-                            <div className={"node__form-group node__form-group-checked"}>
-                                <input type="checkbox" name={'is_first'} value={value.is_first}
-                                       onChange={handleChange}/><label>Khởi tạo</label>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        );
+    const getData = async () => {
+        let departments = await axios.get(urls.get_list_departments);
+        let positions = await axios.get(urls.get_list_positions);
+        return Promise.all([departments, positions]);
     }
-;
+
+    useEffect(() => {
+        getData().then(res => {
+            let departments = res[0];
+            let positions = res[1];
+            setListDataSelect({
+                departments: departments.data.data.map(item => ({value: item.id, label: item.dep_name})),
+                positions: positions.data.data.map(item => ({value: item.id, label: item.pos_name})),
+            });
+        });
+    }, []);
+
+    const handleChange = (name, value, showName = null) => {
+        switch (name) {
+            case 'is_first': {
+                setStepData({
+                    ...stepData,
+                    is_first: value
+                })
+            }
+            default:
+                setStepData({...stepData, [name]: value})
+                break;
+        }
+    }
+
+    const resetPanelCreate = () => {
+        setTabType('department-position');
+        setShowCreatePanel(false);
+        setStepData(defaultData);
+        setDisplay(null);
+    }
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        if (stepData.action) {
+            setDisplay(<div className="mt-5">
+                <p style={{marginBottom: 0}}><strong>Phòng
+                    ban:</strong> {_.get(stepData, 'department.name', 'Bất kỳ')}</p>
+                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', 'Bất kỳ')}
+                </p>
+                <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
+                <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
+                {stepData.current_process_user_is_target && <p style={{marginBottom: 0}}>Lấy người đang thực hiện làm đối tượng cụ thể</p>}
+                {stepData.same_department_on_step && <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
+                {stepData.same_target_on_step && <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
+            </div>);
+        }
+    }
+
+    const handleSetStepData = (key, data) => {
+        setStepData({
+            ...stepData,
+            [key]: data
+        })
+    }
+
+    const handleTabChange = key => {
+        setReset(!reset);
+        setTabType(key);
+        setStepData({
+            ...stepData,
+            department: null,
+            position: null,
+            action: null,
+            current_process_user_is_target: false,
+            connect_to_step: null,
+            same_department_on: null
+        });
+    }
+
+    return (
+        <div>
+            <div className="node"
+                 draggable={showCreatePanel}
+                 onDragEnd={resetPanelCreate}
+                 onDragStart={event => drag({...stepData, mode: tabType}, event)}>
+                {!showCreatePanel ?
+                    <Button
+                        variant="outline-dark"
+                        style={{width: '100%'}}
+                        onClick={() => setShowCreatePanel(true)}>
+                        <FaPlus/> Tạo step
+                    </Button> :
+                    <PanelCreate editor={editor} setShowModal={setShowModal} change={handleChange} display={display}/>
+                }
+            </div>
+            <Modal show={showModal} onHide={handleCloseModal} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Đối tượng và hành động</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{overflow: 'hidden'}}>
+                    <Tabs
+                        activeKey={tabType}
+                        onSelect={handleTabChange}>
+                        <Tab eventKey="department-position" title="Đối tượng theo phòng ban - chức danh">
+                            <DepartmentPosition
+                                key={'department-position'}
+                                departments={listDataSelect.departments}
+                                positions={listDataSelect.positions}
+                                url={urls.get_list_actions_by_post_dep}
+                                tableId={tableId}
+                                setParentData={handleSetStepData}
+                                reset={reset}
+                            />
+                        </Tab>
+                        <Tab eventKey="position" title="Đối tượng theo chức danh">
+                            <Position
+                                positions={listDataSelect.positions}
+                                editor={editor}
+                                reset={reset}
+                                url={urls.get_list_actions_by_post}
+                                setParentData={handleSetStepData}
+                            />
+                        </Tab>
+                        {/*<Tab eventKey="personal" title="Đối tượng bất ký">*/}
+                        {/*    <AnyOne*/}
+                        {/*        editor={editor}*/}
+                        {/*        reset={reset}*/}
+                        {/*        setParentData={handleSetStepData}/>*/}
+                        {/*</Tab>*/}
+                    </Tabs>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Xác nhận
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </div>
+    );
+};
 
 export default Node;

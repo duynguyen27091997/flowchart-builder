@@ -27,17 +27,21 @@ import { TTFlow } from '@tuoitre/flowchart-builder'
 import '@tuoitre/flowchart-builder/dist/index.css'
 
 const Example = () => {
+    let permissions = [];
   return (
     <div>
       <TTFlow urls={
         {
-          workflowTypesUrl : '.../api/workflow/get-workflow-types',
-          storeStepsUrl:'.../api/step/store-steps',
-          workflowDetailUrl:'.../api/workflow/detail?type=',
-          targetTypeUrl : '.../api/step/get-action-target-types',
-          actionTypeUrl : '.../api/step/get-action-types',
+            get_list_document_types: '{domain}/api/document-type/get-document-types',
+            get_one_document_type: '{domain}/api/document-type/get',
+            get_workflow_detail: '{domain}/api/workflow/detail',
+            store_work_flow: '{domain}/api/workflow/store',
+            get_list_departments: '{domain}/api/list/departments',
+            get_list_positions: '{domain}/api/list/positions',
+            get_list_actions_by_post_dep: '{domain}/api/permission/departments/positions',
+            get_list_actions_by_post: '{domain}/api/list/permission/work-formality',
         }
-      }/>
+      } tableId={11} permissions={permissions}/>
     </div>
   )
 
@@ -47,15 +51,24 @@ const Example = () => {
 ## Props
 
 ### urls : Object
-> workflowTypesUrl : url get workflow types
+> get_list_document_types : url get list document type
 
-> storeStepsUrl : url save workflow
+> get_one_document_type : url get single document typr
 
-> workflowDetailUrl : url get workflow detail
+> get_workflow_detail : url get workflow detail
 
-> targetTypeUrl : url get list target
+> store_work_flow : url store workflow with step
 
-> actionTypeUrl : url get action target
+> get_list_departments : url get list departments
+
+> get_list_positions : url get list positions
+
+> get_list_actions_by_post_dep : url get list action by department and position
+
+> get_list_actions_by_post : url get list action by position
+
+> tableId: id of table Workflow on service-management
+> 
 ## Repo
 
 [https://github.com/duynguyen27091997/flowchart-builder](https://github.com/duynguyen27091997/flowchart-builder)
