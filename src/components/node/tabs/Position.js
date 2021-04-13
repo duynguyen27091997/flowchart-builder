@@ -19,7 +19,8 @@ const Position = props => {
     let [selectedData, setSelectedData] = useState({
         position: null,
         action: null,
-        same_department_on_step: null
+        same_department_on_step: null,
+        not_part_of_department: true
     });
 
     let [listActionByPos, setListActionByPos] = useState([]);
@@ -32,21 +33,11 @@ const Position = props => {
         setSelectedData({
             position: null,
             action: null,
-            same_department_on_step: null
+            same_department_on_step: null,
+            not_part_of_department: true
         })
     }, [reset])
 
-    let as = [
-        {
-            label: 'asdasdsadas',
-            options: [
-                {
-                    label: 'czx',
-                    value: 'asdasda'
-                }
-            ]
-        }
-    ];
     const getActionData = pos => {
         axios.get(`${url.trim('/')}/${pos}`).then(({data}) => {
             let options = [];
@@ -151,20 +142,35 @@ const Position = props => {
                         }}
                     />
                 </Form.Group>
+                {/*<Form.Group>*/}
+                {/*    <Form.Label>Cùng phòng ban với đói tượng ở bước:</Form.Label>*/}
+                {/*    <Select*/}
+                {/*        menuPortalTarget={document.body}*/}
+                {/*        styles={{menuPortal: base => ({...base, zIndex: 9999})}}*/}
+                {/*        options={editor.workflow.steps.map(step => ({value: step.step_id, label: step.name}))}*/}
+                {/*        onChange={option => {*/}
+                {/*            setSelectedData({*/}
+                {/*                ...selectedData,*/}
+                {/*                same_department_on_step: option*/}
+                {/*            });*/}
+                {/*            setParentData('same_department_on_step', {id: option.value, name: option.label});*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*</Form.Group>*/}
                 <Form.Group>
-                    <Form.Label>Cùng phòng ban với đói tượng ở bước:</Form.Label>
-                    <Select
-                        menuPortalTarget={document.body}
-                        styles={{menuPortal: base => ({...base, zIndex: 9999})}}
-                        options={editor.workflow.steps.map(step => ({value: step.step_id, label: step.name}))}
-                        onChange={option => {
+                    <Form.Check
+                        className="mt-3"
+                        name="is_first"
+                        type="checkbox"
+                        checked={selectedData.not_part_of_department}
+                        label="Không thuộc phòng ban nào"
+                        onChange={({target}) => {
                             setSelectedData({
                                 ...selectedData,
-                                same_department_on_step: option
+                                not_part_of_department: target.checked
                             });
-                            setParentData('same_department_on_step', {id: option.value, name: option.label});
-                        }}
-                    />
+                            setParentData('not_part_of_department', target.checked)}
+                        }/>
                 </Form.Group>
             </div>
         </div>

@@ -21,7 +21,8 @@ const Node = ({drag, urls, tableId, editor}) => {
         is_first: false,
         current_process_user_is_target: false,
         same_department_on_step: null,
-        same_target_on_step: null
+        same_target_on_step: null,
+        not_part_of_department: true
     };
 
     let [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -77,16 +78,20 @@ const Node = ({drag, urls, tableId, editor}) => {
     const handleCloseModal = () => {
         setShowModal(false);
         if (stepData.action) {
+            let text = _.get(stepData, 'not_part_of_department', true) ? 'Không thuộc phòng ban nào' : 'Bất kỳ';
             setDisplay(<div className="mt-5">
                 <p style={{marginBottom: 0}}><strong>Phòng
                     ban:</strong> {_.get(stepData, 'department.name', 'Bất kỳ')}</p>
-                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', 'Bất kỳ')}
+                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', text)}
                 </p>
                 <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
                 <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
-                {stepData.current_process_user_is_target && <p style={{marginBottom: 0}}>Lấy người đang thực hiện làm đối tượng cụ thể</p>}
-                {stepData.same_department_on_step && <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
-                {stepData.same_target_on_step && <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
+                {stepData.current_process_user_is_target &&
+                <p style={{marginBottom: 0}}>Lấy người đang thực hiện làm đối tượng cụ thể</p>}
+                {stepData.same_department_on_step &&
+                <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
+                {stepData.same_target_on_step &&
+                <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
             </div>);
         }
     }
@@ -108,7 +113,8 @@ const Node = ({drag, urls, tableId, editor}) => {
             action: null,
             current_process_user_is_target: false,
             connect_to_step: null,
-            same_department_on: null
+            same_department_on: null,
+            not_part_of_department: true
         });
     }
 

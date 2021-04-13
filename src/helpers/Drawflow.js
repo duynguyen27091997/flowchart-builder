@@ -1413,6 +1413,7 @@ export default class Workflow {
             current_process_user_is_target: data.current_process_user_is_target,
             same_department_on_step: data.same_department_on_step,
             same_target_on_step: data.same_target_on_step,
+            not_part_of_department: data.not_part_of_department,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         });
