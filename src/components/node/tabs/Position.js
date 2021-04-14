@@ -43,19 +43,22 @@ const Position = props => {
             let options = [];
             data = Object.values(data);
             if (data.length) {
-                options = data.map(item => {
-                    let serviceName = item.name;
-                    let metaOption = {};
-                    item.groups.map(group => {
-                        let groupName = group.name;
-                        metaOption.label = serviceName + ' - ' + groupName
-                        metaOption.options = group.permissions.map(permission => ({
-                            label: permission.name,
-                            value: permission.id
-                        }));
-                    });
-                    return metaOption;
-                });
+                options = data.reduce((result, service) => {
+                    let serviceName = service.name;
+                    return [
+                        ...result,
+                        ...service.groups.reduce((final, group) => {
+                            let fullName = `${serviceName} - ${group.name}`;
+                            return [
+                                ...final,
+                                {
+                                    label: fullName,
+                                    options: group.permissions.map(per => ({value: per.id, label: per.name}))
+                                }
+                            ]
+                        }, [])
+                    ]
+                }, [])
             }
             setListActionByPos(options);
         }).catch(err => {
