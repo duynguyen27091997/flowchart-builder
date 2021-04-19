@@ -175,6 +175,22 @@ const Position = props => {
                             setParentData('not_part_of_department', !target.checked)}
                         }/>
                 </Form.Group>
+                <Form.Group>
+                    <Form.Check
+                        className="mt-3"
+                        type="checkbox"
+                        name="current_process_user_is_target"
+                        label="Chọn người đang thực hiện làm đối tượng"
+                        checked={selectedData.disable_current_process_user_is_target}
+                        onChange={({target}) => {
+                            setSelectedData({
+                                ...selectedData,
+                                current_process_user_is_target: target.checked
+                            });
+                            setParentData('current_process_user_is_target', target.checked)
+                        }}
+                    />
+                </Form.Group>
             </div>
         </div>
     )
