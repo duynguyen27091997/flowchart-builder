@@ -22,7 +22,8 @@ const Node = ({drag, urls, tableId, editor}) => {
         current_process_user_is_target: false,
         same_department_on_step: null,
         same_target_on_step: null,
-        not_part_of_department: true
+        not_part_of_department: true,
+        required_to_select_specific_target: false
     };
 
     let [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -92,6 +93,8 @@ const Node = ({drag, urls, tableId, editor}) => {
                 <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
                 {stepData.same_target_on_step &&
                 <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
+                {stepData.required_to_select_specific_target &&
+                <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
             </div>);
         }
     }

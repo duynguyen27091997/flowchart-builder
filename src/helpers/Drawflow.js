@@ -1414,6 +1414,7 @@ export default class Workflow {
             same_department_on_step: data.same_department_on_step,
             same_target_on_step: data.same_target_on_step,
             not_part_of_department: data.not_part_of_department,
+            required_to_select_specific_target: data.required_to_select_specific_target,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         });

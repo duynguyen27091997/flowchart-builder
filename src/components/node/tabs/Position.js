@@ -20,7 +20,8 @@ const Position = props => {
         position: null,
         action: null,
         same_department_on_step: null,
-        not_part_of_department: true
+        not_part_of_department: true,
+        required_to_select_specific_target: false
     });
 
     let [listActionByPos, setListActionByPos] = useState([]);
@@ -34,7 +35,8 @@ const Position = props => {
             position: null,
             action: null,
             same_department_on_step: null,
-            not_part_of_department: true
+            not_part_of_department: true,
+            required_to_select_specific_target: false
         })
     }, [reset])
 
@@ -172,8 +174,25 @@ const Position = props => {
                                 ...selectedData,
                                 not_part_of_department: !target.checked
                             });
-                            setParentData('not_part_of_department', !target.checked)}
+                            setParentData('not_part_of_department', !target.checked)
+                        }
                         }/>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Check
+                        className="mt-3"
+                        type="checkbox"
+                        name="required_to_select_specific_target"
+                        label="Bắt buộc chọn đối tượng cụ thể"
+                        checked={selectedData.required_to_select_specific_target}
+                        onChange={({target}) => {
+                            setSelectedData({
+                                ...selectedData,
+                                required_to_select_specific_target: target.checked
+                            });
+                            setParentData('required_to_select_specific_target', target.checked)
+                        }}
+                    />
                 </Form.Group>
                 <Form.Group>
                     <Form.Check
