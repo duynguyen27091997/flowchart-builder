@@ -109,13 +109,35 @@ const useFlowChart = (workflowId) => {
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-        let template = `<div><div class="title-box"><h6 class="mt-1"><strong>Tên:</strong> ${_.get(data, 'name', '')}</h6><p class="mt-2"><strong>Mô tả:</strong> ${_.get(data, 'description', '')}</p></div><div class="box"><p class="box__target">Phòng ban: ${_.get(data, 'department.name', _.get(data,'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Chức vụ của đối tượng thuộc phòng ban của người tạo tài liệu')}<span></span></p><p class="box__action">Chức vụ: ${_.get(data, 'position.name', 'Bất kỳ')}</p><p class="box__action">Hành động: ${data.action.name}</p><p>Mô tả</p>${data.current_process_user_is_target ? '<p>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>' : ''}${data.same_department_on_step ? `<p>Đối tượng có liên hệ tới bước: ${data.same_department_on_step.name}</p>` : ''}${data.same_target_on_step ? `<p>Đối tượng lấy từ bước: ${data.same_target_on_step.name}</p>` : ''}${data.required_to_select_specific_target ? `<p>Bắt buộc chọn đối tượng cụ thể</p>` : ''}</div></div>`;
+        let template = generateHtml();
+
         editor.addNode(data, pos_x, pos_y, template);
     }
 
 
     return [editor, drag, drop, allowDrop];
 };
+
+const generateHtml = () => {
+    return  `<div>
+                  <div class="title-box">
+                    <h6 class="mt-1"><strong>Tên:</strong> __name__</h6>
+                    <p class="mt-2"><strong>Mô tả:</strong> __description__</p>
+                 </div>
+                 <div class="box">
+                        <p class="box__target">Phòng ban: __department__
+                            <span></span>
+                        </p>
+                        <p class="box__action">Chức vụ: __position__</p>
+                        <p class="box__action">Hành động: __action__</p>
+                        <p>Mô tả</p>
+                        __current_process_user_is_target__
+                        __same_department_on_step__
+                        __same_target_on_step__
+                        __required_to_select_specific_target__
+                </div>
+            </div>`;
+}
 
 export default useFlowChart;
 

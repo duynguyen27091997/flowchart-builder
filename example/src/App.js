@@ -17,7 +17,7 @@ const App = () => {
 
     let tableId = 11;
 
-    let permissions = [{action:'view'}, {action:'create'}];
+    let permissions = [{action:'view'}, {action:'create'},{action:'delete'}];
 
     return <TTFlow urls={urls} tableId={tableId} permissions={permissions}/>
 }

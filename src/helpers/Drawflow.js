@@ -1,6 +1,7 @@
 /* eslint-disable */
 import {ACTION_CLASS_PREFIX} from '../helpers/constants';
 import _ from 'lodash'
+import {generateStepHtml} from "./functions";
 
 export default class Workflow {
     constructor(container, render = null) {
@@ -1336,6 +1337,7 @@ export default class Workflow {
     }
 
     addNode(data, ele_pos_x, ele_pos_y, html) {
+
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
 
@@ -1389,20 +1391,7 @@ export default class Workflow {
 
         jsonOutput.push(outputItem)
 
-        const content = document.createElement('div');
-        content.classList.add("workflow_content_node");
-
-        content.innerHTML = html;
-
-        node.appendChild(inputs);
-        node.appendChild(content);
-        node.appendChild(outputs);
-        node.style.top = ele_pos_y + "px";
-        node.style.left = ele_pos_x + "px";
-        parent.appendChild(node);
-        this.precanvas.appendChild(parent);
-
-        this.workflow.steps.push({
+        let pushData = {
             step_id: this.nodeId,
             description: data.description,
             name: data.name,
@@ -1417,7 +1406,24 @@ export default class Workflow {
             required_to_select_specific_target: data.required_to_select_specific_target,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
-        });
+        }
+
+
+
+        const content = document.createElement('div');
+        content.classList.add("workflow_content_node");
+
+        content.innerHTML = generateStepHtml(pushData, html);
+
+        node.appendChild(inputs);
+        node.appendChild(content);
+        node.appendChild(outputs);
+        node.style.top = ele_pos_y + "px";
+        node.style.left = ele_pos_x + "px";
+        parent.appendChild(node);
+        this.precanvas.appendChild(parent);
+
+        this.workflow.steps.push(pushData);
 
         this.dispatch('nodeCreated', this.nodeId);
 
@@ -1488,7 +1494,7 @@ export default class Workflow {
         content.classList.add("workflow_content_node");
         //content.innerHTML = dataNode.html;
 
-        content.innerHTML = dataNode.html;
+        content.innerHTML = generateStepHtml(dataNode, dataNode.html);
 
         node.appendChild(inputs);
         node.appendChild(content);
