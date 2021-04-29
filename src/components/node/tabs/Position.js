@@ -168,7 +168,7 @@ const Position = props => {
                         name="is_first"
                         type="checkbox"
                         checked={!selectedData.not_part_of_department}
-                        label="Chức vụ thuộc phòng ban hiện tại"
+                        label="Chức vụ của đối tượng thuộc phòng ban của người tạo tài liệu"
                         onChange={({target}) => {
                             setSelectedData({
                                 ...selectedData,
@@ -199,7 +199,7 @@ const Position = props => {
                         className="mt-3"
                         type="checkbox"
                         name="current_process_user_is_target"
-                        label="Chọn người đang thực hiện làm đối tượng"
+                        label="Chọn người đang tạo tài liệu làm đối tượng cho bước này"
                         checked={selectedData.disable_current_process_user_is_target}
                         onChange={({target}) => {
                             setSelectedData({

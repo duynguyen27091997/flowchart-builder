@@ -79,7 +79,7 @@ const Node = ({drag, urls, tableId, editor}) => {
     const handleCloseModal = () => {
         setShowModal(false);
         if (stepData.action) {
-            let text = _.get(stepData, 'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Thuộc phòng ban hiện tại';
+            let text = _.get(stepData, 'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Chức vụ của đối tượng thuộc phòng ban của người tạo tài liệu';
             setDisplay(<div className="mt-5">
                 <p style={{marginBottom: 0}}><strong>Phòng
                     ban:</strong> {_.get(stepData, 'department.name', text)}</p>
@@ -88,7 +88,7 @@ const Node = ({drag, urls, tableId, editor}) => {
                 <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
                 <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
                 {stepData.current_process_user_is_target &&
-                <p style={{marginBottom: 0}}>Lấy người đang thực hiện làm đối tượng cụ thể</p>}
+                <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
                 {stepData.same_department_on_step &&
                 <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
                 {stepData.same_target_on_step &&
