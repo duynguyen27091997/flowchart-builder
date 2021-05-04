@@ -22,7 +22,7 @@ const Node = ({drag, urls, tableId, editor}) => {
         current_process_user_is_target: false,
         same_department_on_step: null,
         same_target_on_step: null,
-        not_part_of_department: true,
+        not_part_of_department: false,
         required_to_select_specific_target: false
     };
 
@@ -117,7 +117,7 @@ const Node = ({drag, urls, tableId, editor}) => {
             current_process_user_is_target: false,
             connect_to_step: null,
             same_department_on: null,
-            not_part_of_department: true
+            not_part_of_department: key !== 'department-position'
         });
     }
 

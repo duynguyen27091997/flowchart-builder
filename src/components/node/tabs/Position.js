@@ -200,7 +200,7 @@ const Position = props => {
                         type="checkbox"
                         name="current_process_user_is_target"
                         label="Chọn người đang tạo tài liệu làm đối tượng cho bước này"
-                        checked={selectedData.disable_current_process_user_is_target}
+                        checked={selectedData.current_process_user_is_target}
                         onChange={({target}) => {
                             setSelectedData({
                                 ...selectedData,
