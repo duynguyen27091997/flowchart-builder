@@ -69,7 +69,6 @@ const FlowChart = props => {
         data.document_type_id = documentType ? documentType.id : null;
         data.workflow_pos_x = editor.canvas_x;
         data.workflow_pos_y = editor.canvas_y;
-        console.log(data);return false;
         axios.post(urls.store_work_flow, data)
             .then(res => {
                 alert.show('Lưu thành công');
