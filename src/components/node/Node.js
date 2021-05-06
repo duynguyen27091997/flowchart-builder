@@ -22,8 +22,13 @@ const Node = ({drag, urls, tableId, editor}) => {
         current_process_user_is_target: false,
         same_department_on_step: null,
         same_target_on_step: null,
-        not_part_of_department: false,
-        required_to_select_specific_target: false
+        use_document_creator_department_for_position: true,
+        required_to_select_specific_target: false,
+        co_approval: {
+            enable: false,
+            type: null,
+            sufficient_quantity_target_of_position_department_value: 2
+        }
     };
 
     let [showCreatePanel, setShowCreatePanel] = useState(false)
@@ -79,31 +84,30 @@ const Node = ({drag, urls, tableId, editor}) => {
     const handleCloseModal = () => {
         setShowModal(false);
         if (stepData.action) {
-            let text = _.get(stepData, 'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Chức vụ của đối tượng thuộc phòng ban của người tạo tài liệu';
             setDisplay(<div className="mt-5">
                 <p style={{marginBottom: 0}}><strong>Phòng
-                    ban:</strong> {_.get(stepData, 'department.name', text)}</p>
-                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', text)}
+                    ban:</strong> {_.get(stepData, 'department.name', (stepData.use_document_creator_department_for_position ? 'Lấy phòng ban của người tạo tài liệu làm phòng ban cho chức vụ' : 'Không thuộc phòng ban nào'))}
                 </p>
+                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name')}</p>
                 <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
                 <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
+                <br/>
                 {stepData.current_process_user_is_target &&
                 <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
-                {stepData.same_department_on_step &&
-                <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
-                {stepData.same_target_on_step &&
-                <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
                 {stepData.required_to_select_specific_target &&
                 <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
+                {stepData.co_approval.enable && <p style={{marginBottom: 0}}>Đồng duyệt</p>}
+                {stepData.co_approval.enable && <p style={{marginBottom: 0}}>Đồng duyệt</p>}
             </div>);
         }
     }
 
     const handleSetStepData = (key, data) => {
-        setStepData({
-            ...stepData,
-            [key]: data
-        })
+        let tmp = {
+            ...stepData
+        }
+        _.set(tmp, key, data)
+        setStepData(tmp)
     }
 
     const handleTabChange = key => {

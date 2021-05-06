@@ -70,7 +70,8 @@
     "react-bootstrap": "^1.5.1",
     "react-icons": "^4.1.0",
     "react-select": "^4.2.1",
-    "react-step-wizard": "^5.3.5"
+    "react-step-wizard": "^5.3.5",
+    "react-switch": "^6.0.0"
   },
   "directories": {
     "example": "example"

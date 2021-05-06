@@ -2,7 +2,18 @@ import React, {useState, useEffect} from 'react'
 import {Form} from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
+import Switch from "react-switch";
 
+let coopApprovalOption = [
+    {
+        label: 'Duyệt đủ theo số lượng cho trước (đối tượng bất kỳ thuộc phòng ban - chức vụ ở trên)',
+        value: 'sufficient_quantity_target_of_position_department'
+    },
+    {
+        label: 'Chọn một số đối tượng cụ thể (thuộc phòng ban - chức vụ ở trên)',
+        value: 'some_specific_target_of_position_department'
+    }
+];
 const Position = props => {
     let {
         positions,
@@ -20,25 +31,15 @@ const Position = props => {
         position: null,
         action: null,
         same_department_on_step: null,
-        not_part_of_department: true,
-        required_to_select_specific_target: false
+        required_to_select_specific_target: false,
+        use_document_creator_department_for_position: true,
+        co_approval: false,
+        co_approval_type: coopApprovalOption[0],
+        sufficient_quantity_target_of_position_department_value: 2,
+        current_process_user_is_target: false
     });
 
     let [listActionByPos, setListActionByPos] = useState([]);
-
-    useEffect(() => {
-        setDisableSelect({
-            action: true
-        });
-
-        setSelectedData({
-            position: null,
-            action: null,
-            same_department_on_step: null,
-            not_part_of_department: true,
-            required_to_select_specific_target: false
-        })
-    }, [reset])
 
     const getActionData = pos => {
         axios.get(`${url.trim('/')}/${pos}`).then(({data}) => {
@@ -68,13 +69,8 @@ const Position = props => {
         });
     };
 
-
-    const convertData = () => {
-
-    }
-
-    const formatGroupLabel = data => (
-        <div style={{
+    const formatGroupLabel = data => {
+        return <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -98,9 +94,72 @@ const Position = props => {
                 padding: '0.16666666666667em 0.5em',
                 textAlign: 'center',
             }}>{data.options.length}</span>
-        </div>
-    );
+        </div>;
+    };
 
+    const renderSelectCoopApprovalSelectType = () => {
+        if (selectedData.co_approval) {
+            return <Form.Group>
+                <Form.Label>Loại đồng duyệt <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
+                <Select
+                    menuPortalTarget={document.body}
+                    styles={{menuPortal: base => ({...base, zIndex: 9999})}}
+                    placeholder="Loại dồng duyệt"
+                    options={coopApprovalOption}
+                    value={selectedData.co_approval_type}
+                    onChange={option => {
+                        setSelectedData({
+                            ...selectedData,
+                            co_approval_type: option
+                        });
+                    }}
+                />
+            </Form.Group>
+        }
+        return null;
+    }
+
+    const renderCoApprovalMetaData = () => {
+        if (selectedData.co_approval && selectedData.co_approval_type) {
+            switch (selectedData.co_approval_type.value) {
+                case 'sufficient_quantity_target_of_position_department': {
+                    return <Form.Group className="mt-3">
+                        <Form.Label>Nhập số lượng đói tượng đồng duyệt
+                            <span className="text-danger" title="Bắt buộc">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            name="name"
+                            type="number"
+                            value={selectedData.sufficient_quantity_target_of_position_department_value}
+                            onChange={({target}) => setSelectedData({
+                                ...selectedData,
+                                sufficient_quantity_target_of_position_department_value: target.value
+                            })}
+                            min={2}/>
+                    </Form.Group>
+                }
+            }
+        }
+        return null;
+    }
+
+    useEffect(() => {
+        setDisableSelect({
+            action: true
+        });
+
+        setSelectedData({
+            position: null,
+            action: null,
+            same_department_on_step: null,
+            use_document_creator_department_for_position: true,
+            required_to_select_specific_target: false,
+            co_approval: false,
+            co_approval_type: coopApprovalOption[0],
+            sufficient_quantity_target_of_position_department_value: 2,
+            current_process_user_is_target: false
+        })
+    }, [reset])
 
     return (
         <div className="row mt-3">
@@ -147,69 +206,81 @@ const Position = props => {
                         }}
                     />
                 </Form.Group>
-                {/*<Form.Group>*/}
-                {/*    <Form.Label>Cùng phòng ban với đói tượng ở bước:</Form.Label>*/}
-                {/*    <Select*/}
-                {/*        menuPortalTarget={document.body}*/}
-                {/*        styles={{menuPortal: base => ({...base, zIndex: 9999})}}*/}
-                {/*        options={editor.workflow.steps.map(step => ({value: step.step_id, label: step.name}))}*/}
-                {/*        onChange={option => {*/}
-                {/*            setSelectedData({*/}
-                {/*                ...selectedData,*/}
-                {/*                same_department_on_step: option*/}
-                {/*            });*/}
-                {/*            setParentData('same_department_on_step', {id: option.value, name: option.label});*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</Form.Group>*/}
                 <Form.Group>
-                    <Form.Check
-                        className="mt-3"
-                        name="is_first"
-                        type="checkbox"
-                        checked={!selectedData.not_part_of_department}
-                        label="Chức vụ của đối tượng thuộc phòng ban của người tạo tài liệu"
-                        onChange={({target}) => {
-                            setSelectedData({
-                                ...selectedData,
-                                not_part_of_department: !target.checked
-                            });
-                            setParentData('not_part_of_department', !target.checked)
-                        }
-                        }/>
+                    <label className={"d-flex align-items-center"}>
+                        <Switch height={20}
+                                width={45}
+                                onChange={(checked) => {
+                                    setSelectedData({
+                                        ...selectedData,
+                                        use_document_creator_department_for_position: checked
+                                    });
+                                    setParentData('use_document_creator_department_for_position', checked)
+                                }}
+                                checked={selectedData.use_document_creator_department_for_position}/>
+                        <span className={"pl-2"}>Lấy phòng ban của người tạo tài liệu làm phòng ban cho chức vụ</span>
+                    </label>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Check
-                        className="mt-3"
-                        type="checkbox"
-                        name="required_to_select_specific_target"
-                        label="Bắt buộc chọn đối tượng cụ thể"
-                        checked={selectedData.required_to_select_specific_target}
-                        onChange={({target}) => {
-                            setSelectedData({
-                                ...selectedData,
-                                required_to_select_specific_target: target.checked
-                            });
-                            setParentData('required_to_select_specific_target', target.checked)
-                        }}
-                    />
+                    <label className={"d-flex align-items-center"}>
+                        <Switch height={20}
+                                width={45}
+                                disabled={selectedData.co_approval || selectedData.current_process_user_is_target}
+                                onChange={(checked) => {
+                                    setSelectedData({
+                                        ...selectedData,
+                                        required_to_select_specific_target: checked,
+                                        co_approval: false,
+                                        co_approval_type: coopApprovalOption[0],
+                                        sufficient_quantity_target_of_position_department_value: 2,
+                                        current_process_user_is_target: false
+                                    });
+                                }}
+                                checked={selectedData.required_to_select_specific_target}/>
+                        <span className={"pl-2"}>Bắt buộc chọn đối tượng cụ thể</span>
+                    </label>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Check
-                        className="mt-3"
-                        type="checkbox"
-                        name="current_process_user_is_target"
-                        label="Chọn người đang tạo tài liệu làm đối tượng cho bước này"
-                        checked={selectedData.current_process_user_is_target}
-                        onChange={({target}) => {
-                            setSelectedData({
-                                ...selectedData,
-                                current_process_user_is_target: target.checked
-                            });
-                            setParentData('current_process_user_is_target', target.checked)
-                        }}
-                    />
+                    <label className={"d-flex align-items-center"}>
+                        <Switch height={20}
+                                width={45}
+                                disabled={selectedData.co_approval || selectedData.required_to_select_specific_target}
+                                onChange={(checked) => {
+                                    setSelectedData({
+                                        ...selectedData,
+                                        current_process_user_is_target: checked,
+                                        required_to_select_specific_target: false,
+                                        co_approval: false,
+                                        co_approval_type: coopApprovalOption[0],
+                                        sufficient_quantity_target_of_position_department_value: 2,
+                                    });
+                                }}
+                                checked={selectedData.current_process_user_is_target}/>
+                        <span className={"pl-2"}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</span>
+                    </label>
                 </Form.Group>
+                <Form.Group>
+                    <label className={"d-flex align-items-center"}>
+                        <Switch height={20}
+                                width={45}
+                                disabled={selectedData.required_to_select_specific_target || selectedData.current_process_user_is_target}
+                                onChange={(checked) => {
+                                    let tmp = {
+                                        ...selectedData,
+                                        co_approval: checked
+                                    };
+                                    if (!checked) {
+                                        tmp.co_approval_type = coopApprovalOption[0];
+                                        tmp.sufficient_quantity_target_of_position_department_value = 2;
+                                    }
+                                    setSelectedData(tmp)
+                                }}
+                                checked={selectedData.co_approval}/>
+                        <span className={"pl-2"}>Đồng duyệt?</span>
+                    </label>
+                </Form.Group>
+                {renderSelectCoopApprovalSelectType()}
+                {renderCoApprovalMetaData()}
             </div>
         </div>
     )
