@@ -1,5 +1,5 @@
 /* eslint-disable */
-import {ACTION_CLASS_PREFIX} from '../helpers/constants';
+import {ACTION_CLASS_PREFIX} from './constants';
 import _ from 'lodash'
 import {generateStepHtml} from "./functions";
 
@@ -1402,8 +1402,9 @@ export default class Workflow {
             current_process_user_is_target: data.current_process_user_is_target,
             same_department_on_step: data.same_department_on_step,
             same_target_on_step: data.same_target_on_step,
-            not_part_of_department: data.not_part_of_department,
+            use_document_creator_department_for_position: data.use_document_creator_department_for_position,
             required_to_select_specific_target: data.required_to_select_specific_target,
+            co_approval: data.co_approval,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         }

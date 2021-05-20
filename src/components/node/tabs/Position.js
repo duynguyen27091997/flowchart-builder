@@ -3,17 +3,12 @@ import {Form} from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
 import Switch from "react-switch";
+import {COOP_APPROVAL_TYPE} from '../../../helpers/constants'
 
-let coopApprovalOption = [
-    {
-        label: 'Duyệt đủ theo số lượng cho trước (đối tượng bất kỳ thuộc phòng ban - chức vụ ở trên)',
-        value: 'sufficient_quantity_target_of_position_department'
-    },
-    {
-        label: 'Chọn một số đối tượng cụ thể (thuộc phòng ban - chức vụ ở trên)',
-        value: 'some_specific_target_of_position_department'
-    }
-];
+const COOP_APPROVAL_TYPE_DEFAULT = Object.values(COOP_APPROVAL_TYPE.position).find(value => {
+    return value.default;
+})
+
 const Position = props => {
     let {
         positions,
@@ -23,23 +18,19 @@ const Position = props => {
         url
     } = props;
 
-    let [disableSelect, setDisableSelect] = useState({
-        action: true
-    });
+    let [disabled, setDisables] = useState({action: true});
 
-    let [selectedData, setSelectedData] = useState({
+    let [data, setData] = useState({
         position: null,
         action: null,
-        same_department_on_step: null,
-        required_to_select_specific_target: false,
-        use_document_creator_department_for_position: true,
+        required_to_select_specific_target: true,
+        use_document_creator_department_for_position: false,
         co_approval: false,
-        co_approval_type: coopApprovalOption[0],
-        sufficient_quantity_target_of_position_department_value: 2,
+        co_approval_type: null,
         current_process_user_is_target: false
     });
 
-    let [listActionByPos, setListActionByPos] = useState([]);
+    let [listActions, setListActions] = useState([]);
 
     const getActionData = pos => {
         axios.get(`${url.trim('/')}/${pos}`).then(({data}) => {
@@ -63,7 +54,7 @@ const Position = props => {
                     ]
                 }, [])
             }
-            setListActionByPos(options);
+            setListActions(options);
         }).catch(err => {
             alert.show('Có lỗi xảy ra');
         });
@@ -97,28 +88,6 @@ const Position = props => {
         </div>;
     };
 
-    const renderSelectCoopApprovalSelectType = () => {
-        if (selectedData.co_approval) {
-            return <Form.Group>
-                <Form.Label>Loại đồng duyệt <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
-                <Select
-                    menuPortalTarget={document.body}
-                    styles={{menuPortal: base => ({...base, zIndex: 9999})}}
-                    placeholder="Loại dồng duyệt"
-                    options={coopApprovalOption}
-                    value={selectedData.co_approval_type}
-                    onChange={option => {
-                        setSelectedData({
-                            ...selectedData,
-                            co_approval_type: option
-                        });
-                    }}
-                />
-            </Form.Group>
-        }
-        return null;
-    }
-
     const renderCoApprovalMetaData = () => {
         if (selectedData.co_approval && selectedData.co_approval_type) {
             switch (selectedData.co_approval_type.value) {
@@ -130,11 +99,14 @@ const Position = props => {
                         <Form.Control
                             name="name"
                             type="number"
-                            value={selectedData.sufficient_quantity_target_of_position_department_value}
-                            onChange={({target}) => setSelectedData({
-                                ...selectedData,
-                                sufficient_quantity_target_of_position_department_value: target.value
-                            })}
+                            value={selectedData.approval_target_nums}
+                            onChange={({target}) => {
+                                setSelectedData({
+                                    ...selectedData,
+                                    approval_target_nums: target.value
+                                })
+                                setParentData('co_approval.approval_target_nums', target.value)
+                            }}
                             min={2}/>
                     </Form.Group>
                 }
@@ -144,21 +116,21 @@ const Position = props => {
     }
 
     useEffect(() => {
-        setDisableSelect({
-            action: true
-        });
+        setDisables({action: true});
 
-        setSelectedData({
+        setDisables({
             position: null,
             action: null,
-            same_department_on_step: null,
-            use_document_creator_department_for_position: true,
-            required_to_select_specific_target: false,
+            required_to_select_specific_target: true,
+            use_document_creator_department_for_position: false,
             co_approval: false,
-            co_approval_type: coopApprovalOption[0],
-            sufficient_quantity_target_of_position_department_value: 2,
+            co_approval_type: null,
             current_process_user_is_target: false
         })
+
+        // setParentData('co_approval.type', coopApprovalOption[0].value);
+        // setParentData('co_approval.approval_target_nums', 2)
+
     }, [reset])
 
     return (
@@ -171,19 +143,19 @@ const Position = props => {
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
                         placeholder="Chọn chức vụ"
                         options={positions}
-                        value={selectedData.position}
+                        value={data.position}
                         onChange={option => {
-                            setSelectedData({
-                                ...selectedData,
-                                position: option,
-                                action: null
-                            });
-                            setParentData('actions', []);
-                            setDisableSelect({
-                                action: false
-                            });
-                            getActionData(option.value);
-                            setParentData('position', {id: option.value, name: option.label});
+                            // setSelectedData({
+                            //     ...selectedData,
+                            //     position: option,
+                            //     action: null
+                            // });
+                            // setParentData('actions', []);
+                            // setDisableSelect({
+                            //     action: false
+                            // });
+                            // getActionData(option.value);
+                            // setParentData('position', {id: option.value, name: option.label});
                         }}
                     />
                 </Form.Group>
@@ -194,15 +166,15 @@ const Position = props => {
                         styles={{menuPortal: base => ({...base, zIndex: 9999})}}
                         formatGroupLabel={formatGroupLabel}
                         placeholder="Chọn"
-                        options={listActionByPos}
-                        isDisabled={disableSelect.action}
-                        value={selectedData.action}
+                        options={listActions}
+                        isDisabled={data.action}
+                        value={data.action}
                         onChange={option => {
-                            setSelectedData({
-                                ...selectedData,
-                                action: option
-                            });
-                            setParentData('action', {id: option.value, name: option.label});
+                            // setSelectedData({
+                            //     ...selectedData,
+                            //     action: option
+                            // });
+                            // setParentData('action', {id: option.value, name: option.label});
                         }}
                     />
                 </Form.Group>
@@ -211,13 +183,10 @@ const Position = props => {
                         <Switch height={20}
                                 width={45}
                                 onChange={(checked) => {
-                                    setSelectedData({
-                                        ...selectedData,
-                                        use_document_creator_department_for_position: checked
-                                    });
+                                    setData({...data, use_document_creator_department_for_position: checked});
                                     setParentData('use_document_creator_department_for_position', checked)
                                 }}
-                                checked={selectedData.use_document_creator_department_for_position}/>
+                                checked={data.use_document_creator_department_for_position}/>
                         <span className={"pl-2"}>Lấy phòng ban của người tạo tài liệu làm phòng ban cho chức vụ</span>
                     </label>
                 </Form.Group>
@@ -225,18 +194,12 @@ const Position = props => {
                     <label className={"d-flex align-items-center"}>
                         <Switch height={20}
                                 width={45}
-                                disabled={selectedData.co_approval || selectedData.current_process_user_is_target}
+                                disabled={data.co_approval || data.current_process_user_is_target}
                                 onChange={(checked) => {
-                                    setSelectedData({
-                                        ...selectedData,
-                                        required_to_select_specific_target: checked,
-                                        co_approval: false,
-                                        co_approval_type: coopApprovalOption[0],
-                                        sufficient_quantity_target_of_position_department_value: 2,
-                                        current_process_user_is_target: false
-                                    });
+                                    setData({...data, required_to_select_specific_target: checked});
+                                    setParentData('required_to_select_specific_target', checked)
                                 }}
-                                checked={selectedData.required_to_select_specific_target}/>
+                                checked={data.required_to_select_specific_target}/>
                         <span className={"pl-2"}>Bắt buộc chọn đối tượng cụ thể</span>
                     </label>
                 </Form.Group>
@@ -244,18 +207,12 @@ const Position = props => {
                     <label className={"d-flex align-items-center"}>
                         <Switch height={20}
                                 width={45}
-                                disabled={selectedData.co_approval || selectedData.required_to_select_specific_target}
+                                disabled={data.co_approval || data.required_to_select_specific_target}
                                 onChange={(checked) => {
-                                    setSelectedData({
-                                        ...selectedData,
-                                        current_process_user_is_target: checked,
-                                        required_to_select_specific_target: false,
-                                        co_approval: false,
-                                        co_approval_type: coopApprovalOption[0],
-                                        sufficient_quantity_target_of_position_department_value: 2,
-                                    });
+                                    setData({...data, current_process_user_is_target: checked});
+                                    setParentData('current_process_user_is_target', checked)
                                 }}
-                                checked={selectedData.current_process_user_is_target}/>
+                                checked={data.current_process_user_is_target}/>
                         <span className={"pl-2"}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</span>
                     </label>
                 </Form.Group>
@@ -263,24 +220,45 @@ const Position = props => {
                     <label className={"d-flex align-items-center"}>
                         <Switch height={20}
                                 width={45}
-                                disabled={selectedData.required_to_select_specific_target || selectedData.current_process_user_is_target}
+                                disabled={data.required_to_select_specific_target || data.current_process_user_is_target}
                                 onChange={(checked) => {
-                                    let tmp = {
-                                        ...selectedData,
-                                        co_approval: checked
-                                    };
-                                    if (!checked) {
-                                        tmp.co_approval_type = coopApprovalOption[0];
-                                        tmp.sufficient_quantity_target_of_position_department_value = 2;
+                                    let co_approval = false;
+                                    let co_approval_type = null
+                                    if (checked) {
+                                        co_approval = checked;
+                                        co_approval_type = COOP_APPROVAL_TYPE_DEFAULT
                                     }
-                                    setSelectedData(tmp)
+                                    setData({
+                                        ...data,
+                                        required_to_select_specific_target: false,
+                                        co_approval,
+                                        co_approval_type
+                                    })
+                                    setParentData('co_approval.enable', co_approval);
+                                    setParentData('co_approval.type', co_approval_type);
                                 }}
-                                checked={selectedData.co_approval}/>
-                        <span className={"pl-2"}>Đồng duyệt?</span>
+                                checked={data.co_approval}/>
+                        <span className={"pl-2"}>Đồng duyệt</span>
                     </label>
                 </Form.Group>
-                {renderSelectCoopApprovalSelectType()}
-                {renderCoApprovalMetaData()}
+                {
+                    data.co_approval &&
+                    <Form.Group>
+                        <Form.Label>Loại đồng duyệt <span className="text-danger" title="Bắt buộc">*</span></Form.Label>
+                        <Select
+                            menuPortalTarget={document.body}
+                            styles={{menuPortal: base => ({...base, zIndex: 9999})}}
+                            placeholder="Loại dồng duyệt"
+                            options={Object.values(COOP_APPROVAL_TYPE.position)}
+                            value={data.co_approval_type}
+                            onChange={option => {
+                                setData({...data, co_approval_type: option});
+                                setParentData('co_approval.type', option.value)
+                            }}
+                        />
+                    </Form.Group>
+                }
+                {/*{renderCoApprovalMetaData()}*/}
             </div>
         </div>
     )

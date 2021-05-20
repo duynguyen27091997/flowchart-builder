@@ -130,11 +130,14 @@ const generateHtml = () => {
                         </p>
                         <p class="box__action">Chức vụ: __position__</p>
                         <p class="box__action">Hành động: __action__</p>
-                        <p>Mô tả</p>
-                        __current_process_user_is_target__
-                        __same_department_on_step__
-                        __same_target_on_step__
-                        __required_to_select_specific_target__
+                        <p>Thông tin thêm:</p>
+                        <p><strong>Loại duyệt:</strong> __approval_type__</p>
+                        <p>__co_approval_type__</p>
+                        <p>__co_approval_type_extra_data__</p>
+                        <p>__current_process_user_is_target__</p>
+                        <p>__same_department_on_step__</p>
+                        <p>__same_target_on_step__</p>
+                        <p>__required_to_select_specific_target__</p>
                 </div>
             </div>`;
 }

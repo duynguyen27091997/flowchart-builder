@@ -5,9 +5,9 @@ import {TTFlow} from '@tuoitre/flowchart-builder'
 
 const App = () => {
     let urls = {
-        get_list_document_types: 'https://document.tuoitre.vn/api/document-type/get-document-types',
-        get_one_document_type: 'https://document.tuoitre.vn/api/document-type/get',
-        get_workflow_detail: 'https://workflow.tuoitre.vn/api/workflow/detail',
+        get_list_document_types: 'http://document.erp.ez/api/document-type/get-document-types',
+        get_one_document_type: 'http://document.erp.ez/api/document-type/get',
+        get_workflow_detail: 'http://workflow.erp.ez/api/workflow/detail',
         store_work_flow: 'https://workflow.tuoitre.vn/api/workflow/store',
         get_list_departments: 'https://employee.tuoitre.vn/api/departments',
         get_list_positions: 'https://employee.tuoitre.vn/api/positions',

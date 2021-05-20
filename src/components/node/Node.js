@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {useAlert} from 'react-alert';
 import {FaPlus} from "react-icons/fa";
 import {Button, Form, Modal, Tab, Tabs} from "react-bootstrap";
 import axios from "axios";
@@ -9,6 +8,7 @@ import DepartmentPosition from "./tabs/DepartmentPosition";
 import Position from "./tabs/Position";
 import AnyOne from "./tabs/Anyone";
 import PanelCreate from "./PanelCreate";
+import {COOP_APPROVAL_TYPE} from '../../helpers/constants'
 
 const Node = ({drag, urls, tableId, editor}) => {
 
@@ -27,7 +27,7 @@ const Node = ({drag, urls, tableId, editor}) => {
         co_approval: {
             enable: false,
             type: null,
-            sufficient_quantity_target_of_position_department_value: 2
+            approval_target_nums: 2
         }
     };
 
@@ -39,7 +39,7 @@ const Node = ({drag, urls, tableId, editor}) => {
         actions: [],
     });
     let [showModal, setShowModal] = useState(false);
-    let [tabType, setTabType] = useState('department-position');
+    let [tabType, setTabType] = useState('department_position');
     let [display, setDisplay] = useState(null);
     let [reset, setReset] = useState(false);
 
@@ -75,10 +75,16 @@ const Node = ({drag, urls, tableId, editor}) => {
     }
 
     const resetPanelCreate = () => {
-        setTabType('department-position');
+        setTabType('department_position');
         setShowCreatePanel(false);
         setStepData(defaultData);
         setDisplay(null);
+    }
+
+    const resolveCoApprovalType = () => {
+        let tmp = coopApprovalType[tabType].find(item => item.value === stepData.co_approval.type);
+        if (tmp) return tmp.label;
+        return null;
     }
 
     const handleCloseModal = () => {
@@ -90,14 +96,13 @@ const Node = ({drag, urls, tableId, editor}) => {
                 </p>
                 <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name')}</p>
                 <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
-                <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
                 <br/>
-                {stepData.current_process_user_is_target &&
-                <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
-                {stepData.required_to_select_specific_target &&
-                <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
-                {stepData.co_approval.enable && <p style={{marginBottom: 0}}>Đồng duyệt</p>}
-                {stepData.co_approval.enable && <p style={{marginBottom: 0}}>Đồng duyệt</p>}
+                <p style={{marginBottom: 0}}><strong>Thông tin thêm: </strong></p>
+                <p style={{marginBottom: 0}}><strong>Loại duyệt:</strong> {stepData.co_approval.enable ? 'Đồng duyệt' : 'Đơn duyệt'}</p>
+                {stepData.co_approval.enable && <p style={{marginBottom: 0}}><strong>Loại đồng duyệt:</strong> {resolveCoApprovalType()}</p>}
+                {stepData.co_approval.enable && stepData.co_approval.type === 'sufficient_quantity_target_of_position_department' && <p style={{marginBottom: 0}}><strong>Số lương đối tượng đồng duyệt:</strong> {stepData.co_approval.approval_target_nums}</p>}
+                {stepData.current_process_user_is_target && <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
+                {stepData.required_to_select_specific_target && <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
             </div>);
         }
     }
@@ -119,9 +124,15 @@ const Node = ({drag, urls, tableId, editor}) => {
             position: null,
             action: null,
             current_process_user_is_target: false,
-            connect_to_step: null,
-            same_department_on: null,
-            not_part_of_department: key !== 'department-position'
+            same_department_on_step: null,
+            same_target_on_step: null,
+            use_document_creator_department_for_position: true,
+            required_to_select_specific_target: false,
+            co_approval: {
+                enable: false,
+                type: null,
+                approval_target_nums: 2
+            }
         });
     }
 
@@ -149,14 +160,14 @@ const Node = ({drag, urls, tableId, editor}) => {
                     <Tabs
                         activeKey={tabType}
                         onSelect={handleTabChange}>
-                        <Tab eventKey="department-position" title="Đối tượng theo phòng ban - chức danh">
+                        <Tab eventKey="department_position" title="Đối tượng theo phòng ban - chức danh">
                             <DepartmentPosition
                                 key={'department-position'}
                                 departments={listDataSelect.departments}
                                 positions={listDataSelect.positions}
                                 url={urls.get_list_actions_by_post_dep}
-                                tableId={tableId}
                                 setParentData={handleSetStepData}
+                                editor={editor}
                                 reset={reset}
                             />
                         </Tab>
