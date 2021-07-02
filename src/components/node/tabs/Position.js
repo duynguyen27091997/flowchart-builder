@@ -18,8 +18,6 @@ const Position = props => {
         url
     } = props;
 
-    let [disabled, setDisables] = useState({action: true});
-
     let [data, setData] = useState({
         position: null,
         action: null,
@@ -89,8 +87,8 @@ const Position = props => {
     };
 
     const renderCoApprovalMetaData = () => {
-        if (selectedData.co_approval && selectedData.co_approval_type) {
-            switch (selectedData.co_approval_type.value) {
+        if (data.co_approval) {
+            switch (data.co_approval_type.value) {
                 case 'sufficient_quantity_target_of_position_department': {
                     return <Form.Group className="mt-3">
                         <Form.Label>Nhập số lượng đói tượng đồng duyệt
@@ -99,11 +97,14 @@ const Position = props => {
                         <Form.Control
                             name="name"
                             type="number"
-                            value={selectedData.approval_target_nums}
+                            value={data.co_approval_type.approval_target_nums}
                             onChange={({target}) => {
-                                setSelectedData({
-                                    ...selectedData,
-                                    approval_target_nums: target.value
+                                setData({
+                                    ...data,
+                                    co_approval_type: {
+                                        ...data.co_approval_type,
+                                        approval_target_nums: target.value
+                                    }
                                 })
                                 setParentData('co_approval.approval_target_nums', target.value)
                             }}
@@ -116,15 +117,15 @@ const Position = props => {
     }
 
     useEffect(() => {
-        setDisables({action: true});
-
-        setDisables({
+        setData({
             position: null,
             action: null,
             required_to_select_specific_target: true,
             use_document_creator_department_for_position: false,
-            co_approval: false,
-            co_approval_type: null,
+            co_approval: {
+                enable: false,
+                type: null
+            },
             current_process_user_is_target: false
         })
 
@@ -132,6 +133,10 @@ const Position = props => {
         // setParentData('co_approval.approval_target_nums', 2)
 
     }, [reset])
+
+    useEffect(() => {
+        setParentData(data);
+    }, [data])
 
     return (
         <div className="row mt-3">
@@ -145,17 +150,8 @@ const Position = props => {
                         options={positions}
                         value={data.position}
                         onChange={option => {
-                            // setSelectedData({
-                            //     ...selectedData,
-                            //     position: option,
-                            //     action: null
-                            // });
-                            // setParentData('actions', []);
-                            // setDisableSelect({
-                            //     action: false
-                            // });
-                            // getActionData(option.value);
-                            // setParentData('position', {id: option.value, name: option.label});
+                            setData({...data, position: option, action: null});
+                            getActionData(option.value);
                         }}
                     />
                 </Form.Group>
@@ -170,11 +166,7 @@ const Position = props => {
                         isDisabled={data.action}
                         value={data.action}
                         onChange={option => {
-                            // setSelectedData({
-                            //     ...selectedData,
-                            //     action: option
-                            // });
-                            // setParentData('action', {id: option.value, name: option.label});
+                            setData({...data, action: option});
                         }}
                     />
                 </Form.Group>
@@ -184,7 +176,6 @@ const Position = props => {
                                 width={45}
                                 onChange={(checked) => {
                                     setData({...data, use_document_creator_department_for_position: checked});
-                                    setParentData('use_document_creator_department_for_position', checked)
                                 }}
                                 checked={data.use_document_creator_department_for_position}/>
                         <span className={"pl-2"}>Lấy phòng ban của người tạo tài liệu làm phòng ban cho chức vụ</span>
@@ -197,7 +188,6 @@ const Position = props => {
                                 disabled={data.co_approval || data.current_process_user_is_target}
                                 onChange={(checked) => {
                                     setData({...data, required_to_select_specific_target: checked});
-                                    setParentData('required_to_select_specific_target', checked)
                                 }}
                                 checked={data.required_to_select_specific_target}/>
                         <span className={"pl-2"}>Bắt buộc chọn đối tượng cụ thể</span>
@@ -210,7 +200,6 @@ const Position = props => {
                                 disabled={data.co_approval || data.required_to_select_specific_target}
                                 onChange={(checked) => {
                                     setData({...data, current_process_user_is_target: checked});
-                                    setParentData('current_process_user_is_target', checked)
                                 }}
                                 checked={data.current_process_user_is_target}/>
                         <span className={"pl-2"}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</span>
@@ -231,11 +220,11 @@ const Position = props => {
                                     setData({
                                         ...data,
                                         required_to_select_specific_target: false,
-                                        co_approval,
-                                        co_approval_type
+                                        co_approval: {
+                                            enable: co_approval,
+                                            type: co_approval_type
+                                        }
                                     })
-                                    setParentData('co_approval.enable', co_approval);
-                                    setParentData('co_approval.type', co_approval_type);
                                 }}
                                 checked={data.co_approval}/>
                         <span className={"pl-2"}>Đồng duyệt</span>
@@ -252,8 +241,7 @@ const Position = props => {
                             options={Object.values(COOP_APPROVAL_TYPE.position)}
                             value={data.co_approval_type}
                             onChange={option => {
-                                setData({...data, co_approval_type: option});
-                                setParentData('co_approval.type', option.value)
+                                setData({...data, co_approval: {...data.co_approval, type: option}});
                             }}
                         />
                     </Form.Group>

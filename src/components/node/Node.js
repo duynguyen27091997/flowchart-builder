@@ -12,7 +12,8 @@ import {COOP_APPROVAL_TYPE} from '../../helpers/constants'
 
 const Node = ({drag, urls, tableId, editor}) => {
 
-    let defaultData = {
+    let [showCreatePanel, setShowCreatePanel] = useState(false)
+    let [stepData, setStepData] = useState({
         name: '',
         description: '',
         department: null,
@@ -20,24 +21,14 @@ const Node = ({drag, urls, tableId, editor}) => {
         action: null,
         is_first: false,
         current_process_user_is_target: false,
-        same_department_on_step: null,
-        same_target_on_step: null,
         use_document_creator_department_for_position: true,
         required_to_select_specific_target: false,
         co_approval: {
             enable: false,
-            type: null,
-            approval_target_nums: 2
+            type: null
         }
-    };
-
-    let [showCreatePanel, setShowCreatePanel] = useState(false)
-    let [stepData, setStepData] = useState(defaultData);
-    let [listDataSelect, setListDataSelect] = useState({
-        departments: [],
-        positions: [],
-        actions: [],
     });
+    let [listDataSelect, setListDataSelect] = useState({departments: [], positions: [], actions: [],});
     let [showModal, setShowModal] = useState(false);
     let [tabType, setTabType] = useState('department_position');
     let [display, setDisplay] = useState(null);
@@ -88,6 +79,8 @@ const Node = ({drag, urls, tableId, editor}) => {
     }
 
     const handleCloseModal = () => {
+        console.log(stepData);
+        return false;
         setShowModal(false);
         if (stepData.action) {
             setDisplay(<div className="mt-5">
@@ -98,21 +91,26 @@ const Node = ({drag, urls, tableId, editor}) => {
                 <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
                 <br/>
                 <p style={{marginBottom: 0}}><strong>Thông tin thêm: </strong></p>
-                <p style={{marginBottom: 0}}><strong>Loại duyệt:</strong> {stepData.co_approval.enable ? 'Đồng duyệt' : 'Đơn duyệt'}</p>
-                {stepData.co_approval.enable && <p style={{marginBottom: 0}}><strong>Loại đồng duyệt:</strong> {resolveCoApprovalType()}</p>}
-                {stepData.co_approval.enable && stepData.co_approval.type === 'sufficient_quantity_target_of_position_department' && <p style={{marginBottom: 0}}><strong>Số lương đối tượng đồng duyệt:</strong> {stepData.co_approval.approval_target_nums}</p>}
-                {stepData.current_process_user_is_target && <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
-                {stepData.required_to_select_specific_target && <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
+                <p style={{marginBottom: 0}}><strong>Loại
+                    duyệt:</strong> {stepData.co_approval.enable ? 'Đồng duyệt' : 'Đơn duyệt'}</p>
+                {stepData.co_approval.enable &&
+                <p style={{marginBottom: 0}}><strong>Loại đồng duyệt:</strong> {resolveCoApprovalType()}</p>}
+                {stepData.co_approval.enable && stepData.co_approval.type === 'sufficient_quantity_target_of_position_department' &&
+                <p style={{marginBottom: 0}}><strong>Số lương đối tượng đồng
+                    duyệt:</strong> {stepData.co_approval.approval_target_nums}</p>}
+                {stepData.current_process_user_is_target &&
+                <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
+                {stepData.required_to_select_specific_target &&
+                <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
             </div>);
         }
     }
 
-    const handleSetStepData = (key, data) => {
-        let tmp = {
-            ...stepData
-        }
-        _.set(tmp, key, data)
-        setStepData(tmp)
+    const handleSetStepData = data => {
+        setStepData({
+            ...stepData,
+            ...data
+        });
     }
 
     const handleTabChange = key => {
