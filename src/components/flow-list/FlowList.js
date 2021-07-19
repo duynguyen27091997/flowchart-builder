@@ -12,15 +12,15 @@ const FlowList = props => {
                 {
                     list.map((item, index) =>
                         <li
-                            className={`dd-item ${item.children.length > 0 && 'dd-parent'}`}
+                            className={`dd-item ${item.children && item.children.length > 0 && 'dd-parent'}`}
                             onClick={() => {
-                                if (item.children.length === 0) {
+                                if (!item.children || item.children.length === 0) {
                                     clickHandle && clickHandle(item)
                                 }
                             }}
                             key={index}>
-                            <div className={`dd-handle ${item.children.length > 0 && 'parent-title'}`}>{item.display_name}</div>
-                            {item.children.length > 0 && <FlowList list={item.children} clickHandle={clickHandle}/>}
+                            <div className={`dd-handle ${item.children && item.children.length > 0 && 'parent-title'}`}>{item.display_name}</div>
+                            {item.children && item.children.length > 0 && <FlowList list={item.children} clickHandle={clickHandle}/>}
                         </li>)
                 }
             </ol>

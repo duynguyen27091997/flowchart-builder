@@ -3,7 +3,7 @@ export const COOP_APPROVAL_TYPE = {
     department_position: {
         all_target_of_position_department: {
             label: 'Tất cả đối tượng đều phải duyệt (thuộc phòng ban - chức vụ ở trên)',
-            value: 'all_target_of_position_department',
+            value: 'all_of_position_department',
             default: true
         },
         sufficient_quantity_target_of_position_department: {

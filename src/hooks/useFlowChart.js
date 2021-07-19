@@ -96,10 +96,6 @@ const useFlowChart = (workflowId) => {
             alert.show('Chưa nhập đủ trường cần thiết');
             return false;
         }
-        // if ((!data.action || !data.name) || (data.mode === 'department-position' && (!data.department || !data.position))) {
-        //     alert.show('Chưa nhập đủ trường cần thiết');
-        //     return false;
-        // }
 
         if ((editor.workflow.steps.findIndex(item => item.is_first === true) !== -1) && data.is_first) {
             alert.show('Đã tồn tại bước bắt đầu !');
@@ -125,19 +121,17 @@ const generateHtml = () => {
                     <p class="mt-2"><strong>Mô tả:</strong> __description__</p>
                  </div>
                  <div class="box">
-                        <p class="box__target">Phòng ban: __department__
-                            <span></span>
-                        </p>
-                        <p class="box__action">Chức vụ: __position__</p>
-                        <p class="box__action">Hành động: __action__</p>
-                        <p>Thông tin thêm:</p>
-                        <p><strong>Loại duyệt:</strong> __approval_type__</p>
-                        <p>__co_approval_type__</p>
-                        <p>__co_approval_type_extra_data__</p>
-                        <p>__current_process_user_is_target__</p>
-                        <p>__same_department_on_step__</p>
-                        <p>__same_target_on_step__</p>
-                        <p>__required_to_select_specific_target__</p>
+                        <h5>Đối tượng</h5>
+                        <p class="mt-2"><strong>- Phòng ban:</strong> __department__</p>
+                        <p><strong>- Chức vụ:</strong> __position__</p>
+                        <p><strong>- Loại duyệt:</strong> __approval_type__</p>
+                        __co_approval_type__
+                        __approval_target_nums__
+                        __use_document_creator_as_step_target__
+                        __required_to_select_specific_target__
+                        <br/>
+                        <h5>Hành động</h5>
+                        <p class="mt-2">- __action__</p>
                 </div>
             </div>`;
 }

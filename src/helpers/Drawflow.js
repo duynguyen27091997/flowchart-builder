@@ -1373,18 +1373,18 @@ export default class Workflow {
         }
 
         let outputItem = {
-            action_id: data.action.id,
-            action_name: data.action.name,
-            department_id: _.get(data, 'department.id', null),
-            department_name: _.get(data, 'department.name', null),
-            position_id: _.get(data, 'position.id', null),
-            position_name: _.get(data, 'position.name', null)
+            action_id: data.action.value,
+            action_name: data.action.label,
+            department_id: data.department?.value,
+            department_name: data.department?.label,
+            position_id: data.position.value,
+            position_name: data.position.label
         };
 
         ['pass', 'reject'].forEach(value => {
             let output = document.createElement('div');
             output.classList.add("output");
-            output.classList.add(`${ACTION_CLASS_PREFIX}${data.action.id}_output_${value}`);
+            output.classList.add(`${ACTION_CLASS_PREFIX}${data.action.value}_output_${value}`);
             outputItem[value] = null;
             outputs.appendChild(output)
         });
@@ -1399,17 +1399,13 @@ export default class Workflow {
             is_first: data.is_first,
             inputs: jsonInput,
             actions: jsonOutput,
-            current_process_user_is_target: data.current_process_user_is_target,
-            same_department_on_step: data.same_department_on_step,
-            same_target_on_step: data.same_target_on_step,
+            use_document_creator_as_step_target: data.use_document_creator_as_step_target,
             use_document_creator_department_for_position: data.use_document_creator_department_for_position,
             required_to_select_specific_target: data.required_to_select_specific_target,
             co_approval: data.co_approval,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         }
-
-
 
         const content = document.createElement('div');
         content.classList.add("workflow_content_node");

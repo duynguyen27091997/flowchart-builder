@@ -13,7 +13,7 @@ import {Button, Modal} from "react-bootstrap";
 const FlowChart = props => {
     let {
         urls,
-        tableId,
+        user,
         permissions = []
     } = props;
 
@@ -24,19 +24,21 @@ const FlowChart = props => {
     let [documentType, setDocumentType] = useState(null);
 
     const onClickSelectDocumentType = item => {
-        axios.get(urls.get_workflow_detail, {params: {type_id: item.id}}).then(
-            ({status, data}) => {
-                setShowModal(false);
-                if (status === 200) {
+        axios.get(urls.get_workflow_detail, {params: {type_id: item.id}})
+            .then(
+                ({status, data}) => {
                     setDocumentType(item)
                     editor.import(data);
-                } else {
-                    editor.clear()
-                    alert.show('Không tìm thấy dữ liệu, Tiến hành tạo mới');
-                    setDocumentType(item);
                 }
-            }
-        )
+            )
+            .catch(() => {
+                editor.clear()
+                alert.show('Không tìm thấy dữ liệu, Tiến hành tạo mới');
+                setDocumentType(item);
+            })
+            .finally(() => {
+                setShowModal(false);
+            })
     }
 
     const handleCloseModal = () => {
@@ -64,14 +66,13 @@ const FlowChart = props => {
 
     const handleSave = steps => {
         let data = {
-            steps: steps.steps
+            steps: steps.steps,
+            workflow_pos_x: editor.canvas_x,
+            workflow_pos_y: editor.canvas_y,
+            creator_id: user?.id,
+            creator_name: user?.name
         };
-        data.document_type_id = documentType ? documentType.id : null;
-        data.workflow_pos_x = editor.canvas_x;
-        data.workflow_pos_y = editor.canvas_y;
-        console.log(data);
-        return false;
-        axios.post(urls.store_work_flow, data)
+        axios.post(urls.store_work_flow + '/' + documentType.id, data)
             .then(res => {
                 alert.show('Lưu thành công');
             })
@@ -94,7 +95,7 @@ const FlowChart = props => {
                     </Button>
                 </div>
                 {documentType && renderType(documentType)}
-                {documentType && <Node urls={urls} drag={drag} tableId={tableId} editor={editor}/>}
+                {documentType && <Node urls={urls} drag={drag} editor={editor}/>}
                 <FlowTool editor={editor} handleSave={handleSave} permissions={permissions}
                           checkPermission={checkPermission}/>
             </aside>

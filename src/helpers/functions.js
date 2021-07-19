@@ -9,21 +9,41 @@ const resolveCoApprovalType = (key, co_approval_type) => {
 
 export const generateStepHtml = (data, template) => {
     let action = data.actions[0];
-    let co_approval_type_key = data?.department?.name ? 'department_position' : 'position';
+    let departmentName = action.department_name ?? (data.use_document_creator_department_for_position ? 'Lấy phòng ban của người tạo tài liệu làm phòng ban cho chức vụ' : 'Không thuộc phòng ban nào')
+    let positionName =action.position_name;
+    let actionName = action.action_name;
+    let coApprovalType = '';
+    let approvalTargetNums = '';
+    let useDocumentCreatorAsStepTarget = '';
+    let requiredToSelectSpecificTarget = '';
+
+    if(data.co_approval.enable){
+        coApprovalType = `<p><strong>- Loại đồng duyệt:</strong> ${data.co_approval.type.label}</p>`
+    }
+
+    if(data.co_approval.enable && data.co_approval.type.value === 'sufficient_quantity_target_of_position_department'){
+        approvalTargetNums = `<p><strong>- Số lương đối tượng đồng duyệt:</strong> ${data.co_approval.type.approval_target_nums}</p>`
+    }
+
+    if(data.use_document_creator_as_step_target){
+        useDocumentCreatorAsStepTarget = `<p>- Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>`
+    }
+
+    if(data.required_to_select_specific_target){
+        requiredToSelectSpecificTarget = `<p>- Bắt buộc chọn đối tượng cụ thể</p>`;
+    }
 
     let replace = {
-        __name__: _.get(data, 'name', ''),
-        __description__: _.get(data, 'description', ''),
-        __department__: _.get(action, 'department_name') ?? (_.get(data, 'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Lấy phòng ban của người tạo tài liệu'),
-        __position__: _.get(action, 'position_name', 'Bất kỳ'),
-        __action__: action.action_name,
-        __current_process_user_is_target__: data.current_process_user_is_target ? '<p>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>' : '',
-        __same_department_on_step__: data.same_department_on_step ? `<p>Đối tượng có liên hệ tới bước: ${data.same_department_on_step.name}</p>` : '',
-        __same_target_on_step__: data.same_target_on_step ? `<p>Đối tượng lấy từ bước: ${data.same_target_on_step.name} </p>` : '',
-        __required_to_select_specific_target__: data.required_to_select_specific_target ? `<p>Bắt buộc chọn đối tượng cụ thể</p>` : '',
+        __name__: data.name,
+        __description__: data.description,
+        __department__: departmentName,
+        __position__: positionName,
         __approval_type__: data?.co_approval?.enable ? 'Đồng duyệt' : 'Đơn duyệt',
-        __co_approval_type__: data?.co_approval?.enable ? resolveCoApprovalType(co_approval_type_key, data.co_approval.type) : '',
-        __co_approval_type_extra_data__: data?.co_approval?.enable && data?.co_approval?.type === 'sufficient_quantity_target_of_position_department' ? `<strong>Số lương đối tượng đồng duyệt:</strong> ${data?.co_approval?.number_targets}` : ''
+        __co_approval_type__: coApprovalType,
+        __approval_target_nums__: approvalTargetNums,
+        __use_document_creator_as_step_target__: useDocumentCreatorAsStepTarget,
+        __required_to_select_specific_target__: requiredToSelectSpecificTarget,
+        __action__: actionName,
     };
 
     return Object.keys(replace).reduce((result, key) => {
