@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {useAlert} from 'react-alert';
 import {FaPlus} from "react-icons/fa";
 import {Button, Form, Modal, Tab, Tabs} from "react-bootstrap";
 import axios from "axios";
@@ -10,32 +9,28 @@ import Position from "./tabs/Position";
 import AnyOne from "./tabs/Anyone";
 import PanelCreate from "./PanelCreate";
 
-const Node = ({drag, urls, tableId, editor}) => {
+const Node = ({drag, urls, editor}) => {
 
-    let defaultData = {
-        name: '',
-        description: '',
+    let [showCreatePanel, setShowCreatePanel] = useState(false)
+    let [stepData, setStepData] = useState({
+        name: null,
+        description: null,
         department: null,
         position: null,
         action: null,
         is_first: false,
-        current_process_user_is_target: false,
-        same_department_on_step: null,
-        same_target_on_step: null,
-        not_part_of_department: false,
-        required_to_select_specific_target: false
-    };
-
-    let [showCreatePanel, setShowCreatePanel] = useState(false)
-    let [stepData, setStepData] = useState(defaultData);
-    let [listDataSelect, setListDataSelect] = useState({
-        departments: [],
-        positions: [],
-        actions: [],
+        use_document_creator_as_step_target: false,
+        required_to_select_specific_target: false,
+        use_document_creator_department_for_position: false,
+        co_approval: {
+            enable: false,
+            type: null
+        }
     });
+    let [listDataSelect, setListDataSelect] = useState({departments: [], positions: [], actions: [],});
     let [showModal, setShowModal] = useState(false);
-    let [tabType, setTabType] = useState('department-position');
-    let [display, setDisplay] = useState(null);
+    let [tabType, setTabType] = useState('department_position');
+    let [display, setDisplay] = useState(false);
     let [reset, setReset] = useState(false);
 
     const getData = async () => {
@@ -70,63 +65,66 @@ const Node = ({drag, urls, tableId, editor}) => {
     }
 
     const resetPanelCreate = () => {
-        setTabType('department-position');
+        setTabType('department_position');
         setShowCreatePanel(false);
-        setStepData(defaultData);
-        setDisplay(null);
+        setStepData({
+            name: null,
+            description: null,
+            department: null,
+            position: null,
+            action: null,
+            is_first: false,
+            use_document_creator_as_step_target: false,
+            required_to_select_specific_target: false,
+            use_document_creator_department_for_position: false,
+            co_approval: {
+                enable: false,
+                type: null
+            }
+        });
+        setDisplay(false);
     }
 
     const handleCloseModal = () => {
         setShowModal(false);
         if (stepData.action) {
-            let text = _.get(stepData, 'not_part_of_department') ? 'Không thuộc phòng ban nào' : 'Chức vụ của đối tượng thuộc phòng ban của người tạo tài liệu';
-            setDisplay(<div className="mt-5">
-                <p style={{marginBottom: 0}}><strong>Phòng
-                    ban:</strong> {_.get(stepData, 'department.name', text)}</p>
-                <p style={{marginBottom: 0}}><strong>Chức vụ:</strong> {_.get(stepData, 'position.name', text)}
-                </p>
-                <p style={{marginBottom: 5}}><strong>Hành động:</strong> {_.get(stepData, 'action.name')}</p>
-                <p style={{marginBottom: 0}}><strong>Mô tả: </strong></p>
-                {stepData.current_process_user_is_target &&
-                <p style={{marginBottom: 0}}>Chọn người đang tạo tài liệu làm đối tượng cho bước này</p>}
-                {stepData.same_department_on_step &&
-                <p style={{marginBottom: 0}}>Đối tượng có liên hệ tới bước: {stepData.same_department_on_step.name}</p>}
-                {stepData.same_target_on_step &&
-                <p style={{marginBottom: 0}}>Đối tượng lấy từ bước: {stepData.same_target_on_step.name}</p>}
-                {stepData.required_to_select_specific_target &&
-                <p style={{marginBottom: 0}}>Bắt buộc chọn đối tượng cụ thể</p>}
-            </div>);
+            setDisplay(true);
         }
     }
 
-    const handleSetStepData = (key, data) => {
+    const handleSetStepData = data => {
         setStepData({
             ...stepData,
-            [key]: data
-        })
+            ...data
+        });
     }
 
     const handleTabChange = key => {
-        setReset(!reset);
-        setTabType(key);
-        setStepData({
-            ...stepData,
-            department: null,
-            position: null,
-            action: null,
-            current_process_user_is_target: false,
-            connect_to_step: null,
-            same_department_on: null,
-            not_part_of_department: key !== 'department-position'
-        });
+        if(key !== tabType){
+            setReset(!reset);
+            setTabType(key);
+            setStepData({
+                ...stepData,
+                department: null,
+                position: null,
+                action: null,
+                current_process_user_is_target: false,
+                same_department_on_step: null,
+                same_target_on_step: null,
+                use_document_creator_department_for_position: true,
+                required_to_select_specific_target: false,
+                co_approval: {
+                    enable: false,
+                    type: null,
+                    approval_target_nums: 2
+                }
+            });
+        }
     }
 
     return (
         <div>
-            <div className="node"
-                 draggable={showCreatePanel}
-                 onDragEnd={resetPanelCreate}
-                 onDragStart={event => drag({...stepData, mode: tabType}, event)}>
+            <div className="node" draggable={showCreatePanel} onDragEnd={resetPanelCreate} onDragStart={event => drag({...stepData, mode: tabType}, event)}>
                 {!showCreatePanel ?
                     <Button
                         variant="outline-dark"
@@ -134,10 +132,10 @@ const Node = ({drag, urls, tableId, editor}) => {
                         onClick={() => setShowCreatePanel(true)}>
                         <FaPlus/> Tạo step
                     </Button> :
-                    <PanelCreate editor={editor} setShowModal={setShowModal} change={handleChange} display={display}/>
+                    <PanelCreate editor={editor} setShowModal={setShowModal} change={handleChange} display={display} stepData={stepData}/>
                 }
             </div>
-            <Modal show={showModal} onHide={handleCloseModal} size="lg">
+            <Modal show={showModal} onHide={handleCloseModal} size="lg" backdrop="static">
                 <Modal.Header closeButton>
                     <Modal.Title>Đối tượng và hành động</Modal.Title>
                 </Modal.Header>
@@ -145,14 +143,14 @@ const Node = ({drag, urls, tableId, editor}) => {
                     <Tabs
                         activeKey={tabType}
                         onSelect={handleTabChange}>
-                        <Tab eventKey="department-position" title="Đối tượng theo phòng ban - chức danh">
+                        <Tab eventKey="department_position" title="Đối tượng theo phòng ban - chức danh">
                             <DepartmentPosition
                                 key={'department-position'}
                                 departments={listDataSelect.departments}
                                 positions={listDataSelect.positions}
                                 url={urls.get_list_actions_by_post_dep}
-                                tableId={tableId}
                                 setParentData={handleSetStepData}
+                                editor={editor}
                                 reset={reset}
                             />
                         </Tab>
@@ -165,12 +163,6 @@ const Node = ({drag, urls, tableId, editor}) => {
                                 setParentData={handleSetStepData}
                             />
                         </Tab>
-                        {/*<Tab eventKey="personal" title="Đối tượng bất ký">*/}
-                        {/*    <AnyOne*/}
-                        {/*        editor={editor}*/}
-                        {/*        reset={reset}*/}
-                        {/*        setParentData={handleSetStepData}/>*/}
-                        {/*</Tab>*/}
                     </Tabs>
                 </Modal.Body>
                 <Modal.Footer>
@@ -180,7 +172,7 @@ const Node = ({drag, urls, tableId, editor}) => {
                 </Modal.Footer>
             </Modal>
         </div>
-    );
-};
+    )
+}
 
 export default Node;

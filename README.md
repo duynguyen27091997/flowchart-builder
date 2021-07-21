@@ -13,7 +13,9 @@
 ```bash
 npm install @tuoitre/flowchart-builder
 ```
+
 or
+
 ```bash
 yarn add @tuoitre/flowchart-builder
 ```
@@ -23,27 +25,34 @@ yarn add @tuoitre/flowchart-builder
 ```jsx
 import React from 'react'
 
-import { TTFlow } from '@tuoitre/flowchart-builder'
+import {TTFlow} from '@tuoitre/flowchart-builder'
 import '@tuoitre/flowchart-builder/dist/index.css'
 
 const Example = () => {
+    // list permisison of current login user
     let permissions = [];
-  return (
-    <div>
-      <TTFlow urls={
-        {
-            get_list_document_types: '{domain}/api/document-type/get-document-types',
-            get_one_document_type: '{domain}/api/document-type/get',
-            get_workflow_detail: '{domain}/api/workflow/detail',
-            store_work_flow: '{domain}/api/workflow/store',
-            get_list_departments: '{domain}/api/list/departments',
-            get_list_positions: '{domain}/api/list/positions',
-            get_list_actions_by_post_dep: '{domain}/api/permission/departments/positions',
-            get_list_actions_by_post: '{domain}/api/list/permission/work-formality',
-        }
-      } tableId={11} permissions={permissions}/>
-    </div>
-  )
+    
+    // id and name of current login user
+    let user = {
+        id: 15,
+        name: "Admin"
+    };
+
+    let url = {
+        get_list_document_types: '{domain}/api/document-type/get-document-types',
+        get_one_document_type: '{domain}/api/document-type/get',
+        get_workflow_detail: '{domain}/api/workflow/detail',
+        store_work_flow: '{domain}/api/workflow/store',
+        get_list_departments: '{domain}/api/list/departments',
+        get_list_positions: '{domain}/api/list/positions',
+        get_list_actions_by_post_dep: '{domain}/api/permission/departments/positions',
+        get_list_actions_by_post: '{domain}/api/list/permission/work-formality',
+    };
+    return (
+        <div>
+            <TTFlow urls={url} permissions={permissions} user={user}/>
+        </div>
+    )
 
 }
 ```
@@ -51,6 +60,7 @@ const Example = () => {
 ## Props
 
 ### urls : Object
+
 > get_list_document_types : url get list document type
 
 > get_one_document_type : url get single document typr
@@ -68,7 +78,8 @@ const Example = () => {
 > get_list_actions_by_post : url get list action by position
 
 > tableId: id of table Workflow on service-management
-> 
+>
+
 ## Repo
 
 [https://github.com/duynguyen27091997/flowchart-builder](https://github.com/duynguyen27091997/flowchart-builder)
