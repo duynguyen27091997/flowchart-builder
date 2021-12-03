@@ -1,7 +1,7 @@
 import DrawFlow from "../helpers/Drawflow";
 import {useState, useEffect} from "react";
 import {useAlert} from 'react-alert';
-import _ from 'lodash'
+import {templateHtml} from "../helpers/functions";
 
 // function bindEvent(editor) {
 //     // Events!
@@ -105,7 +105,7 @@ const useFlowChart = (workflowId) => {
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-        let template = generateHtml();
+        let template = templateHtml();
 
         editor.addNode(data, pos_x, pos_y, template);
     }
@@ -113,28 +113,6 @@ const useFlowChart = (workflowId) => {
 
     return [editor, drag, drop, allowDrop];
 };
-
-const generateHtml = () => {
-    return  `<div>
-                  <div class="title-box">
-                    <h6 class="mt-1"><strong>Tên:</strong> __name__</h6>
-                    <p class="mt-2"><strong>Mô tả:</strong> __description__</p>
-                 </div>
-                 <div class="box">
-                        <h5>Đối tượng</h5>
-                        <p class="mt-2"><strong>- Phòng ban:</strong> __department__</p>
-                        <p><strong>- Chức vụ:</strong> __position__</p>
-                        <p><strong>- Loại duyệt:</strong> __approval_type__</p>
-                        __co_approval_type__
-                        __approval_target_nums__
-                        __use_document_creator_as_step_target__
-                        __required_to_select_specific_target__
-                        <br/>
-                        <h5>Hành động</h5>
-                        <p class="mt-2">- __action__</p>
-                </div>
-            </div>`;
-}
 
 export default useFlowChart;
 

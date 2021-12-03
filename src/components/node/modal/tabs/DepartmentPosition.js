@@ -5,7 +5,7 @@ import axios from "axios";
 import {useAlert} from 'react-alert'
 import Switch from "react-switch";
 
-import {COOP_APPROVAL_TYPE} from '../../../helpers/constants';
+import {COOP_APPROVAL_TYPE} from '../../../../helpers/constants';
 
 const COOP_APPROVAL_TYPE_DEFAULT = Object.values(COOP_APPROVAL_TYPE.department_position).find(value => {
     return value.default;

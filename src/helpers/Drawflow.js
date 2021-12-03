@@ -1,7 +1,7 @@
 /* eslint-disable */
 import {ACTION_CLASS_PREFIX} from './constants';
 import _ from 'lodash'
-import {generateStepHtml} from "./functions";
+import {generateStepHtml, templateHtml} from "./functions";
 
 export default class Workflow {
     constructor(container, render = null) {
@@ -1403,6 +1403,7 @@ export default class Workflow {
             use_document_creator_department_for_position: data.use_document_creator_department_for_position,
             required_to_select_specific_target: data.required_to_select_specific_target,
             co_approval: data.co_approval,
+            charge_of_opinion: data.charge_of_opinion,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         }
@@ -1489,9 +1490,8 @@ export default class Workflow {
 
         const content = document.createElement('div');
         content.classList.add("workflow_content_node");
-        //content.innerHTML = dataNode.html;
 
-        content.innerHTML = generateStepHtml(dataNode, dataNode.html);
+        content.innerHTML = generateStepHtml(dataNode, templateHtml());
 
         node.appendChild(inputs);
         node.appendChild(content);

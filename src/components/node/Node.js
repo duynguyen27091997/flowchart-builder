@@ -1,36 +1,44 @@
 import React, {useEffect, useState} from 'react';
 import {FaPlus} from "react-icons/fa";
-import {Button, Form, Modal, Tab, Tabs} from "react-bootstrap";
+import {Button, Modal, Tab, Tabs} from "react-bootstrap";
 import axios from "axios";
-import _ from 'lodash';
 
-import DepartmentPosition from "./tabs/DepartmentPosition";
-import Position from "./tabs/Position";
-import AnyOne from "./tabs/Anyone";
 import PanelCreate from "./PanelCreate";
+import DepartmentPosition from "./modal/tabs/DepartmentPosition";
+import Position from "./modal/tabs/Position";
+import ChargeOfOpinion from "./modal/ChargeOfOpinion";
+
+let defaultStepData = {
+    name: null,
+    description: null,
+    department: null,
+    position: null,
+    action: null,
+    is_first: false,
+    use_document_creator_as_step_target: false,
+    required_to_select_specific_target: false,
+    use_document_creator_department_for_position: false,
+    co_approval: {
+        enable: false,
+        type: null
+    },
+    charge_of_opinion: {
+        enable: false,
+        department: null,
+        position: null,
+        number_of_charge: 1,
+        use_document_creator_department_for_position: false
+    }
+};
 
 const Node = ({drag, urls, editor}) => {
 
     let [showCreatePanel, setShowCreatePanel] = useState(false)
-    let [stepData, setStepData] = useState({
-        name: null,
-        description: null,
-        department: null,
-        position: null,
-        action: null,
-        is_first: false,
-        use_document_creator_as_step_target: false,
-        required_to_select_specific_target: false,
-        use_document_creator_department_for_position: false,
-        co_approval: {
-            enable: false,
-            type: null
-        }
-    });
+    let [stepData, setStepData] = useState(defaultStepData);
     let [listDataSelect, setListDataSelect] = useState({departments: [], positions: [], actions: [],});
-    let [showModal, setShowModal] = useState(false);
+    let [modalTargetAction, setModalTargetAction] = useState(false);
+    let [modalOpinion, setModalOpinion] = useState(false);
     let [tabType, setTabType] = useState('department_position');
-    let [display, setDisplay] = useState(false);
     let [reset, setReset] = useState(false);
 
     const getData = async () => {
@@ -50,46 +58,10 @@ const Node = ({drag, urls, editor}) => {
         });
     }, []);
 
-    const handleChange = (name, value, showName = null) => {
-        switch (name) {
-            case 'is_first': {
-                setStepData({
-                    ...stepData,
-                    is_first: value
-                })
-            }
-            default:
-                setStepData({...stepData, [name]: value})
-                break;
-        }
-    }
-
     const resetPanelCreate = () => {
         setTabType('department_position');
         setShowCreatePanel(false);
-        setStepData({
-            name: null,
-            description: null,
-            department: null,
-            position: null,
-            action: null,
-            is_first: false,
-            use_document_creator_as_step_target: false,
-            required_to_select_specific_target: false,
-            use_document_creator_department_for_position: false,
-            co_approval: {
-                enable: false,
-                type: null
-            }
-        });
-        setDisplay(false);
-    }
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-        if (stepData.action) {
-            setDisplay(true);
-        }
+        setStepData(defaultStepData);
     }
 
     const handleSetStepData = data => {
@@ -100,31 +72,23 @@ const Node = ({drag, urls, editor}) => {
     }
 
     const handleTabChange = key => {
-        if(key !== tabType){
+        if (key !== tabType) {
             setReset(!reset);
             setTabType(key);
             setStepData({
-                ...stepData,
-                department: null,
-                position: null,
-                action: null,
-                current_process_user_is_target: false,
-                same_department_on_step: null,
-                same_target_on_step: null,
-                use_document_creator_department_for_position: true,
-                required_to_select_specific_target: false,
-                co_approval: {
-                    enable: false,
-                    type: null,
-                    approval_target_nums: 2
-                }
+                ...defaultStepData,
+                name: stepData.name,
+                description: stepData.description,
+                is_first: stepData.is_first,
+                charge_of_opinion: stepData.charge_of_opinion
             });
         }
     }
 
     return (
         <div>
-            <div className="node" draggable={showCreatePanel} onDragEnd={resetPanelCreate} onDragStart={event => drag({...stepData, mode: tabType}, event)}>
+            <div className="node" draggable={showCreatePanel} onDragEnd={resetPanelCreate}
+                 onDragStart={event => drag({...stepData, mode: tabType}, event)}>
                 {!showCreatePanel ?
                     <Button
                         variant="outline-dark"
@@ -132,10 +96,15 @@ const Node = ({drag, urls, editor}) => {
                         onClick={() => setShowCreatePanel(true)}>
                         <FaPlus/> Tạo step
                     </Button> :
-                    <PanelCreate editor={editor} setShowModal={setShowModal} change={handleChange} display={display} stepData={stepData}/>
+                    <PanelCreate
+                        editor={editor}
+                        setModalTargetAction={setModalTargetAction}
+                        setModalOpinion={setModalOpinion}
+                        setNodeData={handleSetStepData}
+                        stepData={stepData}/>
                 }
             </div>
-            <Modal show={showModal} onHide={handleCloseModal} size="lg" backdrop="static">
+            <Modal show={modalTargetAction} onHide={() => setModalTargetAction(false)} size="lg" backdrop="static">
                 <Modal.Header closeButton>
                     <Modal.Title>Đối tượng và hành động</Modal.Title>
                 </Modal.Header>
@@ -166,7 +135,23 @@ const Node = ({drag, urls, editor}) => {
                     </Tabs>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
+                    <Button variant="secondary" onClick={() => setModalTargetAction(false)}>
+                        Xác nhận
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={modalOpinion} onHide={() => setModalOpinion(false)} size="lg" backdrop="static">
+                <Modal.Header closeButton>
+                    <Modal.Title>Phụ trách ý kiến</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{overflow: 'hidden'}}>
+                    <ChargeOfOpinion
+                        setParentData={handleSetStepData}
+                        departments={listDataSelect.departments}
+                        positions={listDataSelect.positions}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setModalOpinion(false)}>
                         Xác nhận
                     </Button>
                 </Modal.Footer>

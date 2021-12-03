@@ -3,7 +3,7 @@ import {Form} from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
 import Switch from "react-switch";
-import {COOP_APPROVAL_TYPE} from '../../../helpers/constants'
+import {COOP_APPROVAL_TYPE} from '../../../../helpers/constants'
 
 const COOP_APPROVAL_TYPE_DEFAULT = Object.values(COOP_APPROVAL_TYPE.position).find(value => {
     return value.default;
@@ -89,36 +89,35 @@ const Position = props => {
     };
 
     const renderCoApprovalMetaData = () => {
-        if (data.co_approval.enable) {
-            switch (data.co_approval.type.value) {
-                case 'sufficient_quantity_target_of_position_department': {
-                    console.log(data.co_approval)
-                    return <Form.Group className="mt-3">
-                        <Form.Label>Nhập số lượng đối tượng đồng duyệt
-                            <span className="text-danger" title="Bắt buộc">*</span>
-                        </Form.Label>
-                        <Form.Control
-                            name="approval_target_nums"
-                            type="number"
-                            value={data.co_approval.type.approval_target_nums}
-                            onChange={({target}) => {
-                                setData({
-                                    ...data,
-                                    co_approval: {
-                                        ...data.co_approval,
-                                        type: {
-                                            ...data.co_approval.type,
-                                            approval_target_nums: target.value
-                                        }
+        if (!data.co_approval.enable) {
+            return null;
+        }
+        switch (data.co_approval.type.value) {
+            case 'sufficient_quantity_target_of_position_department': {
+                return <Form.Group className="mt-3">
+                    <Form.Label>Nhập số lượng đối tượng đồng duyệt
+                        <span className="text-danger" title="Bắt buộc">*</span>
+                    </Form.Label>
+                    <Form.Control
+                        name="approval_target_nums"
+                        type="number"
+                        value={data.co_approval.type.approval_target_nums}
+                        onChange={({target}) => {
+                            setData({
+                                ...data,
+                                co_approval: {
+                                    ...data.co_approval,
+                                    type: {
+                                        ...data.co_approval.type,
+                                        approval_target_nums: target.value
                                     }
-                                })
-                            }}
-                            min={2}/>
-                    </Form.Group>
-                }
+                                }
+                            })
+                        }}
+                        min={2}/>
+                </Form.Group>
             }
         }
-        return null;
     }
 
     useEffect(() => {
@@ -137,7 +136,6 @@ const Position = props => {
 
     useEffect(() => {
         setParentData(data);
-        console.log(data)
     }, [data])
 
     return (
