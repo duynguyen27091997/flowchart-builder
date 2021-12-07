@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {Form} from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
+import {useAlert} from 'react-alert'
 import Switch from "react-switch";
 import {COOP_APPROVAL_TYPE} from '../../../../helpers/constants'
 
@@ -10,6 +11,7 @@ const COOP_APPROVAL_TYPE_DEFAULT = Object.values(COOP_APPROVAL_TYPE.position).fi
 })
 
 const Position = props => {
+    let alert = useAlert();
     let {
         positions,
         editor,

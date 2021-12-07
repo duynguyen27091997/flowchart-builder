@@ -27,7 +27,7 @@ let defaultStepData = {
         department: null,
         position: null,
         number_of_charge: 1,
-        use_document_creator_department_for_position: false
+            use_document_creator_department_for_position: false
     }
 };
 

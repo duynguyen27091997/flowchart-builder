@@ -9,8 +9,8 @@ const App = () => {
         get_one_document_type: 'http://document.erp.ez:81/api/document-type/get',
         get_workflow_detail: 'http://workflow.erp.ez:81/api/workflow/get',
         store_work_flow: 'http://workflow.erp.ez:81/api/workflow/store',
-        get_list_departments: 'https://employee.tuoitre.vn/api/departments',
-        get_list_positions: 'https://employee.tuoitre.vn/api/positions',
+        get_list_departments: 'https://employee.tuoitre.vn/api/departments?per_page=1000',
+        get_list_positions: 'https://employee.tuoitre.vn/api/positions?per_page=1000',
         get_list_actions_by_post_dep: 'https://employee.tuoitre.vn/api/permission/departments/positions',
         get_list_actions_by_post: 'https://employee.tuoitre.vn/api/list/permission/work-formality',
     };
