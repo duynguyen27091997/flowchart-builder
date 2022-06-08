@@ -64,6 +64,7 @@
     "chroma-js": "^2.1.1",
     "drawflow": "^0.0.32",
     "lodash": "^4.17.21",
+    "md5": "^2.3.0",
     "node-sass": "^6.0.1",
     "react-alert": "^7.0.2",
     "react-alert-template-basic": "^1.0.0",

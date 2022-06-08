@@ -1,67 +1,8 @@
 import DrawFlow from "../helpers/Drawflow";
 import {useState, useEffect} from "react";
 import {useAlert} from 'react-alert';
-import {templateHtml} from "../helpers/functions";
 
-// function bindEvent(editor) {
-//     // Events!
-//     editor.on('nodeCreated', function (id) {
-//         console.log("Node created " + id);
-//     })
-//
-//     editor.on('nodeRemoved', function (id) {
-//         console.log("Node removed " + id);
-//     })
-//
-//     editor.on('nodeSelected', function (id) {
-//         console.log("Node selected " + id);
-//     })
-//
-//     editor.on('moduleCreated', function (name) {
-//         console.log("Module Created " + name);
-//     })
-//
-//     editor.on('moduleChanged', function (name) {
-//         console.log("Module Changed " + name);
-//     })
-//
-//     editor.on('connectionCreated', function (connection) {
-//         console.log('Connection created');
-//         console.log(connection);
-//     })
-//
-//     editor.on('connectionRemoved', function (connection) {
-//         console.log('Connection removed');
-//         console.log(connection);
-//     })
-//
-//     editor.on('mouseMove', function (position) {
-//         console.log('Position mouse x:' + position.x + ' y:' + position.y);
-//     })
-//
-//     editor.on('nodeMoved', function (id) {
-//         console.log("Node moved " + id);
-//     })
-//
-//     editor.on('zoom', function (zoom) {
-//         console.log('Zoom level ' + zoom);
-//     })
-//
-//     editor.on('translate', function (position) {
-//         console.log('Translate x:' + position.x + ' y:' + position.y);
-//     })
-//
-//     editor.on('addReroute', function (id) {
-//         console.log("Reroute added " + id);
-//     })
-//
-//     editor.on('removeReroute', function (id) {
-//         console.log("Reroute removed " + id);
-//     })
-//
-// }
-
-const useFlowChart = (workflowId) => {
+const useFlowChart = workflowId => {
     let alert = useAlert();
     let [editor, setEditor] = useState(null);
 
@@ -87,13 +28,17 @@ const useFlowChart = (workflowId) => {
     }
 
     const addNodeToDrawFlow = (data, pos_x, pos_y) => {
-
         if (editor.editor_mode === 'fixed') {
             return false;
         }
 
-        if ((!data.action || !data.name)) {
-            alert.show('Chưa nhập đủ trường cần thiết');
+        if (!data.name) {
+            alert.show('Tên step không được để trống');
+            return false;
+        }
+
+        if (!Object.keys(data.targets).length) {
+            alert.show('Chưa chọn đối tượng');
             return false;
         }
 
@@ -105,9 +50,7 @@ const useFlowChart = (workflowId) => {
         pos_x = pos_x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * (editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
         pos_y = pos_y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * (editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-        let template = templateHtml();
-
-        editor.addNode(data, pos_x, pos_y, template);
+        editor.addNode(data, pos_x, pos_y);
     }
 
 

@@ -1,17 +1,15 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import {FaSearch, FaSearchMinus, FaSearchPlus} from "react-icons/fa";
+import {canDo} from "../../helpers/permission";
+import FlowContext from "../../flow-context";
 
-const FlowTool = props => {
-    let {
-        editor,
-        handleSave,
-        checkPermission
-    } = props;
+const FlowTool = ({onSave}) => {
+    const {editor, permissions} = useContext(FlowContext)
     return (
         <div>
             <div>
-                {checkPermission && checkPermission('delete') && <div className="btn-clear" style={{userSelect: 'none'}} onClick={() => editor.clear()}>Xóa</div>}
-                {checkPermission && (checkPermission('create') || checkPermission('update')) && <div className="btn-save" style={{userSelect: 'none'}} onClick={() => {handleSave(editor.export())}}>Lưu</div>}
+                {<div className="btn-clear" style={{userSelect: 'none'}} onClick={() => editor.clear()}>Xóa</div>}
+                {<div className="btn-save" style={{userSelect: 'none'}} onClick={onSave}>Lưu</div>}
             </div>
             <div className="bar-zoom">
                 <FaSearchMinus onClick={() => editor.zoom_out()}/>

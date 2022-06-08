@@ -1,120 +1,108 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import useFlowChart from "../../hooks/useFlowChart";
+import FlowContext from "../../flow-context";
+import {canDo} from '../../helpers/permission'
 import "./FlowChart.scss";
 
 import axios from "axios";
 import Node from "../node/Node";
 import FlowTool from "../flow-tool/FlowTool";
 import {AiOutlineSelect} from "react-icons/ai";
-import FlowList from "../flow-list/FlowList";
+import ListDocumentType from "../list-document-type/ListDocumentType";
 import {useAlert} from 'react-alert'
 import {Button, Modal} from "react-bootstrap";
 
-const FlowChart = props => {
-    let {
-        urls,
-        user,
-        permissions = []
-    } = props;
+const FlowChart = () => {
+    const {
+        document_types = [],
+        workflow_detail_url,
+        permissions,
+        setEditor,
+        setDrag,
+        onSave
+    } = useContext(FlowContext)
 
     let alert = useAlert();
     let [editor, drag, drop, allowDrop] = useFlowChart();
-    let [showModal, setShowModal] = useState(false);
-    let [listDocumentTypes, setListDocumentTypes] = useState([]);
+    let [modalSelectDocumentType, setModalSelectDocumentType] = useState(false);
     let [documentType, setDocumentType] = useState(null);
 
-    const onClickSelectDocumentType = item => {
-        axios.get(urls.get_workflow_detail, {params: {type_id: item.id}})
+    const onSelectDocumentType = item => {
+        if (!workflow_detail_url){
+            alert.show('URL get workflow is invalid.');
+            setModalSelectDocumentType(false);
+            return;
+        }
+        axios.get(workflow_detail_url, {params: {type_id: item.id}})
             .then(
-                ({status, data}) => {
-                    setDocumentType(item)
+                ({data}) => {
                     editor.import(data);
+                },
+                () => {
+                    editor.clear()
+                    alert.show('Không tìm thấy dữ liệu, tiến hành tạo mới.');
                 }
             )
-            .catch(() => {
-                editor.clear()
-                alert.show('Không tìm thấy dữ liệu, Tiến hành tạo mới');
-                setDocumentType(item);
-            })
             .finally(() => {
-                setShowModal(false);
+                setDocumentType(item);
+                setModalSelectDocumentType(false);
             })
     }
 
-    const handleCloseModal = () => {
-        setShowModal(false)
-    }
-    const renderType = type => {
-        return <div className={'mt-5 mb-5 text-center'}>
-            <p>Loại tài liệu</p>
-            <p className={'font-weight-bold'}>{type.display_name} </p>
-        </div>
-    }
-    const getData = async () => {
-        return axios.get(urls.get_list_document_types);
-    }
-
-    useEffect(() => {
-        getData().then(({status, data}) => {
-            if (status === 200) setListDocumentTypes(data);
-        });
-    }, []);
-
-    useEffect(() => {
+    useEffect(()=>{
+        setEditor(editor);
         editor && editor.start();
     }, [editor]);
 
-    const handleSave = steps => {
+    const handleSave = () => {
         let data = {
-            steps: steps.steps,
+            steps: editor.export().steps,
             workflow_pos_x: editor.canvas_x,
             workflow_pos_y: editor.canvas_y,
-            creator_id: user?.id,
-            creator_name: user?.name
         };
-        axios.post(urls.store_work_flow + '/' + documentType.id, data)
-            .then(res => {
-                alert.show('Lưu thành công');
-            })
-            .catch(err => {
-                alert.show('Có lỗi xảy ra');
-            });
+        if (!onSave){
+            throw new Error('onSave handler is not provided')
+        }
+        onSave(documentType.id, data)
     };
-
-    const checkPermission = action => {
-        return permissions.find(permission => permission.action.toLowerCase() === action) !== undefined
-    }
 
 
     const renderFlow = () => {
         return <div className={"flow"}>
             <aside className="flow__sidebar">
                 <div className="d-flex justify-content-center mt-3">
-                    <Button variant="dark" onClick={() => setShowModal(true)}>
+                    <Button variant="dark" onClick={() => setModalSelectDocumentType(true)}>
                         <AiOutlineSelect size={"25"}/> Chọn loại tài liệu
                     </Button>
                 </div>
-                {documentType && renderType(documentType)}
-                {documentType && <Node urls={urls} drag={drag} editor={editor}/>}
-                <FlowTool editor={editor} handleSave={handleSave} permissions={permissions}
-                          checkPermission={checkPermission}/>
+                {
+                    documentType &&
+                    <div>
+                        <div className={'mt-5 mb-5 text-center'}>
+                            <p className={'font-weight-bold'}>{documentType.display_name} </p>
+                        </div>
+                        <Node drag={drag}/>
+                    </div>
+                }
+                <FlowTool onSave={handleSave}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>
-            <Modal show={showModal} onHide={handleCloseModal} size="lg">
+            <Modal show={modalSelectDocumentType} onHide={()=> setModalSelectDocumentType(false)} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Chọn loại tài liệu</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <FlowList list={listDocumentTypes} clickHandle={onClickSelectDocumentType}/>
+                    <ListDocumentType documentTypes={document_types} onSelect={onSelectDocumentType}/>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
+                    <Button variant="secondary" onClick={()=> setModalSelectDocumentType(false)}>
                         Đóng
                     </Button>
                 </Modal.Footer>
             </Modal>
         </div>
     }
+
 
     const renderNoAccess = () => {
         return <div className='card'>
@@ -124,9 +112,7 @@ const FlowChart = props => {
         </div>
     }
 
-    return (
-        checkPermission('view') ? renderFlow() : renderNoAccess()
-    );
+    return canDo('view', permissions) ? renderFlow() : renderNoAccess();
 };
 
 export default FlowChart;

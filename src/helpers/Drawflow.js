@@ -1,7 +1,7 @@
 /* eslint-disable */
-import {ACTION_CLASS_PREFIX} from './constants';
-import _ from 'lodash'
-import {generateStepHtml, templateHtml} from "./functions";
+import {OUTPUT_CLASS_PREFIX, STEP_HTML} from '../constants';
+import _ from 'lodash';
+import {replaceHtml} from "./functions";
 
 export default class Workflow {
     constructor(container, render = null) {
@@ -488,8 +488,7 @@ export default class Workflow {
                         this.connection_ele.classList.add(output_class);
                         this.connection_ele.classList.add(input_class);
 
-                        let [action, , status] = output_class.split("_");
-
+                        let [_, step_id, status] = output_class.split("_");
 
                         let id_input = input_id.slice(5);
                         let id_output = output_id.slice(5);
@@ -497,13 +496,13 @@ export default class Workflow {
                         let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
                         let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
                         let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-                        let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
+                        let portOut = this.workflow.steps[stepOut].outputs.findIndex(step => step.name === `output_${status}`);
 
                         this.workflow.steps[stepIn].inputs[portIn]['steps'].push({
                             "step_id": parseInt(id_output),
                             "output": output_class
                         });
-                        this.workflow.steps[stepOut].actions[portOut][status] = parseInt(id_input);
+                        this.workflow.steps[stepOut].outputs[portOut][status] = parseInt(id_input);
 
                         this.updateConnectionNodes('node-' + id_output);
                         this.updateConnectionNodes('node-' + id_input);
@@ -1336,7 +1335,7 @@ export default class Workflow {
         return nodes;
     }
 
-    addNode(data, ele_pos_x, ele_pos_y, html) {
+    addNode(data, ele_pos_x, ele_pos_y) {
 
         const parent = document.createElement('div');
         parent.classList.add("parent-node");
@@ -1372,20 +1371,14 @@ export default class Workflow {
             jsonInput.push(inputItem);
         }
 
-        let outputItem = {
-            action_id: data.action.value,
-            action_name: data.action.label,
-            department_id: data.department?.value,
-            department_name: data.department?.label,
-            position_id: data.position.value,
-            position_name: data.position.label
-        };
+        let outputItem = {};
 
-        ['pass', 'reject'].forEach(value => {
+        ['pass'].forEach(value => {
             let output = document.createElement('div');
             output.classList.add("output");
-            output.classList.add(`${ACTION_CLASS_PREFIX}${data.action.value}_output_${value}`);
+            output.classList.add(`${OUTPUT_CLASS_PREFIX}_${this.nodeId}_${value}`);
             outputItem[value] = null;
+            outputItem['name'] = `output_${value}`
             outputs.appendChild(output)
         });
 
@@ -1395,15 +1388,16 @@ export default class Workflow {
             step_id: this.nodeId,
             description: data.description,
             name: data.name,
-            html: html,
             is_first: data.is_first,
             inputs: jsonInput,
-            actions: jsonOutput,
-            use_document_creator_as_step_target: data.use_document_creator_as_step_target,
-            use_document_creator_department_for_position: data.use_document_creator_department_for_position,
-            required_to_select_specific_target: data.required_to_select_specific_target,
-            co_approval: data.co_approval,
-            charge_of_opinion: data.charge_of_opinion,
+            outputs: jsonOutput,
+            targets: Object.values(data.targets).map(target => ({
+                department_id: target.department?.value,
+                department_name: target.department?.label,
+                position_id: target.position.value,
+                position_name: target.position.label,
+            })),
+            use_creator_department: data.use_creator_department,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
         }
@@ -1411,7 +1405,7 @@ export default class Workflow {
         const content = document.createElement('div');
         content.classList.add("workflow_content_node");
 
-        content.innerHTML = generateStepHtml(pushData, html);
+        content.innerHTML = replaceHtml(pushData, STEP_HTML);
 
         node.appendChild(inputs);
         node.appendChild(content);
@@ -1436,7 +1430,7 @@ export default class Workflow {
         node.innerHTML = "";
         node.setAttribute("id", "node-" + dataNode.step_id);
         node.classList.add("workflow-node");
-        if (dataNode.class !== '') {
+        if (dataNode.class) {
             node.classList.add(dataNode.class);
         }
 
@@ -1479,11 +1473,11 @@ export default class Workflow {
         //output
         const outputs = document.createElement('div');
         outputs.classList.add("outputs");
-        dataNode.actions.forEach(action => {
-            ['pass', 'reject'].forEach(value => {
+        dataNode.outputs.forEach(action => {
+            ['pass'].forEach(value => {
                 let output = document.createElement('div');
                 output.classList.add("output");
-                output.classList.add(`${ACTION_CLASS_PREFIX}${action.action_id}_output_${value}`);
+                output.classList.add(`${OUTPUT_CLASS_PREFIX}_${dataNode.step_id}_${value}`);
                 outputs.appendChild(output)
             })
         })
@@ -1491,7 +1485,7 @@ export default class Workflow {
         const content = document.createElement('div');
         content.classList.add("workflow_content_node");
 
-        content.innerHTML = generateStepHtml(dataNode, templateHtml());
+        content.innerHTML = replaceHtml(dataNode, STEP_HTML);
 
         node.appendChild(inputs);
         node.appendChild(content);
