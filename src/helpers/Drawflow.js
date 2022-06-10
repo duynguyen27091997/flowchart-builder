@@ -1397,6 +1397,13 @@ export default class Workflow {
                 position_id: target.position.value,
                 position_name: target.position.label,
             })),
+            assign_targets: Object.values(data.assign_targets).map(target => ({
+                department_id: target.department?.value,
+                department_name: target.department?.label,
+                position_id: target.position.value,
+                position_name: target.position.label,
+            })),
+            assign_description: data.assign_description,
             use_creator_department: data.use_creator_department,
             pos_x: ele_pos_x,
             pos_y: ele_pos_y,
@@ -1524,7 +1531,7 @@ export default class Workflow {
             this.connection_selected.parentElement.remove();
             const [, nodeIn, nodeOut, output_class, input_class] = listClass;
 
-            let [action, , status] = output_class.split("_");
+            let [_, step_id, status] = output_class.split("_");
 
             let id_input = nodeIn.slice(13);
             let id_output = nodeOut.slice(14);
@@ -1532,7 +1539,7 @@ export default class Workflow {
             let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
             let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
             let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
+            let portOut = this.workflow.steps[stepOut].outputs.findIndex(step => step.name === `output_${status}`);
 
 
             let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
@@ -1541,7 +1548,7 @@ export default class Workflow {
 
             this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex, 1);
 
-            this.workflow.steps[stepOut].actions[portOut][status] = null;
+            this.workflow.steps[stepOut].outputs[portOut][status] = null;
 
             this.dispatch('connectionRemoved', {
                 output_id: id_output,
@@ -1607,7 +1614,7 @@ export default class Workflow {
 
             const [, nodeIn, nodeOut, output_class, input_class] = listClass;
 
-            let [action, , status] = output_class.split("_");
+            let [_, step_id, status] = output_class.split("_");
 
             let id_input = nodeIn.slice(13);
             let id_output = nodeOut.slice(14);
@@ -1615,7 +1622,7 @@ export default class Workflow {
             let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
             let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
             let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
+            let portOut = this.workflow.steps[stepOut].outputs.findIndex(step => step.name === `output_${status}`);
 
 
             let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
@@ -1623,8 +1630,7 @@ export default class Workflow {
             });
 
             this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex, 1);
-
-            this.workflow.steps[stepOut].actions[portOut][status] = null;
+            this.workflow.steps[stepOut].outputs[portOut][status] = null;
 
             elemsOut[i].remove();
 
@@ -1644,7 +1650,7 @@ export default class Workflow {
 
             const [, nodeIn, nodeOut, output_class, input_class] = listClass;
 
-            let [action, , status] = output_class.split("_");
+            let [_, step_id, status] = output_class.split("_");
 
             let id_input = nodeIn.slice(13);
             let id_output = nodeOut.slice(14);
@@ -1652,7 +1658,7 @@ export default class Workflow {
             let stepIn = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_input));
             let stepOut = this.workflow.steps.findIndex(step => step.step_id === parseInt(id_output));
             let portIn = this.workflow.steps[stepIn].inputs.findIndex(step => step.name === input_class);
-            let portOut = this.workflow.steps[stepOut].actions.findIndex(step => `${ACTION_CLASS_PREFIX}${step.action_id}` === action);
+            let portOut = this.workflow.steps[stepOut].outputs.findIndex(step => step.name === `output_${status}`);
 
 
             let inputItemIndex = this.workflow.steps[stepIn].inputs[portIn]['steps'].findIndex(item => {
@@ -1661,7 +1667,7 @@ export default class Workflow {
 
             this.workflow.steps[stepIn].inputs[portIn]['steps'].splice(inputItemIndex, 1);
 
-            this.workflow.steps[stepOut].actions[portOut][status] = null;
+            this.workflow.steps[stepOut].outputs[portOut][status] = null;
 
             elemsIn[i].remove();
 

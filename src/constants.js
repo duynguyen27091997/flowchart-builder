@@ -5,6 +5,9 @@ export const STEP_HTML = `<div>
                                 <p class="mt-2"><strong>Mô tả:</strong> __description__</p>
                              </div>
                              <div class="box">
-                                <p>Đối tượng đã thêm: __targets_count__</p>
+                                <h5>Đối tượng:</h5>
+                                __targets__
+                                <h5>Ghi chú:</h5>
+                                __info__
                             </div>
                         </div>`
