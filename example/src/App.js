@@ -29,13 +29,17 @@ const App = () => {
         })
     }
 
+    const getWorkflowHandle = documentTypeId => {
+
+    }
+
     return <TTFlow
         document_types={types}
         permissions={[{action: 'view'}, {action: 'create'}, {action: 'delete'}]}
         departments={departments}
         positions={positions}
         onSave={handleSaveWorkflow}
-        workflow_detail_url={"http://workflow.erp.ez:81/api/workflow/get"}/>
+        getWorkflowHandle={getWorkflowHandle}/>
 }
 
 export default App

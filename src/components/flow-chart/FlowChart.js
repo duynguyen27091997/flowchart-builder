@@ -15,11 +15,11 @@ import {Button, Modal} from "react-bootstrap";
 const FlowChart = () => {
     const {
         document_types = [],
-        workflow_detail_url,
+        getWorkflowHandle,
         permissions,
         setEditor,
         setDrag,
-        onSave
+        onSave,
     } = useContext(FlowContext)
 
     let alert = useAlert();
@@ -28,28 +28,18 @@ const FlowChart = () => {
     let [documentType, setDocumentType] = useState(null);
 
     const onSelectDocumentType = item => {
-        if (!workflow_detail_url){
-            alert.show('URL get workflow is invalid.');
-            setModalSelectDocumentType(false);
-            return;
+        let workflow = getWorkflowHandle(item.id);
+        if (workflow) {
+            editor.import(workflow);
+        } else {
+            editor.clear()
+            alert.show('Không tìm thấy dữ liệu, tiến hành tạo mới.');
         }
-        axios.get(workflow_detail_url, {params: {type_id: item.id}})
-            .then(
-                ({data}) => {
-                    editor.import(data);
-                },
-                () => {
-                    editor.clear()
-                    alert.show('Không tìm thấy dữ liệu, tiến hành tạo mới.');
-                }
-            )
-            .finally(() => {
-                setDocumentType(item);
-                setModalSelectDocumentType(false);
-            })
+        setDocumentType(item);
+        setModalSelectDocumentType(false);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setEditor(editor);
         editor && editor.start();
     }, [editor]);
@@ -60,7 +50,7 @@ const FlowChart = () => {
             workflow_pos_x: editor.canvas_x,
             workflow_pos_y: editor.canvas_y,
         };
-        if (!onSave){
+        if (!onSave) {
             throw new Error('onSave handler is not provided')
         }
         onSave(documentType.id, data)
@@ -87,7 +77,7 @@ const FlowChart = () => {
                 <FlowTool onSave={handleSave}/>
             </aside>
             <main id={"draw-main"} className="flow__draw" onDragOver={allowDrop} onDrop={drop}/>
-            <Modal show={modalSelectDocumentType} onHide={()=> setModalSelectDocumentType(false)} size="lg">
+            <Modal show={modalSelectDocumentType} onHide={() => setModalSelectDocumentType(false)} size="lg">
                 <Modal.Header closeButton>
                     <Modal.Title>Chọn loại tài liệu</Modal.Title>
                 </Modal.Header>
@@ -95,7 +85,7 @@ const FlowChart = () => {
                     <ListDocumentType documentTypes={document_types} onSelect={onSelectDocumentType}/>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={()=> setModalSelectDocumentType(false)}>
+                    <Button variant="secondary" onClick={() => setModalSelectDocumentType(false)}>
                         Đóng
                     </Button>
                 </Modal.Footer>
