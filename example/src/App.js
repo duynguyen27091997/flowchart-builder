@@ -29,8 +29,13 @@ const App = () => {
         })
     }
 
-    const getWorkflowHandle = documentTypeId => {
-
+    const getWorkflowHandle = async documentTypeId => {
+        try {
+            let {data} = await axios.get('http://workflow.erp.ez:81/api/workflow/get?type_id=' + documentTypeId)
+            return data;
+        } catch (e) {
+            return null;
+        }
     }
 
     return <TTFlow

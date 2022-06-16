@@ -27,8 +27,8 @@ const FlowChart = () => {
     let [modalSelectDocumentType, setModalSelectDocumentType] = useState(false);
     let [documentType, setDocumentType] = useState(null);
 
-    const onSelectDocumentType = item => {
-        let workflow = getWorkflowHandle(item.id);
+    const onSelectDocumentType = async item => {
+        let workflow = await getWorkflowHandle(item.id);
         if (workflow) {
             editor.import(workflow);
         } else {
