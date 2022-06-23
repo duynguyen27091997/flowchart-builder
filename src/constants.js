@@ -7,6 +7,7 @@ export const STEP_HTML = `<div>
                              <div class="box">
                                 <h5>Đối tượng:</h5>
                                 __targets__
+                                __assign_targets__
                                 <h5>Ghi chú:</h5>
                                 __info__
                             </div>

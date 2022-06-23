@@ -9,7 +9,12 @@ export const replaceHtml = (data, template) => {
                             ${curr.department_name ? (curr.department_name + ' - ') : ' ' }${curr.position_name}
                             </div>`
         },''),
-        __info__: (data.use_creator_department ? `<p>Dùng phòng ban của người tạo tài liệu cho chức vụ</p>` : '') + (data?.assign_targets?.length ? `<p>Có phân công: ${data.assign_description}</p>` : '')
+        __assign_targets__: data.assign_targets.length ? data.assign_targets.reduce((acc, curr) => {
+            return acc + `<div class="alert alert-secondary" role="alert">
+                            ${curr.department_name ? (curr.department_name + ' - ') : ' ' }${curr.position_name}
+                            </div>`
+        },'<h5>Đối tượng phân công:</h5>') : '',
+        __info__: (data.use_creator_department ? `<p>Dùng phòng ban của người tạo tài liệu cho chức vụ</p>` : '') + (data?.assign_targets?.length ? `<p><strong>Mô tả phân công</strong>: ${data.assign_description}</p>` : '')
     };
 
     return Object.keys(replace).reduce((result, key) => {
