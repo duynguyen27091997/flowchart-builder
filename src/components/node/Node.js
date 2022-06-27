@@ -8,21 +8,25 @@ import FlowContext from "../../flow-context";
 
 const Node = ({drag}) => {
     let {editor} = useContext(FlowContext);
+    const steps = editor.workflow.steps;
 
     let [stepData, setStepData] = useState({
         name: null,
         description: null,
         targets: {},
-        is_first: editor.workflow.steps.length === 0,
+        is_first: !editor.workflow.steps.find(step => step.is_first),
         use_creator_department: false,
         assign_targets: {},
         assign_description: null
     });
 
 
-    useEffect(()=>{
-        stepData.is_first = editor.workflow.steps.length === 0
-    }, [editor])
+    useEffect(() => {
+        setStepData({
+            ...stepData,
+            is_first: !steps.find(step => step.is_first)
+        })
+    }, [steps])
 
     let [showModalTarget, setShowModalTarget] = useState(false);
     let [showModalAssign, setShowModalAssign] = useState(false);
