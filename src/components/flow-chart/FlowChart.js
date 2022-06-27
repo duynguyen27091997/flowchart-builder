@@ -51,11 +51,10 @@ const FlowChart = () => {
             workflow_pos_x: editor.canvas_x,
             workflow_pos_y: editor.canvas_y,
         };
-        console.log(data)
-        // if (!onSave) {
-        //     throw new Error('onSave handler is not provided')
-        // }
-        // onSave(documentType.id, data)
+        if (!onSave) {
+            throw new Error('onSave handler is not provided')
+        }
+        onSave(documentType.id, data)
     };
 
 
