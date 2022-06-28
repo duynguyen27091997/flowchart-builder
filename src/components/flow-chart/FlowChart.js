@@ -20,6 +20,7 @@ const FlowChart = () => {
         setEditor,
         setDrag,
         onSave,
+        onWorkflowNotFound
     } = useContext(FlowContext)
 
     let alert = useAlert();
@@ -34,7 +35,11 @@ const FlowChart = () => {
             editor.import(workflow);
         } else {
             editor.clear()
-            alert.show('Không tìm thấy dữ liệu, tiến hành tạo mới.');
+            if (onWorkflowNotFound) {
+                onWorkflowNotFound(item)
+            } else {
+                alert.show('Không tìm thấy dữ liệu, tiến hành tạo mới.');
+            }
         }
         setDocumentType(item);
         setModalSelectDocumentType(false);
@@ -56,7 +61,6 @@ const FlowChart = () => {
         }
         onSave(documentType.id, data)
     };
-
 
     const renderFlow = () => {
         return <div className={"flow"}>
@@ -93,7 +97,6 @@ const FlowChart = () => {
             </Modal>
         </div>
     }
-
 
     const renderNoAccess = () => {
         return <div className='card'>

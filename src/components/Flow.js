@@ -14,7 +14,6 @@ const alertOptions = {
     transition: transitions.SCALE
 };
 
-
 const Flow = props => {
     const [editor, setEditor] = useState(null);
     const [drag, setDrag] = useState(null);
